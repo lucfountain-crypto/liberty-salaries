@@ -7,27 +7,37 @@ import {
   TrendingUp, 
   Building2, 
   MapPin, 
-  ShieldCheck, 
   Award, 
-  ExternalLink, 
   Download, 
   Sparkles,
   Zap,
   BarChart3,
   Users,
   ChevronRight,
-  Info
+  Info,
+  Clock
 } from 'lucide-react';
 
 export default function SalaryDashboard() {
   const [selectedSector, setSelectedSector] = useState<string>('All Sectors');
   const [selectedRegion, setSelectedRegion] = useState<string>('london');
+  const [selectedExpTier, setSelectedExpTier] = useState<string>('senior');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedRoleId, setSelectedRoleId] = useState<string>(salaryData.roles[0].id);
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const sectors = ['All Sectors', ...salaryData.meta.sectors];
   const regions = salaryData.meta.regions;
+  const expTiers = salaryData.meta.experience_tiers || [
+    { id: "junior", name: "1–3 Years (Junior / Associate)", multiplier: 0.72 },
+    { id: "mid", name: "3–6 Years (Mid-Level)", multiplier: 0.88 },
+    { id: "senior", name: "6–10 Years (Senior Lead)", multiplier: 1.00 },
+    { id: "lead_exec", name: "10+ Years (Principal / Director)", multiplier: 1.35 }
+  ];
+
+  // Current selected experience tier multiplier
+  const currentExpMeta = expTiers.find(e => e.id === selectedExpTier) || expTiers[2];
+  const expMultiplier = currentExpMeta.multiplier;
 
   // Filter roles based on search and sector
   const filteredRoles = useMemo(() => {
@@ -46,9 +56,17 @@ export default function SalaryDashboard() {
     return salaryData.roles.find(r => r.id === selectedRoleId) || filteredRoles[0] || salaryData.roles[0];
   }, [selectedRoleId, filteredRoles]);
 
-  // Region data for current role
-  const currentRegionData = activeRole.regional_data[selectedRegion as keyof typeof activeRole.regional_data] || activeRole.regional_data.london;
+  // Raw region data for current role
+  const rawRegionData = activeRole.regional_data[selectedRegion as keyof typeof activeRole.regional_data] || activeRole.regional_data.london;
   const currentRegionMeta = regions.find(r => r.id === selectedRegion) || regions[0];
+
+  // Calculated adjusted percentile numbers based on Experience Level Multiplier
+  const currentRegionData = {
+    ...rawRegionData,
+    p10: Math.round((rawRegionData.p10 * expMultiplier) / 500) * 500,
+    p50: Math.round((rawRegionData.p50 * expMultiplier) / 500) * 500,
+    p90: Math.round((rawRegionData.p90 * expMultiplier) / 500) * 500,
+  };
 
   // Sector summary
   const sectorSummary = salaryData.sector_summaries[activeRole.sector as keyof typeof salaryData.sector_summaries] || {
@@ -118,7 +136,7 @@ export default function SalaryDashboard() {
           <div className="relative z-10 max-w-3xl space-y-4">
             <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-800/80 border border-slate-700 text-amber-400 text-xs font-medium">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Free Unlocked Industry Data • All UK Sectors</span>
+              <span>Free Unlocked Industry Data • Experience & Regional Adjusted</span>
             </div>
             
             <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
@@ -126,7 +144,7 @@ export default function SalaryDashboard() {
             </h1>
             
             <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-              Real-time percentile distributions (10th, 50th, 90th), base vs. bonus allocations, and regional variance indicators compiled across top UK financial, insurance, and tech institutions.
+              Real-time percentile distributions (10th, 50th, 90th), experience level tiers (1-10+ yrs), base vs. bonus allocations, and regional variance indicators across top UK institutions.
             </p>
 
             {/* Quick Stats Bar */}
@@ -140,26 +158,26 @@ export default function SalaryDashboard() {
                 <p className="text-xl font-bold text-white">{salaryData.meta.sectors.length}</p>
               </div>
               <div className="bg-slate-950/60 border border-slate-800/80 rounded-xl p-3">
-                <p className="text-[11px] text-slate-400 uppercase font-medium">Regional Multipliers</p>
-                <p className="text-xl font-bold text-cyan-400">{salaryData.meta.regions.length} Regions</p>
+                <p className="text-[11px] text-slate-400 uppercase font-medium">Experience Tiers</p>
+                <p className="text-xl font-bold text-emerald-400">{expTiers.length} Seniorities</p>
               </div>
               <div className="bg-slate-950/60 border border-slate-800/80 rounded-xl p-3">
                 <p className="text-[11px] text-slate-400 uppercase font-medium">Data Cycle</p>
-                <p className="text-xl font-bold text-emerald-400">Monthly Fresh</p>
+                <p className="text-xl font-bold text-cyan-400">Monthly Fresh</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Controls Section: Search + Sectors + Regions */}
+        {/* Controls Section: Search + Sectors + Experience + Regions */}
         <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 space-y-5 shadow-xl backdrop-blur-sm">
           
-          {/* Top Row: Search Input */}
+          {/* Search Input */}
           <div className="relative">
             <Search className="absolute left-4 top-3.5 h-5 w-5 text-slate-400" />
             <input 
               type="text"
-              placeholder="Search by job title, role, skill, or keyword (e.g. 'Underwriter', 'Quant', 'AI Engineer')..."
+              placeholder="Search by job title, role, skill, or keyword (e.g. 'Project Manager', 'Underwriter', 'Quant')..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-11 pr-4 py-3 bg-slate-950/80 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all"
@@ -174,7 +192,7 @@ export default function SalaryDashboard() {
             )}
           </div>
 
-          {/* Middle Row: Sector Tabs */}
+          {/* Sector Tabs */}
           <div className="space-y-2">
             <label className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center space-x-1.5">
               <Building2 className="w-3.5 h-3.5 text-amber-400" />
@@ -197,7 +215,30 @@ export default function SalaryDashboard() {
             </div>
           </div>
 
-          {/* Bottom Row: Region Selector */}
+          {/* Experience Level & Seniority Selector */}
+          <div className="space-y-2 pt-1 border-t border-slate-800/60">
+            <label className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center space-x-1.5">
+              <Clock className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Experience & Seniority Level</span>
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {expTiers.map((tier) => (
+                <button
+                  key={tier.id}
+                  onClick={() => setSelectedExpTier(tier.id)}
+                  className={`px-3 py-2 rounded-xl text-xs font-medium text-center transition-all cursor-pointer ${
+                    selectedExpTier === tier.id
+                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 font-bold shadow-sm'
+                      : 'bg-slate-950/60 text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-slate-800/80'
+                  }`}
+                >
+                  {tier.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Region Selector */}
           <div className="space-y-2 pt-1 border-t border-slate-800/60">
             <label className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center space-x-1.5">
               <MapPin className="w-3.5 h-3.5 text-cyan-400" />
@@ -224,7 +265,7 @@ export default function SalaryDashboard() {
         {/* Dashboard Main Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* Left Column: Role Selection List (4 cols) */}
+          {/* Left Column: Role Selection List */}
           <div className="lg:col-span-4 space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold text-white uppercase tracking-wider flex items-center space-x-2">
@@ -247,6 +288,7 @@ export default function SalaryDashboard() {
               ) : (
                 filteredRoles.map((role) => {
                   const regData = role.regional_data[selectedRegion as keyof typeof role.regional_data] || role.regional_data.london;
+                  const adjMedian = Math.round((regData.p50 * expMultiplier) / 500) * 500;
                   const isSelected = activeRole.id === role.id;
 
                   return (
@@ -276,8 +318,8 @@ export default function SalaryDashboard() {
                       </div>
 
                       <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-800/60">
-                        <span className="text-slate-400">Median Base:</span>
-                        <span className="font-bold text-white">{formatCurrency(regData.p50)}</span>
+                        <span className="text-slate-400">Median ({currentExpMeta.name.split(' ')[0]}):</span>
+                        <span className="font-bold text-white">{formatCurrency(adjMedian)}</span>
                       </div>
                     </div>
                   );
@@ -285,7 +327,7 @@ export default function SalaryDashboard() {
               )}
             </div>
 
-            {/* Subtle AdSense Unit Placeholder #1 */}
+            {/* AdSense Unit Placeholder #1 */}
             <div className="p-4 rounded-xl bg-slate-950/40 border border-slate-800/80 text-center space-y-1">
               <span className="text-[9px] uppercase tracking-widest text-slate-600 block">ADVERTISEMENT</span>
               <div className="py-4 border border-dashed border-slate-800 rounded-lg text-slate-500 text-xs">
@@ -294,14 +336,14 @@ export default function SalaryDashboard() {
             </div>
           </div>
 
-          {/* Right Column: Hero Interactive Salary Gauge & Analytics (8 cols) */}
+          {/* Right Column: Hero Interactive Salary Gauge & Analytics */}
           <div className="lg:col-span-8 space-y-6">
             
             {/* Main Interactive Salary Gauge Card */}
             <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6 shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/5 rounded-full blur-2xl pointer-events-none"></div>
 
-              {/* Role Title & Sector Header */}
+              {/* Role Title & Filters Summary Header */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-5">
                 <div>
                   <div className="flex items-center space-x-2 text-xs font-semibold text-amber-400 uppercase tracking-wider mb-1">
@@ -313,10 +355,16 @@ export default function SalaryDashboard() {
                   <p className="text-xs text-slate-400 mt-1 max-w-xl">{activeRole.description}</p>
                 </div>
 
-                <div className="sm:text-right shrink-0">
-                  <span className="text-xs text-slate-400 block">Selected Region:</span>
-                  <span className="text-sm font-bold text-cyan-400">{currentRegionMeta.name}</span>
-                  <div className="text-xs text-emerald-400 font-semibold mt-0.5 flex items-center sm:justify-end space-x-1">
+                <div className="sm:text-right shrink-0 space-y-1">
+                  <div>
+                    <span className="text-xs text-slate-400">Region: </span>
+                    <span className="text-xs font-bold text-cyan-400">{currentRegionMeta.name}</span>
+                  </div>
+                  <div>
+                    <span className="text-xs text-slate-400">Experience: </span>
+                    <span className="text-xs font-bold text-emerald-400">{currentExpMeta.name}</span>
+                  </div>
+                  <div className="text-xs text-amber-400 font-semibold flex items-center sm:justify-end space-x-1">
                     <TrendingUp className="w-3.5 h-3.5" />
                     <span>{currentRegionData.yoy} YoY Increment</span>
                   </div>
@@ -328,7 +376,7 @@ export default function SalaryDashboard() {
                 <div className="flex items-center justify-between">
                   <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-1.5">
                     <BarChart3 className="w-4 h-4 text-amber-400" />
-                    <span>Compensation Distribution Percentiles</span>
+                    <span>Compensation Distribution ({currentExpMeta.name})</span>
                   </h3>
                   <span className="text-xs text-slate-400">Base Salary Range (£ GBP)</span>
                 </div>
@@ -339,7 +387,7 @@ export default function SalaryDashboard() {
                   <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 text-center space-y-1">
                     <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">Lowest (10th%)</span>
                     <p className="text-lg sm:text-2xl font-black text-slate-300">{formatCurrency(currentRegionData.p10)}</p>
-                    <span className="text-[10px] text-slate-500 block">Entry / Minimum Tier</span>
+                    <span className="text-[10px] text-slate-500 block">Entry Tier Band</span>
                   </div>
 
                   {/* 50th Percentile (MEDIAN HERO) */}
@@ -364,14 +412,13 @@ export default function SalaryDashboard() {
                       className="h-full rounded-full bg-gradient-to-r from-slate-700 via-amber-500 to-amber-300 relative"
                       style={{ width: '100%' }}
                     >
-                      {/* Median Indicator Pin */}
                       <div className="absolute top-0 bottom-0 left-1/2 -ml-1 w-2 bg-white rounded-full shadow-md shadow-amber-500/80"></div>
                     </div>
                   </div>
                   <div className="flex justify-between text-[11px] text-slate-400 font-medium px-1">
-                    <span>10th Percentile</span>
-                    <span className="text-amber-400 font-bold">50th Percentile (Median)</span>
-                    <span>90th Percentile</span>
+                    <span>10th Percentile ({formatCurrency(currentRegionData.p10)})</span>
+                    <span className="text-amber-400 font-bold">50th Median ({formatCurrency(currentRegionData.p50)})</span>
+                    <span>90th Percentile ({formatCurrency(currentRegionData.p90)})</span>
                   </div>
                 </div>
               </div>
@@ -382,11 +429,10 @@ export default function SalaryDashboard() {
                 {/* Base vs Bonus split */}
                 <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-3">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-300">Total Package Structure</span>
+                    <span className="font-semibold text-slate-300">Total Package Allocation</span>
                     <span className="text-amber-400 font-bold">{currentRegionData.bonus_pct}% Target Bonus</span>
                   </div>
 
-                  {/* Stacked bar */}
                   <div className="h-3 w-full bg-slate-800 rounded-full overflow-hidden flex">
                     <div className="bg-amber-500 h-full" style={{ width: `${currentRegionData.base_pct}%` }}></div>
                     <div className="bg-cyan-400 h-full" style={{ width: `${currentRegionData.bonus_pct}%` }}></div>
@@ -412,7 +458,7 @@ export default function SalaryDashboard() {
                   </div>
 
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    At median salary ({formatCurrency(currentRegionData.p50)}), active candidate availability is rated as <strong className="text-white">{currentRegionData.demand}</strong>.
+                    At median salary ({formatCurrency(currentRegionData.p50)}), active candidate availability is rated as <strong className="text-white">{currentRegionData.demand}</strong> for {currentExpMeta.name.toLowerCase()}.
                   </p>
 
                   <div className="pt-1 flex items-center space-x-1 text-[11px] text-amber-400 font-medium">
@@ -445,7 +491,7 @@ export default function SalaryDashboard() {
                 <div>
                   <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center space-x-2">
                     <MapPin className="w-4 h-4 text-cyan-400" />
-                    <span>Regional Salary Breakdown for {activeRole.title}</span>
+                    <span>Regional Salary Breakdown for {activeRole.title} ({currentExpMeta.name.split(' ')[0]})</span>
                   </h3>
                   <p className="text-xs text-slate-400">Compare compensation benchmarks across top geographic hubs.</p>
                 </div>
@@ -469,6 +515,10 @@ export default function SalaryDashboard() {
                       if (!regD) return null;
                       const isCurrent = reg.id === selectedRegion;
 
+                      const adj10 = Math.round((regD.p10 * expMultiplier) / 500) * 500;
+                      const adj50 = Math.round((regD.p50 * expMultiplier) / 500) * 500;
+                      const adj90 = Math.round((regD.p90 * expMultiplier) / 500) * 500;
+
                       return (
                         <tr 
                           key={reg.id} 
@@ -481,9 +531,9 @@ export default function SalaryDashboard() {
                             {isCurrent && <span className="h-1.5 w-1.5 rounded-full bg-cyan-400"></span>}
                             <span>{reg.name}</span>
                           </td>
-                          <td className="p-3 text-slate-300">{formatCurrency(regD.p10)}</td>
-                          <td className="p-3 font-bold text-amber-400">{formatCurrency(regD.p50)}</td>
-                          <td className="p-3 text-slate-300">{formatCurrency(regD.p90)}</td>
+                          <td className="p-3 text-slate-300">{formatCurrency(adj10)}</td>
+                          <td className="p-3 font-bold text-amber-400">{formatCurrency(adj50)}</td>
+                          <td className="p-3 text-slate-300">{formatCurrency(adj90)}</td>
                           <td className="p-3 text-emerald-400 font-medium">{regD.yoy}</td>
                           <td className="p-3">
                             <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
@@ -523,7 +573,7 @@ export default function SalaryDashboard() {
         </div>
       </main>
 
-      {/* Floating Bottom Sticky Bar: Liberty Towers Stealth B2B Lead Converter */}
+      {/* Floating Bottom Sticky Bar */}
       <div className="fixed bottom-0 inset-x-0 z-30 bg-[#0c1220]/95 backdrop-blur-md border-t border-slate-800 py-3.5 px-4 shadow-2xl">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center space-x-3 text-center sm:text-left">
@@ -575,7 +625,7 @@ export default function SalaryDashboard() {
               </div>
               <div>
                 <label className="text-xs text-slate-300 block mb-1">Target Role & Salary Band</label>
-                <input type="text" defaultValue={`${activeRole.title} (${formatCurrency(currentRegionData.p50)})`} className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-white" />
+                <input type="text" defaultValue={`${activeRole.title} - ${currentExpMeta.name} (${formatCurrency(currentRegionData.p50)})`} className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-white" />
               </div>
 
               <button 
