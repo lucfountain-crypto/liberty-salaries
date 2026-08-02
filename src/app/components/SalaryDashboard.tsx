@@ -228,13 +228,13 @@ export default function SalaryDashboard() {
       <header className="border-b border-slate-200 bg-white sticky top-0 z-50 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
           
-          {/* Liberty Towers Dark Logo Badge Container for Perfect Visibility */}
+          {/* Liberty Towers Navy Blue Logo Badge Container */}
           <div className="flex items-center space-x-4">
-            <a href="https://www.libertytowers.co.uk/" target="_blank" rel="noopener noreferrer" className="bg-[#0b1324] px-3.5 py-2 rounded-xl border border-slate-800 shadow-sm flex items-center hover:opacity-95 transition">
+            <a href="https://www.libertytowers.co.uk/" target="_blank" rel="noopener noreferrer" className="bg-blue-900 px-3.5 py-2 rounded-xl shadow-sm flex items-center hover:bg-blue-800 transition">
               <img 
                 src="https://s3-eu-west-1.amazonaws.com/rss-websites/libertytowers.co.uk/05-03-2025-84d6f95879f38981b06deb3d3b3c1ac753eaf0ab.png" 
                 alt="Liberty Towers Logo" 
-                className="h-7 sm:h-8 w-auto object-contain"
+                className="h-7 sm:h-8 w-auto object-contain brightness-0 invert"
               />
             </a>
             <div className="hidden sm:block border-l border-slate-200 pl-4">
@@ -328,21 +328,23 @@ export default function SalaryDashboard() {
                   </div>
                 </div>
 
-                {/* Grid for Steps 2 & 3 - Perfectly Level */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-100 items-start">
+                {/* Grid for Steps 2 & 3 - Perfectly Aligned Inputs */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-100">
                   
                   {/* Input 2: Years Experience */}
-                  <div className="flex flex-col justify-between h-full">
-                    <label className="text-sm font-bold text-slate-900 block mb-2 min-h-[40px] flex items-center">
-                      2. How many years of experience?
-                    </label>
+                  <div className="flex flex-col">
+                    <div className="min-h-[44px] flex items-end pb-2">
+                      <label className="text-sm font-bold text-slate-900 leading-tight">
+                        2. How many years of experience?
+                      </label>
+                    </div>
                     <select
                       value={expYears}
                       onChange={(e) => {
                         setExpYears(e.target.value);
                         setHasGenerated(true);
                       }}
-                      className="w-full bg-slate-50 border border-slate-300 focus:border-blue-800 text-slate-900 px-4 py-3.5 rounded-xl text-sm focus:outline-none transition"
+                      className="w-full bg-slate-50 border border-slate-300 focus:border-blue-800 text-slate-900 px-4 py-3.5 rounded-xl text-sm focus:outline-none transition h-[48px]"
                     >
                       <option value="1-3">1–3 Years (Junior / Assistant)</option>
                       <option value="3-6">3–6 Years (Mid-Level)</option>
@@ -352,10 +354,12 @@ export default function SalaryDashboard() {
                   </div>
 
                   {/* Input 3: Location & Setup (Natural Language) */}
-                  <div className="flex flex-col justify-between h-full">
-                    <label className="text-sm font-bold text-slate-900 block mb-2 min-h-[40px] flex items-center">
-                      3. Type location and is the role Based in Office, Hybrid or remote.
-                    </label>
+                  <div className="flex flex-col">
+                    <div className="min-h-[44px] flex items-end pb-2">
+                      <label className="text-sm font-bold text-slate-900 leading-tight">
+                        3. Type location and is the role Based in Office, Hybrid or remote.
+                      </label>
+                    </div>
                     <div>
                       <div className="relative">
                         <MapPin className="absolute left-3.5 top-3.5 w-4 h-4 text-blue-800" />
@@ -367,7 +371,7 @@ export default function SalaryDashboard() {
                             setHasGenerated(true);
                           }}
                           placeholder="e.g. Leeds, 2 days in the office"
-                          className="w-full bg-slate-50 border border-slate-300 focus:border-blue-800 text-slate-900 pl-10 pr-4 py-3.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-800/10 transition"
+                          className="w-full bg-slate-50 border border-slate-300 focus:border-blue-800 text-slate-900 pl-10 pr-4 py-3.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-800/10 transition h-[48px]"
                         />
                       </div>
                       <span className="text-[11px] text-slate-500 mt-1 block">
@@ -590,11 +594,11 @@ export default function SalaryDashboard() {
       <footer className="border-t border-slate-200 bg-white py-8 text-center text-xs text-slate-500">
         <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-3">
-            <div className="bg-[#0b1324] px-2.5 py-1 rounded-lg border border-slate-800">
+            <div className="bg-blue-900 px-2.5 py-1.5 rounded-lg">
               <img 
                 src="https://s3-eu-west-1.amazonaws.com/rss-websites/libertytowers.co.uk/05-03-2025-84d6f95879f38981b06deb3d3b3c1ac753eaf0ab.png" 
                 alt="Liberty Towers" 
-                className="h-5 w-auto object-contain"
+                className="h-5 w-auto object-contain brightness-0 invert"
               />
             </div>
             <span>Recruitment without borders. Talent without compromise.</span>
