@@ -156,8 +156,30 @@ export default function SalaryDashboard() {
     let yoy = "+3.8%";
     let hiringInsight = "High active applicant volume on market release. Rigorous screening required to shortlist top 5% performers.";
 
-    // 1. Insurance Account Handler / Account Executive / Broking
-    if (
+    // Check for Executive Director level titles (Director, CMO, VP, Chief, Head of)
+    const isDirectorLevel = inputLower.includes('director') || inputLower.includes('cmo') || inputLower.includes('cfo') || inputLower.includes('cro') || inputLower.includes('vp') || inputLower.includes('head of') || inputLower.includes('chief');
+
+    // 1. Marketing, Brand, Sales & Commercial Leadership
+    if (inputLower.includes('market') || inputLower.includes('brand') || inputLower.includes('growth') || inputLower.includes('sales') || inputLower.includes('commercial director')) {
+      sector = "Commercial, Marketing & Growth Strategy";
+      if (isDirectorLevel) {
+        baseP10 = 85000; baseP50 = 135000; baseP90 = 195000;
+        basePct = 75; bonusPct = 25;
+        description = "Leads commercial brand architecture, omni-channel growth strategy, revenue expansion, and executive marketing operations.";
+        demand = "High Demand for Proven Growth Directors";
+        yoy = "+6.2%";
+        hiringInsight = "Marketing Directors with verified ROI on customer acquisition, brand repositioning, and digital growth command top-tier packages (£120k-£180k+).";
+      } else {
+        baseP10 = 42000; baseP50 = 68000; baseP90 = 110000;
+        basePct = 80; bonusPct = 20;
+        description = "Drives brand positioning, campaign execution, digital marketing channels, and client acquisition pipelines.";
+        demand = "Moderate-High Candidate Availability";
+        yoy = "+4.8%";
+        hiringInsight = "Good active applicant volume. Primary differentiator is demonstrated campaign conversion and sector-specific domain knowledge.";
+      }
+    }
+    // 2. Insurance Account Handler / Account Executive / Broking
+    else if (
       inputLower.includes('account handler') || 
       inputLower.includes('account executive') || 
       inputLower.includes('broker support') || 
@@ -172,7 +194,7 @@ export default function SalaryDashboard() {
       yoy = "+5.8%";
       hiringInsight = "Competitive broking market. Experienced handlers with Acturis/Open GI mastery and strong insurer relationships command premium London packages.";
     }
-    // 2. Gaming, iGaming, Sportsbook & Retention Analyst
+    // 3. Gaming, iGaming, Sportsbook & Retention Analyst
     else if (inputLower.includes('gaming') || inputLower.includes('retention') || inputLower.includes('casino') || inputLower.includes('sportsbook') || inputLower.includes('igaming') || inputLower.includes('crm analyst')) {
       sector = "iGaming, Gaming & Digital Media";
       baseP10 = 26000; baseP50 = 36000; baseP90 = 52000;
@@ -182,7 +204,7 @@ export default function SalaryDashboard() {
       yoy = "+3.2%";
       hiringInsight = "European & offshore remote hubs (Spain, Malta, Gibraltar) command lower base pay rates (~€28k-€44k EUR). High applicant volume for remote roles.";
     }
-    // 3. Admin & EA/PA
+    // 4. Admin & EA/PA
     else if (inputLower.includes('pa') || inputLower.includes('secretary') || inputLower.includes('assistant') || inputLower.includes('reception') || inputLower.includes('admin') || inputLower.includes('office manager')) {
       sector = "Corporate Administration & Executive Support";
       baseP10 = 32000; baseP50 = 42000; baseP90 = 58000;
@@ -192,7 +214,7 @@ export default function SalaryDashboard() {
       yoy = "+3.5%";
       hiringInsight = "Roles attract huge active applicant volumes. Liberty Towers pre-screens and filters for candidate stability, C-suite discretion, and culture fit.";
     } 
-    // 4. Architecture, Property & Built Environment
+    // 5. Architecture, Property & Built Environment
     else if (inputLower.includes('architect') || inputLower.includes('design') || inputLower.includes('building') || inputLower.includes('property') || inputLower.includes('surveyor') || inputLower.includes('construction') || inputLower.includes('cad') || inputLower.includes('bim')) {
       sector = "Architecture, Property & Built Environment";
       baseP10 = 38000; baseP50 = 58000; baseP90 = 92000;
@@ -202,7 +224,7 @@ export default function SalaryDashboard() {
       yoy = "+4.6%";
       hiringInsight = "Steady market demand. Finance and Property managers with commercial lease and asset accounting proficiency command premium rates.";
     } 
-    // 5. Operations, Change & Business Analysis
+    // 6. Operations, Change & Business Analysis
     else if (inputLower.includes('ops') || inputLower.includes('operation') || inputLower.includes('business analyst') || inputLower.includes('supply chain') || inputLower.includes('change manager') || inputLower.includes('transformation')) {
       sector = "Operations, Change & Business Transformation";
       baseP10 = 42000; baseP50 = 68000; baseP90 = 110000;
@@ -212,7 +234,7 @@ export default function SalaryDashboard() {
       yoy = "+4.8%";
       hiringInsight = "Strong demand in financial services and corporate ops. Proven track record in cost-reduction or systems rollout is key.";
     } 
-    // 6. Tech Infrastructure, Cloud, DevOps & Cyber Security
+    // 7. Tech Infrastructure, Cloud, DevOps & Cyber Security
     else if (inputLower.includes('devops') || inputLower.includes('cloud') || inputLower.includes('sre') || inputLower.includes('cyber') || inputLower.includes('security') || inputLower.includes('infrastructure') || inputLower.includes('network') || inputLower.includes('sysadmin')) {
       sector = "Tech Infrastructure, Cloud & Cyber Security";
       baseP10 = 55000; baseP50 = 88000; baseP90 = 145000;
@@ -222,7 +244,7 @@ export default function SalaryDashboard() {
       yoy = "+7.2%";
       hiringInsight = "Cyber and Cloud Architects face intense buy-side competition. Candidates expect remote/hybrid flexibility and certification bonuses.";
     } 
-    // 7. Insurance & Reinsurance / Actuarial
+    // 8. Insurance & Reinsurance / Actuarial
     else if (inputLower.includes('actuary') || inputLower.includes('pricing') || inputLower.includes('risk model')) {
       sector = "Insurance & Reinsurance";
       baseP10 = 65000; baseP50 = 105000; baseP90 = 165000;
@@ -232,7 +254,7 @@ export default function SalaryDashboard() {
       yoy = "+5.8%";
       hiringInsight = "Tight candidate pool. Targeted headhunting required to reach passive actuarial specialists.";
     } 
-    // 8. Legal & Professional Services
+    // 9. Legal & Professional Services
     else if (inputLower.includes('legal') || inputLower.includes('solicitor') || inputLower.includes('lawyer') || inputLower.includes('counsel')) {
       sector = "Legal & Professional Services";
       baseP10 = 65000; baseP50 = 105000; baseP90 = 165000;
@@ -241,16 +263,6 @@ export default function SalaryDashboard() {
       demand = "High Talent Scarcity";
       yoy = "+6.2%";
       hiringInsight = "Competitive market. Top 10% legal counsel expect hybrid flexibility and clear equity/bonus pathways.";
-    } 
-    // 9. Commercial, Marketing & Sales
-    else if (inputLower.includes('market') || inputLower.includes('brand') || inputLower.includes('growth') || inputLower.includes('sales')) {
-      sector = "Commercial & Growth Strategy";
-      baseP10 = 38000; baseP50 = 60000; baseP90 = 100000;
-      basePct = 75; bonusPct = 25;
-      description = "Drives brand positioning, client acquisition, revenue channels, and strategic market expansion.";
-      demand = "Moderate Candidate Pool";
-      yoy = "+4.5%";
-      hiringInsight = "Good applicant volume; key differentiator is verified track record of direct revenue generation.";
     } 
     // 10. HR & Talent Management
     else if (inputLower.includes('hr') || inputLower.includes('people') || inputLower.includes('talent') || inputLower.includes('recruit')) {
@@ -263,7 +275,7 @@ export default function SalaryDashboard() {
       hiringInsight = "Strong active market response; pre-screening focuses on strategic ER experience and sector alignment.";
     } 
     // 11. Finance & Corporate Accounting
-    else if (inputLower.includes('finance') || inputLower.includes('accountant') || inputLower.includes('accounting') || inputLower.includes('controller') || inputLower.includes('cfo')) {
+    else if (inputLower.includes('finance') || inputLower.includes('accountant') || inputLower.includes('accounting') || inputLower.includes('controller')) {
       sector = "Finance & Corporate Accounting";
       baseP10 = 45000; baseP50 = 75000; baseP90 = 130000;
       basePct = 82; bonusPct = 18;
@@ -320,8 +332,8 @@ export default function SalaryDashboard() {
   const expMultipliers: Record<string, { label: string; multiplier: number }> = {
     '1-3': { label: '1–3 Years (Junior / Assistant)', multiplier: 0.80 },
     '3-6': { label: '3–6 Years (Mid-Level Specialist)', multiplier: 1.00 },
-    '6-10': { label: '6–10 Years (Senior Account Exec)', multiplier: 1.25 },
-    '10+': { label: '10+ Years (Highly Experienced / Lead)', multiplier: 1.55 }
+    '6-10': { label: '6–10 Years (Senior Lead)', multiplier: 1.25 },
+    '10+': { label: '10+ Years (Highly Experienced / Executive Director)', multiplier: 1.50 }
   };
 
   const currentExpMeta = expMultipliers[expYears] || expMultipliers['1-3'];
@@ -492,9 +504,9 @@ export default function SalaryDashboard() {
                     {[
                       'PA Secretary',
                       'Executive Assistant',
+                      'Marketing Director',
                       'Account Handler, Insurance',
-                      'DevOps Engineer',
-                      'Specialty Underwriter'
+                      'DevOps Engineer'
                     ].map((role) => (
                       <button
                         key={role}
