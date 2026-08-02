@@ -18,43 +18,127 @@ import {
   CheckCircle2,
   Send,
   SlidersHorizontal,
-  ArrowRight
+  ArrowRight,
+  RefreshCw
 } from 'lucide-react';
 
 export default function SalaryDashboard() {
   // Conversational Form State
-  const [roleInput, setRoleInput] = useState<string>('Specialty Underwriter');
-  const [expYears, setExpYears] = useState<string>('6-10'); // '1-3', '3-6', '6-10', '10+'
+  const [roleInput, setRoleInput] = useState<string>('PA Secretary');
+  const [expYears, setExpYears] = useState<string>('1-3'); // '1-3', '3-6', '6-10', '10+'
   const [locationInput, setLocationInput] = useState<string>('london'); // 'london', 'southeast', 'north', 'scotland', 'us_remote'
   const [workStyle, setWorkStyle] = useState<string>('hybrid'); // 'hybrid', 'remote', 'onsite'
   
   // App view modes: 'guided' (simple natural language) vs 'full' (all roles matrix)
   const [viewMode, setViewMode] = useState<'guided' | 'full'>('guided');
   const [hasGenerated, setHasGenerated] = useState<boolean>(true);
+  const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  // Sector & Role Data matching
-  const roles = salaryData.roles;
-  
-  // Find best matching role based on user natural language input
-  const matchedRole = useMemo(() => {
-    const inputLower = roleInput.toLowerCase().trim();
-    if (!inputLower) return roles[0];
-    
-    // Direct or partial title match
-    const exactMatch = roles.find(r => r.title.toLowerCase().includes(inputLower) || inputLower.includes(r.title.toLowerCase()));
-    if (exactMatch) return exactMatch;
+  // Pre-cached roles from JSON
+  const predefinedRoles = salaryData.roles;
 
-    // Category / description match
-    const categoryMatch = roles.find(r => 
-      r.category.toLowerCase().includes(inputLower) || 
-      r.description.toLowerCase().includes(inputLower) ||
-      r.sector.toLowerCase().includes(inputLower)
+  // Role Knowledge Base / Heuristic AI Parser for ANY job title
+  const activeRoleData = useMemo(() => {
+    const titleClean = roleInput.trim() || 'PA Secretary';
+    const inputLower = titleClean.toLowerCase();
+
+    // 1. Check if matches one of our pre-cached roles
+    const predefined = predefinedRoles.find(r => 
+      r.title.toLowerCase().includes(inputLower) || 
+      inputLower.includes(r.title.toLowerCase())
     );
-    if (categoryMatch) return categoryMatch;
 
-    return roles[0];
-  }, [roleInput, roles]);
+    if (predefined) {
+      return predefined;
+    }
+
+    // 2. Universal Heuristic Engine for ANY custom job title (e.g. PA Secretary, EA, Marketing, Legal, etc.)
+    let sector = "Corporate & Executive Support";
+    let baseP10 = 32000;
+    let baseP50 = 45000;
+    let baseP90 = 65000;
+    let basePct = 90;
+    let bonusPct = 10;
+    let description = `Provides high-level administrative, organizational, and operational support for senior stakeholders.`;
+    let demand = "High Demand";
+    let yoy = "+4.8%";
+
+    // Role category heuristics
+    if (inputLower.includes('pa') || inputLower.includes('secretary') || inputLower.includes('assistant') || inputLower.includes('reception') || inputLower.includes('admin')) {
+      sector = "Corporate Administration & Executive Support";
+      baseP10 = 30000; baseP50 = 42000; baseP90 = 60000;
+      basePct = 92; bonusPct = 8;
+      description = "Manages executive diaries, travel logistics, board coordination, and senior administrative operations.";
+      demand = "High Demand"; yoy = "+4.2%";
+    } else if (inputLower.includes('legal') || inputLower.includes('solicitor') || inputLower.includes('lawyer') || inputLower.includes('counsel')) {
+      sector = "Legal & Professional Services";
+      baseP10 = 65000; baseP50 = 105000; baseP90 = 165000;
+      basePct = 85; bonusPct = 15;
+      description = "Advises on corporate transactions, regulatory governance, commercial contracts, and dispute resolution.";
+      demand = "Critical Scarcity"; yoy = "+6.2%";
+    } else if (inputLower.includes('market') || inputLower.includes('brand') || inputLower.includes('growth') || inputLower.includes('sales')) {
+      sector = "Commercial & Growth Strategy";
+      baseP10 = 40000; baseP50 = 65000; baseP90 = 105000;
+      basePct = 75; bonusPct = 25;
+      description = "Drives brand positioning, client acquisition, revenue channels, and strategic market expansion.";
+      demand = "High Demand"; yoy = "+5.0%";
+    } else if (inputLower.includes('hr') || inputLower.includes('people') || inputLower.includes('talent') || inputLower.includes('recruit')) {
+      sector = "Human Resources & Talent Leadership";
+      baseP10 = 42000; baseP50 = 70000; baseP90 = 115000;
+      basePct = 85; bonusPct = 15;
+      description = "Leads talent acquisition, organizational development, employee retention, and compensation strategy.";
+      demand = "High Demand"; yoy = "+4.9%";
+    } else if (inputLower.includes('finance') || inputLower.includes('account') || inputLower.includes('controller') || inputLower.includes('cfo')) {
+      sector = "Finance & Corporate Accounting";
+      baseP10 = 48000; baseP50 = 80000; baseP90 = 135000;
+      basePct = 80; bonusPct = 20;
+      description = "Oversees financial planning & analysis (FP&A), statutory reporting, tax governance, and audit compliance.";
+      demand = "High Demand"; yoy = "+5.4%";
+    } else if (inputLower.includes('quant') || inputLower.includes('trading') || inputLower.includes('hft') || inputLower.includes('dev')) {
+      sector = "Quant & Quantitative Finance";
+      baseP10 = 90000; baseP50 = 180000; baseP90 = 280000;
+      basePct = 60; bonusPct = 40;
+      description = "Engineers algorithmic trading models, high-frequency execution infrastructure, and alpha strategy research.";
+      demand = "Critical Scarcity"; yoy = "+8.5%";
+    } else if (inputLower.includes('underwriter') || inputLower.includes('insurance') || inputLower.includes('broker') || inputLower.includes('claims')) {
+      sector = "Insurance & Specialty Reinsurance";
+      baseP10 = 55000; baseP50 = 95000; baseP90 = 160000;
+      basePct = 75; bonusPct = 25;
+      description = "Evaluates portfolio risk, Lloyd's syndicate exposure, pricing strategy, and broker client relationships.";
+      demand = "Critical Scarcity"; yoy = "+6.0%";
+    }
+
+    // Regional adjustments
+    const regionMultipliers: Record<string, number> = {
+      london: 1.0,
+      southeast: 0.88,
+      north: 0.80,
+      scotland: 0.82,
+      us_remote: 1.25
+    };
+
+    const regMult = regionMultipliers[locationInput] || 1.0;
+
+    return {
+      id: `custom-${inputLower.replace(/[^a-z0-9]/g, '-')}`,
+      title: titleClean.replace(/\b\w/g, l => l.toUpperCase()),
+      sector: sector,
+      category: "Executive Benchmark",
+      description: description,
+      regional_data: {
+        [locationInput]: {
+          p10: Math.round(baseP10 * regMult),
+          p50: Math.round(baseP50 * regMult),
+          p90: Math.round(baseP90 * regMult),
+          base_pct: basePct,
+          bonus_pct: bonusPct,
+          demand: demand,
+          yoy: yoy
+        }
+      }
+    };
+  }, [roleInput, locationInput, predefinedRoles]);
 
   // Experience level multipliers
   const expMultipliers: Record<string, { label: string; multiplier: number }> = {
@@ -64,30 +148,46 @@ export default function SalaryDashboard() {
     '10+': { label: '10+ Years (Director / Head)', multiplier: 1.35 }
   };
 
-  const currentExpMeta = expMultipliers[expYears] || expMultipliers['6-10'];
+  const currentExpMeta = expMultipliers[expYears] || expMultipliers['1-3'];
   const multiplier = currentExpMeta.multiplier;
 
-  // Raw region data for current role
-  const rawRegionData = matchedRole.regional_data[locationInput as keyof typeof matchedRole.regional_data] || matchedRole.regional_data.london;
+  // Active region data
+  const rawRegionData = activeRoleData.regional_data[locationInput as keyof typeof activeRoleData.regional_data] || {
+    p10: 30000,
+    p50: 45000,
+    p90: 65000,
+    base_pct: 90,
+    bonus_pct: 10,
+    demand: "High Demand",
+    yoy: "+4.5%"
+  };
 
   // Work style adjustment factor
   const workStyleMultiplier = workStyle === 'remote' ? 1.05 : workStyle === 'onsite' ? 0.97 : 1.0;
 
   // Calculated final benchmarks
-  const p10 = Math.round((rawRegionData.p10 * multiplier * workStyleMultiplier) / 1000) * 1000;
-  const p50 = Math.round((rawRegionData.p50 * multiplier * workStyleMultiplier) / 1000) * 1000;
-  const p90 = Math.round((rawRegionData.p90 * multiplier * workStyleMultiplier) / 1000) * 1000;
+  const p10 = Math.round((rawRegionData.p10 * multiplier * workStyleMultiplier) / 500) * 500;
+  const p50 = Math.round((rawRegionData.p50 * multiplier * workStyleMultiplier) / 500) * 500;
+  const p90 = Math.round((rawRegionData.p90 * multiplier * workStyleMultiplier) / 500) * 500;
 
-  const basePct = rawRegionData.base_pct || 80;
-  const bonusPct = rawRegionData.bonus_pct || 20;
+  const basePct = rawRegionData.base_pct || 85;
+  const bonusPct = rawRegionData.bonus_pct || 15;
 
   const formatCurrency = (val: number) => {
     return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(val);
   };
 
+  const handleGenerate = () => {
+    setIsGenerating(true);
+    setTimeout(() => {
+      setHasGenerated(true);
+      setIsGenerating(false);
+    }, 250);
+  };
+
   const handleQuickSelect = (roleTitle: string) => {
     setRoleInput(roleTitle);
-    setHasGenerated(true);
+    handleGenerate();
   };
 
   return (
@@ -119,7 +219,7 @@ export default function SalaryDashboard() {
               className="text-xs text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700 border border-slate-700 px-3 py-2 rounded-lg transition flex items-center space-x-1.5"
             >
               <SlidersHorizontal className="w-3.5 h-3.5 text-amber-400" />
-              <span className="hidden md:inline">{viewMode === 'guided' ? 'Switch to Full Directory' : 'Switch to Simple Assistant'}</span>
+              <span className="hidden md:inline">{viewMode === 'guided' ? 'Full Directory' : 'Simple Assistant'}</span>
             </button>
             <button
               onClick={() => setShowModal(true)}
@@ -133,7 +233,7 @@ export default function SalaryDashboard() {
       </header>
 
       {/* Hero Intro Banner */}
-      <section className="bg-gradient-to-b from-[#0f172a] via-[#0b1324] to-[#0a0e1a] border-b border-slate-800/60 py-10 px-4 sm:px-6 lg:px-8">
+      <section className="bg-gradient-to-b from-[#0f172a] via-[#0b1324] to-[#0a0e1a] border-b border-slate-800/60 py-8 sm:py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-medium mb-4">
             <Sparkles className="w-3.5 h-3.5" />
@@ -146,7 +246,7 @@ export default function SalaryDashboard() {
             </span>
           </h1>
           <p className="mt-3 text-sm sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            Get instant, real-time UK market compensation distribution (10th, 50th, 90th percentiles), talent scarcity indicators, and base/bonus breakdowns for any role or experience level.
+            Get instant, real-time UK market compensation distribution (10th, 50th, 90th percentiles), talent scarcity indicators, and base/bonus breakdowns for <strong>any role or experience level.</strong>
           </p>
         </div>
       </section>
@@ -166,7 +266,7 @@ export default function SalaryDashboard() {
                 </div>
                 <div>
                   <h2 className="text-lg font-bold text-white">What role would you like current Market data on?</h2>
-                  <p className="text-xs text-slate-400">Type in natural human language, or pick a popular benchmark below.</p>
+                  <p className="text-xs text-slate-400">Type any job title or role in natural human language (e.g. PA Secretary, Solicitor, Quant Developer...)</p>
                 </div>
               </div>
 
@@ -177,23 +277,26 @@ export default function SalaryDashboard() {
                   <input
                     type="text"
                     value={roleInput}
-                    onChange={(e) => setRoleInput(e.target.value)}
-                    placeholder="e.g. Specialty Underwriter, Quant Developer, Head of Risk, M&A Advisor..."
+                    onChange={(e) => {
+                      setRoleInput(e.target.value);
+                      setHasGenerated(true);
+                    }}
+                    placeholder="e.g. PA Secretary, Executive Assistant, Specialty Underwriter, Quant Developer..."
                     className="w-full bg-[#0d1322] border border-slate-700 focus:border-amber-500 text-white pl-12 pr-4 py-3.5 rounded-xl text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-amber-500/20 transition"
                   />
                 </div>
 
                 {/* Popular Role Quick Buttons */}
                 <div className="mt-4">
-                  <span className="text-xs font-semibold text-slate-400 block mb-2">Popular Executive Benchmarks:</span>
+                  <span className="text-xs font-semibold text-slate-400 block mb-2">Popular Executive & Support Benchmarks:</span>
                   <div className="flex flex-wrap gap-2">
                     {[
+                      'PA Secretary',
+                      'Executive Assistant',
                       'Specialty Underwriter',
                       'Quant Researcher',
-                      'HFT C++ Developer',
-                      'Risk Actuary',
-                      'Regulatory Compliance Officer',
-                      'Project & Change Manager'
+                      'Legal Counsel',
+                      'Project Manager'
                     ].map((role) => (
                       <button
                         key={role}
@@ -221,13 +324,16 @@ export default function SalaryDashboard() {
                   </label>
                   <select
                     value={expYears}
-                    onChange={(e) => setExpYears(e.target.value)}
+                    onChange={(e) => {
+                      setExpYears(e.target.value);
+                      setHasGenerated(true);
+                    }}
                     className="w-full bg-[#0d1322] border border-slate-700 focus:border-amber-500 text-white px-4 py-3 rounded-xl text-sm focus:outline-none transition"
                   >
-                    <option value="1-3">1–3 Years (Junior / Associate)</option>
-                    <option value="3-6">3–6 Years (Mid-Level)</option>
+                    <option value="1-3">1–3 Years (Junior / Associate / Assistant)</option>
+                    <option value="3-6">3–6 Years (Mid-Level Specialist)</option>
                     <option value="6-10">6–10 Years (Senior Lead)</option>
-                    <option value="10+">10+ Years (Director / Head)</option>
+                    <option value="10+">10+ Years (Director / Head / Principal)</option>
                   </select>
                 </div>
 
@@ -239,19 +345,25 @@ export default function SalaryDashboard() {
                   <div className="grid grid-cols-2 gap-2">
                     <select
                       value={locationInput}
-                      onChange={(e) => setLocationInput(e.target.value)}
+                      onChange={(e) => {
+                        setLocationInput(e.target.value);
+                        setHasGenerated(true);
+                      }}
                       className="bg-[#0d1322] border border-slate-700 focus:border-amber-500 text-white px-3 py-3 rounded-xl text-xs sm:text-sm focus:outline-none transition"
                     >
-                      <option value="london">London & Lloyd's Market</option>
+                      <option value="london">London & City Hubs</option>
                       <option value="southeast">South East England</option>
                       <option value="north">North UK (Manchester/Leeds)</option>
-                      <option value="scotland">Scotland & Regional Hubs</option>
+                      <option value="scotland">Scotland & Regional</option>
                       <option value="us_remote">US / Overseas & Remote</option>
                     </select>
 
                     <select
                       value={workStyle}
-                      onChange={(e) => setWorkStyle(e.target.value)}
+                      onChange={(e) => {
+                        setWorkStyle(e.target.value);
+                        setHasGenerated(true);
+                      }}
                       className="bg-[#0d1322] border border-slate-700 focus:border-amber-500 text-white px-3 py-3 rounded-xl text-xs sm:text-sm focus:outline-none transition"
                     >
                       <option value="hybrid">Hybrid Working</option>
@@ -266,10 +378,15 @@ export default function SalaryDashboard() {
               {/* Action Button */}
               <div className="mt-8 pt-4 flex justify-end">
                 <button
-                  onClick={() => setHasGenerated(true)}
+                  onClick={handleGenerate}
+                  disabled={isGenerating}
                   className="w-full sm:w-auto bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-extrabold text-base px-8 py-3.5 rounded-xl shadow-lg shadow-amber-500/20 transition flex items-center justify-center space-x-2"
                 >
-                  <Sparkles className="w-5 h-5" />
+                  {isGenerating ? (
+                    <RefreshCw className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <Sparkles className="w-5 h-5" />
+                  )}
                   <span>Generate Executive Benchmark</span>
                 </button>
               </div>
@@ -285,15 +402,15 @@ export default function SalaryDashboard() {
                   <div>
                     <div className="flex items-center space-x-2">
                       <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                        {matchedRole.sector}
+                        {activeRoleData.sector}
                       </span>
                       <span className="text-xs text-slate-400">• {currentExpMeta.label}</span>
                     </div>
                     <h3 className="text-2xl font-black text-white mt-1">
-                      {matchedRole.title}
+                      {activeRoleData.title}
                     </h3>
                     <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-2xl">
-                      {matchedRole.description}
+                      {activeRoleData.description}
                     </p>
                   </div>
 
@@ -302,7 +419,7 @@ export default function SalaryDashboard() {
                     <div>
                       <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Region & Setup</span>
                       <span className="text-xs font-bold text-white">
-                        {locationInput === 'london' ? "London & Lloyd's" : locationInput.toUpperCase()} ({workStyle})
+                        {locationInput === 'london' ? 'London & City Hubs' : locationInput.toUpperCase()} ({workStyle})
                       </span>
                     </div>
                   </div>
@@ -358,7 +475,7 @@ export default function SalaryDashboard() {
                     <div>
                       <h4 className="text-sm font-bold text-white">Market Scarcity & Demand Insight</h4>
                       <p className="text-xs text-slate-300 mt-0.5 leading-relaxed">
-                        At median compensation (<strong className="text-amber-400">{formatCurrency(p50)}</strong>), candidate pool availability for <strong className="text-white">{matchedRole.title}</strong> is currently rated as <span className="text-amber-400 font-bold">{rawRegionData.demand}</span> with a <strong className="text-emerald-400">{rawRegionData.yoy}</strong> year-on-year pay trajectory.
+                        At median compensation (<strong className="text-amber-400">{formatCurrency(p50)}</strong>), candidate availability for <strong className="text-white">{activeRoleData.title}</strong> is currently rated as <span className="text-amber-400 font-bold">{rawRegionData.demand}</span> with a <strong className="text-emerald-400">{rawRegionData.yoy}</strong> year-on-year pay trajectory.
                       </p>
                     </div>
                   </div>
@@ -374,7 +491,7 @@ export default function SalaryDashboard() {
                   <div>
                     <h4 className="text-base font-extrabold text-white">Hiring for this role or scaling your team?</h4>
                     <p className="text-xs text-slate-300 mt-1">
-                      Liberty Towers delivers pre-screened executive candidates matched to these benchmarks within 48 hours.
+                      Liberty Towers delivers pre-screened candidates matched to these benchmarks within 48 hours.
                     </p>
                   </div>
 
@@ -392,12 +509,12 @@ export default function SalaryDashboard() {
 
           </div>
         ) : (
-          /* Full Matrix Directory View for Technical Users */
+          /* Full Matrix Directory View */
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-bold text-white">All Sector Roles & Benchmarks Directory</h2>
-                <p className="text-xs text-slate-400">Comprehensive overview across all benchmarked roles.</p>
+                <h2 className="text-xl font-bold text-white">Pre-cached Roles Directory</h2>
+                <p className="text-xs text-slate-400">Quick selection from popular industry benchmarks.</p>
               </div>
               <button
                 onClick={() => setViewMode('guided')}
@@ -409,7 +526,7 @@ export default function SalaryDashboard() {
 
             <div className="bg-[#111827] border border-slate-800 rounded-2xl p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {salaryData.roles.map((r) => (
+                {predefinedRoles.map((r) => (
                   <div
                     key={r.id}
                     onClick={() => {
@@ -446,7 +563,7 @@ export default function SalaryDashboard() {
             <form onSubmit={(e) => { e.preventDefault(); alert('Thank you! A Liberty Towers specialist will reach out shortly.'); setShowModal(false); }} className="space-y-4 mt-6">
               <div>
                 <label className="text-xs font-semibold text-slate-300 block mb-1">Your Name / Company</label>
-                <input required type="text" placeholder="e.g. Sarah Jenkins / Acme Insurance" className="w-full bg-[#0d1322] border border-slate-700 text-white px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-amber-500" />
+                <input required type="text" placeholder="e.g. Sarah Jenkins / Acme Corp" className="w-full bg-[#0d1322] border border-slate-700 text-white px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-amber-500" />
               </div>
               <div>
                 <label className="text-xs font-semibold text-slate-300 block mb-1">Work Email or Phone</label>
@@ -454,7 +571,7 @@ export default function SalaryDashboard() {
               </div>
               <div>
                 <label className="text-xs font-semibold text-slate-300 block mb-1">Role / Benchmark Query</label>
-                <textarea rows={3} placeholder={`Query regarding ${matchedRole.title} compensation...`} className="w-full bg-[#0d1322] border border-slate-700 text-white px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-amber-500 text-xs" />
+                <textarea rows={3} placeholder={`Query regarding ${activeRoleData.title} compensation...`} className="w-full bg-[#0d1322] border border-slate-700 text-white px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-amber-500 text-xs" />
               </div>
 
               <div className="flex items-center justify-end space-x-3 pt-2">
