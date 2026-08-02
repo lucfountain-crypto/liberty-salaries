@@ -165,12 +165,12 @@ export default function SalaryDashboard() {
       inputLower.includes('client manager')
     ) {
       sector = "Insurance & Commercial Broking";
-      baseP10 = 28000; baseP50 = 36000; baseP90 = 55000;
-      basePct = 90; bonusPct = 10;
-      description = "Manages client policy renewals, broker relationships, insurer negotiations, and commercial account administration.";
-      demand = "High Candidate Availability (Steady Applicant Flow)";
-      yoy = "+3.8%";
-      hiringInsight = "Good active applicant volume. Pre-screening focuses on technical policy wording, Acturis/Open GI software proficiency, and client retention rates.";
+      baseP10 = 36000; baseP50 = 52000; baseP90 = 85000;
+      basePct = 85; bonusPct = 15;
+      description = "Manages commercial client policy portfolios, renewal placements, Lloyd's/company market negotiations, and broker client accounts.";
+      demand = "High Demand for Experienced Commercial Handlers";
+      yoy = "+5.2%";
+      hiringInsight = "Competitive broking market. Experienced handlers with Acturis/Open GI mastery and strong insurer relationships command premium London packages.";
     }
     // 2. Gaming, iGaming, Sportsbook & Retention Analyst
     else if (inputLower.includes('gaming') || inputLower.includes('retention') || inputLower.includes('casino') || inputLower.includes('sportsbook') || inputLower.includes('igaming') || inputLower.includes('crm analyst')) {
@@ -283,7 +283,7 @@ export default function SalaryDashboard() {
       hiringInsight = "Fierce bidding war across buy-side funds. Candidates hold multiple competing offers.";
     } 
     // 13. Insurance Underwriting
-    else if (inputLower.includes('underwriter') || inputLower.includes('insurance') || inputLower.includes('claims')) {
+    else if (inputLower.includes('underwriter') || inputLower.includes('insurance') || inputLower.includes('broker') || inputLower.includes('claims')) {
       sector = "Insurance & Specialty Reinsurance";
       baseP10 = 55000; baseP50 = 95000; baseP90 = 160000;
       basePct = 75; bonusPct = 25;
@@ -318,10 +318,10 @@ export default function SalaryDashboard() {
 
   // Experience level multipliers
   const expMultipliers: Record<string, { label: string; multiplier: number }> = {
-    '1-3': { label: '1–3 Years (Junior / Assistant)', multiplier: 0.75 },
-    '3-6': { label: '3–6 Years (Mid-Level)', multiplier: 0.92 },
-    '6-10': { label: '6–10 Years (Senior)', multiplier: 1.12 },
-    '10+': { label: '10+ Years (Highly Experienced)', multiplier: 1.35 }
+    '1-3': { label: '1–3 Years (Junior / Assistant)', multiplier: 0.85 },
+    '3-6': { label: '3–6 Years (Mid-Level)', multiplier: 1.00 },
+    '6-10': { label: '6–10 Years (Senior)', multiplier: 1.25 },
+    '10+': { label: '10+ Years (Highly Experienced)', multiplier: 1.50 }
   };
 
   const currentExpMeta = expMultipliers[expYears] || expMultipliers['1-3'];
