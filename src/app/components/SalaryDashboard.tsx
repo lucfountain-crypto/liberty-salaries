@@ -96,57 +96,74 @@ export default function SalaryDashboard() {
     let basePct = 90;
     let bonusPct = 10;
     let description = `Provides administrative, organizational, and operational support for business leaders.`;
-    let demand = "High Demand";
-    let yoy = "+4.8%";
+    let demand = "High Candidate Volume (Abundant Talent)";
+    let yoy = "+3.8%";
+    let hiringInsight = "High active applicant volume on market release. Rigorous screening required to shortlist top 5% performers.";
 
-    if (inputLower.includes('pa') || inputLower.includes('secretary') || inputLower.includes('assistant') || inputLower.includes('reception') || inputLower.includes('admin')) {
+    if (inputLower.includes('pa') || inputLower.includes('secretary') || inputLower.includes('assistant') || inputLower.includes('reception') || inputLower.includes('admin') || inputLower.includes('office manager')) {
       sector = "Corporate Administration & Executive Support";
-      baseP10 = 30000; baseP50 = 42000; baseP90 = 60000;
-      basePct = 92; bonusPct = 8;
+      baseP10 = 28000; baseP50 = 38000; baseP90 = 55000;
+      basePct = 95; bonusPct = 5;
       description = "Manages executive diaries, travel logistics, board coordination, and senior administrative operations.";
-      demand = "High Demand"; yoy = "+4.2%";
+      demand = "High Candidate Availability (Swamped with Applicants)";
+      yoy = "+3.5%";
+      hiringInsight = "Roles attract huge active applicant volumes. Liberty Towers pre-screens and filters for candidate stability, C-suite discretion, and culture fit.";
     } else if (inputLower.includes('actuary') || inputLower.includes('pricing') || inputLower.includes('risk model')) {
       sector = "Insurance & Reinsurance";
       baseP10 = 65000; baseP50 = 105000; baseP90 = 165000;
       basePct = 80; bonusPct = 20;
       description = "Develops stochastic risk models, catastrophe pricing frameworks, and capital adequacy reserves.";
-      demand = "High Demand"; yoy = "+5.8%";
+      demand = "Critical Talent Scarcity";
+      yoy = "+5.8%";
+      hiringInsight = "Tight candidate pool. Targeted headhunting required to reach passive actuarial specialists.";
     } else if (inputLower.includes('legal') || inputLower.includes('solicitor') || inputLower.includes('lawyer') || inputLower.includes('counsel')) {
       sector = "Legal & Professional Services";
       baseP10 = 65000; baseP50 = 105000; baseP90 = 165000;
       basePct = 85; bonusPct = 15;
       description = "Advises on corporate transactions, regulatory governance, commercial contracts, and dispute resolution.";
-      demand = "Critical Scarcity"; yoy = "+6.2%";
+      demand = "High Talent Scarcity";
+      yoy = "+6.2%";
+      hiringInsight = "Competitive market. Top 10% legal counsel expect hybrid flexibility and clear equity/bonus pathways.";
     } else if (inputLower.includes('market') || inputLower.includes('brand') || inputLower.includes('growth') || inputLower.includes('sales')) {
       sector = "Commercial & Growth Strategy";
       baseP10 = 40000; baseP50 = 65000; baseP90 = 105000;
       basePct = 75; bonusPct = 25;
       description = "Drives brand positioning, client acquisition, revenue channels, and strategic market expansion.";
-      demand = "High Demand"; yoy = "+5.0%";
+      demand = "Moderate Candidate Pool";
+      yoy = "+4.5%";
+      hiringInsight = "Good applicant volume; key differentiator is verified track record of direct revenue generation.";
     } else if (inputLower.includes('hr') || inputLower.includes('people') || inputLower.includes('talent') || inputLower.includes('recruit')) {
       sector = "Human Resources & Talent Leadership";
-      baseP10 = 42000; baseP50 = 70000; baseP90 = 115000;
-      basePct = 85; bonusPct = 15;
+      baseP10 = 40000; baseP50 = 65000; baseP90 = 110000;
+      basePct = 88; bonusPct = 12;
       description = "Leads talent acquisition, organizational development, employee retention, and compensation strategy.";
-      demand = "High Demand"; yoy = "+4.9%";
+      demand = "High Candidate Availability";
+      yoy = "+4.2%";
+      hiringInsight = "Strong active market response; pre-screening focuses on strategic ER experience and sector alignment.";
     } else if (inputLower.includes('finance') || inputLower.includes('account') || inputLower.includes('controller') || inputLower.includes('cfo')) {
       sector = "Finance & Corporate Accounting";
-      baseP10 = 48000; baseP50 = 80000; baseP90 = 135000;
-      basePct = 80; bonusPct = 20;
+      baseP10 = 45000; baseP50 = 75000; baseP90 = 130000;
+      basePct = 82; bonusPct = 18;
       description = "Oversees financial planning & analysis (FP&A), statutory reporting, tax governance, and audit compliance.";
-      demand = "High Demand"; yoy = "+5.4%";
+      demand = "Moderate-High Scarcity (Qualified ACA)";
+      yoy = "+5.0%";
+      hiringInsight = "ACA/ACCA qualified talent commands strong counter-offers. Speed to offer is critical.";
     } else if (inputLower.includes('quant') || inputLower.includes('trading') || inputLower.includes('hft') || inputLower.includes('dev')) {
       sector = "Quant & Quantitative Finance";
       baseP10 = 90000; baseP50 = 180000; baseP90 = 280000;
       basePct = 60; bonusPct = 40;
       description = "Engineers algorithmic trading models, high-frequency execution infrastructure, and strategy research.";
-      demand = "Critical Scarcity"; yoy = "+8.5%";
+      demand = "Extreme Talent Scarcity";
+      yoy = "+8.5%";
+      hiringInsight = "Fierce bidding war across buy-side funds. Candidates hold multiple competing offers.";
     } else if (inputLower.includes('underwriter') || inputLower.includes('insurance') || inputLower.includes('broker') || inputLower.includes('claims')) {
       sector = "Insurance & Specialty Reinsurance";
       baseP10 = 55000; baseP50 = 95000; baseP90 = 160000;
       basePct = 75; bonusPct = 25;
       description = "Evaluates portfolio risk, Lloyd's syndicate exposure, pricing strategy, and broker client relationships.";
-      demand = "Critical Scarcity"; yoy = "+6.0%";
+      demand = "High Talent Scarcity";
+      yoy = "+6.0%";
+      hiringInsight = "Lloyd's and company markets face tight supply of profitable book leads. Direct headhunting recommended.";
     }
 
     const regMult = parsedLocation.multiplier;
@@ -165,7 +182,8 @@ export default function SalaryDashboard() {
           base_pct: basePct,
           bonus_pct: bonusPct,
           demand: demand,
-          yoy: yoy
+          yoy: yoy,
+          hiring_insight: hiringInsight
         }
       }
     };
@@ -189,8 +207,9 @@ export default function SalaryDashboard() {
     p90: 65000,
     base_pct: 90,
     bonus_pct: 10,
-    demand: "High Demand",
-    yoy: "+4.5%"
+    demand: "High Candidate Availability",
+    yoy: "+4.2%",
+    hiring_insight: "High active applicant volume on market release."
   };
 
   // Work style adjustment factor
@@ -482,10 +501,15 @@ export default function SalaryDashboard() {
                       <TrendingUp className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold text-slate-900">Market Demand & Availability</h4>
+                      <h4 className="text-sm font-bold text-slate-900">Market Supply & Candidate Volume</h4>
                       <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
-                        At median salary (<strong className="text-slate-900">{formatCurrency(p50)}</strong>), candidate availability for <strong className="text-slate-900">{activeRoleData.title}</strong> is currently rated as <span className="text-blue-900 font-bold">{rawRegionData.demand}</span> with a <strong className="text-emerald-700">{rawRegionData.yoy}</strong> year-on-year market trend.
+                        At median salary (<strong className="text-slate-900">{formatCurrency(p50)}</strong>), candidate supply for <strong className="text-slate-900">{activeRoleData.title}</strong> is rated as <span className="text-blue-900 font-bold">{rawRegionData.demand}</span> with a <strong className="text-emerald-700">{rawRegionData.yoy}</strong> year-on-year market trend.
                       </p>
+                      {(rawRegionData as any).hiring_insight && (
+                        <p className="text-[11px] text-slate-500 mt-1 italic">
+                          💡 Recruiter Note: {(rawRegionData as any).hiring_insight}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -500,7 +524,7 @@ export default function SalaryDashboard() {
                   <div>
                     <h4 className="text-base font-bold">Looking to hire for this role?</h4>
                     <p className="text-xs text-blue-200 mt-1">
-                      Liberty Towers sources pre-screened candidates matched to these benchmarks.
+                      Liberty Towers pre-screens and filters top 5% candidates matched to these benchmarks.
                     </p>
                   </div>
 
