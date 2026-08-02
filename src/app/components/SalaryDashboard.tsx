@@ -23,10 +23,10 @@ import {
 } from 'lucide-react';
 
 export default function SalaryDashboard() {
-  // Conversational Form State
+  // Conversational Form State (Clean default placeholders)
   const [roleInput, setRoleInput] = useState<string>('');
   const [expYears, setExpYears] = useState<string>('1-3'); // '1-3', '3-6', '6-10', '10+'
-  const [locationNatural, setLocationNatural] = useState<string>('London, 3 days hybrid');
+  const [locationNatural, setLocationNatural] = useState<string>('');
   
   // App view modes
   const [viewMode, setViewMode] = useState<'guided' | 'full'>('guided');
@@ -131,7 +131,7 @@ export default function SalaryDashboard() {
 
   // Role Knowledge Base / Heuristic AI Parser for ANY job title
   const activeRoleData = useMemo(() => {
-    const titleClean = roleInput.trim() || 'Risk Modelling & Pricing Actuary';
+    const titleClean = roleInput.trim() || 'Finance Manager, Property';
     const inputLower = titleClean.toLowerCase();
 
     // Check if matches one of our pre-cached roles
@@ -179,12 +179,12 @@ export default function SalaryDashboard() {
     // 3. Architecture, Property & Built Environment
     else if (inputLower.includes('architect') || inputLower.includes('design') || inputLower.includes('building') || inputLower.includes('property') || inputLower.includes('surveyor') || inputLower.includes('construction') || inputLower.includes('cad') || inputLower.includes('bim')) {
       sector = "Architecture, Property & Built Environment";
-      baseP10 = 35000; baseP50 = 52000; baseP90 = 85000;
-      basePct = 90; bonusPct = 10;
-      description = "Drives architectural design, project coordination, planning compliance, and client stakeholder management.";
-      demand = "High Demand for Experienced Technicians";
-      yoy = "+4.2%";
-      hiringInsight = "Steady market demand. Candidates with REVIT/BIM proficiency and proven project delivery command premium packages.";
+      baseP10 = 38000; baseP50 = 58000; baseP90 = 92000;
+      basePct = 88; bonusPct = 12;
+      description = "Drives property financial management, asset accounting, planning compliance, and development forecasting.";
+      demand = "High Demand for Experienced Property Specialists";
+      yoy = "+4.6%";
+      hiringInsight = "Steady market demand. Finance and Property managers with commercial lease and asset accounting proficiency command premium rates.";
     } 
     // 4. Operations, Change & Business Analysis
     else if (inputLower.includes('ops') || inputLower.includes('operation') || inputLower.includes('business analyst') || inputLower.includes('supply chain') || inputLower.includes('change manager') || inputLower.includes('transformation')) {
@@ -466,7 +466,7 @@ export default function SalaryDashboard() {
                         setRoleInput(e.target.value);
                         setHasGenerated(true);
                       }}
-                      placeholder="Example: Risk Modelling & Pricing Actuary"
+                      placeholder="Example: Finance Manager, Property (or you can leave sector blank)"
                       className="w-full bg-slate-50 border border-slate-300 focus:border-blue-800 text-slate-900 pl-12 pr-4 py-3.5 rounded-xl text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-800/10 transition"
                     />
                   </div>
@@ -476,7 +476,7 @@ export default function SalaryDashboard() {
                     {[
                       'PA Secretary',
                       'Executive Assistant',
-                      'Retention Analyst Gaming',
+                      'Finance Manager, Property',
                       'DevOps Engineer',
                       'Specialty Underwriter'
                     ].map((role) => (
@@ -537,7 +537,7 @@ export default function SalaryDashboard() {
                             setLocationNatural(e.target.value);
                             setHasGenerated(true);
                           }}
-                          placeholder="e.g. UK Remote, Spain Remote, or London 2 days office"
+                          placeholder="Example: London, Hybrid 2 days"
                           className="w-full bg-slate-50 border border-slate-300 focus:border-blue-800 text-slate-900 pl-10 pr-4 py-3.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-800/10 transition h-[48px]"
                         />
                       </div>
