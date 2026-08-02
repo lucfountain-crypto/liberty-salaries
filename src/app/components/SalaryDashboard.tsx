@@ -96,13 +96,13 @@ export default function SalaryDashboard() {
     let basePct = 90;
     let bonusPct = 10;
     let description = `Provides administrative, organizational, and operational support for business leaders.`;
-    let demand = "High Candidate Volume (Abundant Talent)";
+    let demand = "High Candidate Availability (Abundant Talent)";
     let yoy = "+3.8%";
     let hiringInsight = "High active applicant volume on market release. Rigorous screening required to shortlist top 5% performers.";
 
     if (inputLower.includes('pa') || inputLower.includes('secretary') || inputLower.includes('assistant') || inputLower.includes('reception') || inputLower.includes('admin') || inputLower.includes('office manager')) {
       sector = "Corporate Administration & Executive Support";
-      baseP10 = 28000; baseP50 = 38000; baseP90 = 55000;
+      baseP10 = 32000; baseP50 = 42000; baseP90 = 58000;
       basePct = 95; bonusPct = 5;
       description = "Manages executive diaries, travel logistics, board coordination, and senior administrative operations.";
       demand = "High Candidate Availability (Swamped with Applicants)";
@@ -191,10 +191,10 @@ export default function SalaryDashboard() {
 
   // Experience level multipliers
   const expMultipliers: Record<string, { label: string; multiplier: number }> = {
-    '1-3': { label: '1–3 Years (Junior / Assistant)', multiplier: 0.72 },
-    '3-6': { label: '3–6 Years (Mid-Level)', multiplier: 0.88 },
-    '6-10': { label: '6–10 Years (Senior)', multiplier: 1.00 },
-    '10+': { label: '10+ Years (Highly Experienced)', multiplier: 1.35 }
+    '1-3': { label: '1–3 Years (Junior / Assistant)', multiplier: 0.88 },
+    '3-6': { label: '3–6 Years (Mid-Level)', multiplier: 1.00 },
+    '6-10': { label: '6–10 Years (Senior)', multiplier: 1.18 },
+    '10+': { label: '10+ Years (Highly Experienced)', multiplier: 1.45 }
   };
 
   const currentExpMeta = expMultipliers[expYears] || expMultipliers['1-3'];
@@ -202,7 +202,7 @@ export default function SalaryDashboard() {
 
   // Active region data
   const rawRegionData = activeRoleData.regional_data[parsedLocation.regionKey as keyof typeof activeRoleData.regional_data] || {
-    p10: 30000,
+    p10: 32000,
     p50: 45000,
     p90: 65000,
     base_pct: 90,
@@ -215,10 +215,12 @@ export default function SalaryDashboard() {
   // Work style adjustment factor
   const styleMultiplier = parsedLocation.derivedStyle === 'remote' ? 1.05 : parsedLocation.derivedStyle === 'onsite' ? 0.97 : 1.0;
 
-  // Calculated final benchmarks
-  const p10 = Math.round((rawRegionData.p10 * multiplier * styleMultiplier) / 500) * 500;
-  const p50 = Math.round((rawRegionData.p50 * multiplier * styleMultiplier) / 500) * 500;
-  const p90 = Math.round((rawRegionData.p90 * multiplier * styleMultiplier) / 500) * 500;
+  // Calculated final benchmarks (with UK National Minimum Wage floor enforcement)
+  const nmwFloor = parsedLocation.regionKey === 'london' ? 28000 : 25000;
+  
+  const p10 = Math.max(nmwFloor, Math.round((rawRegionData.p10 * multiplier * styleMultiplier) / 500) * 500);
+  const p50 = Math.max(p10 + 5000, Math.round((rawRegionData.p50 * multiplier * styleMultiplier) / 500) * 500);
+  const p90 = Math.max(p50 + 10000, Math.round((rawRegionData.p90 * multiplier * styleMultiplier) / 500) * 500);
 
   const basePct = rawRegionData.base_pct || 85;
   const bonusPct = rawRegionData.bonus_pct || 15;
