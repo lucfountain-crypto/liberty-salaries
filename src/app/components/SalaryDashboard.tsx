@@ -24,10 +24,9 @@ import {
 
 export default function SalaryDashboard() {
   // Conversational Form State
-  const [roleInput, setRoleInput] = useState<string>('PA Secretary');
+  const [roleInput, setRoleInput] = useState<string>('');
   const [expYears, setExpYears] = useState<string>('1-3'); // '1-3', '3-6', '6-10', '10+'
-  const [locationNatural, setLocationNatural] = useState<string>('London, Hybrid 3 days');
-  const [workStyle, setWorkStyle] = useState<string>('hybrid'); // 'hybrid', 'remote', 'onsite'
+  const [locationNatural, setLocationNatural] = useState<string>('London, 3 days hybrid');
   
   // App view modes: 'guided' (simple natural language) vs 'full' (all roles matrix)
   const [viewMode, setViewMode] = useState<'guided' | 'full'>('guided');
@@ -40,9 +39,9 @@ export default function SalaryDashboard() {
 
   // Natural language location parser
   const parsedLocation = useMemo(() => {
-    const locLower = locationNatural.toLowerCase();
+    const locLower = (locationNatural || 'London').toLowerCase();
     let regionKey = 'london';
-    let regionName = 'London & City Hubs';
+    let regionName = "London & City Hubs";
     let multiplier = 1.0;
 
     if (locLower.includes('manchester') || locLower.includes('leeds') || locLower.includes('north') || locLower.includes('birmingham')) {
@@ -76,7 +75,7 @@ export default function SalaryDashboard() {
 
   // Role Knowledge Base / Heuristic AI Parser for ANY job title
   const activeRoleData = useMemo(() => {
-    const titleClean = roleInput.trim() || 'PA Secretary';
+    const titleClean = roleInput.trim() || 'Risk Modeling & Pricing Actuary';
     const inputLower = titleClean.toLowerCase();
 
     // Check if matches one of our pre-cached roles
@@ -106,6 +105,12 @@ export default function SalaryDashboard() {
       basePct = 92; bonusPct = 8;
       description = "Manages executive diaries, travel logistics, board coordination, and senior administrative operations.";
       demand = "High Demand"; yoy = "+4.2%";
+    } else if (inputLower.includes('actuary') || inputLower.includes('pricing') || inputLower.includes('risk model')) {
+      sector = "Insurance & Reinsurance";
+      baseP10 = 65000; baseP50 = 105000; baseP90 = 165000;
+      basePct = 80; bonusPct = 20;
+      description = "Develops stochastic risk models, catastrophe pricing frameworks, and capital adequacy reserves.";
+      demand = "High Demand"; yoy = "+5.8%";
     } else if (inputLower.includes('legal') || inputLower.includes('solicitor') || inputLower.includes('lawyer') || inputLower.includes('counsel')) {
       sector = "Legal & Professional Services";
       baseP10 = 65000; baseP50 = 105000; baseP90 = 165000;
@@ -221,19 +226,19 @@ export default function SalaryDashboard() {
       
       {/* Liberty Clean Header */}
       <header className="border-b border-slate-200 bg-white sticky top-0 z-50 shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
           
-          {/* Liberty Towers Logo */}
+          {/* Liberty Towers Dark Logo Badge Container for Perfect Visibility */}
           <div className="flex items-center space-x-4">
-            <a href="https://www.libertytowers.co.uk/" target="_blank" rel="noopener noreferrer" className="hover:opacity-90 transition">
+            <a href="https://www.libertytowers.co.uk/" target="_blank" rel="noopener noreferrer" className="bg-[#0b1324] px-3.5 py-2 rounded-xl border border-slate-800 shadow-sm flex items-center hover:opacity-95 transition">
               <img 
                 src="https://s3-eu-west-1.amazonaws.com/rss-websites/libertytowers.co.uk/05-03-2025-84d6f95879f38981b06deb3d3b3c1ac753eaf0ab.png" 
                 alt="Liberty Towers Logo" 
-                className="h-9 sm:h-11 w-auto object-contain"
+                className="h-7 sm:h-8 w-auto object-contain"
               />
             </a>
             <div className="hidden sm:block border-l border-slate-200 pl-4">
-              <span className="text-xs font-semibold tracking-wider text-blue-900 uppercase block">Salary Intelligence</span>
+              <span className="text-xs font-bold tracking-wider text-blue-900 uppercase block">SALARY INTELLIGENCE</span>
             </div>
           </div>
 
@@ -261,7 +266,7 @@ export default function SalaryDashboard() {
       <section className="bg-white border-b border-slate-200 py-8 sm:py-10 px-4 sm:px-6 lg:px-8 text-center">
         <div className="max-w-3xl mx-auto">
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Liberty Towers Executive Salary Benchmarks
+            Liberty Towers Salary Benchmarks 2026
           </h1>
           <p className="mt-2 text-sm text-slate-600">
             Real-time UK salary percentiles, market demand, and compensation breakdowns.
@@ -294,7 +299,7 @@ export default function SalaryDashboard() {
                         setRoleInput(e.target.value);
                         setHasGenerated(true);
                       }}
-                      placeholder="e.g. PA Secretary, Specialty Underwriter, Commercial Solicitor, Quant Developer..."
+                      placeholder="Example: Risk Modeling & Pricing Actuary"
                       className="w-full bg-slate-50 border border-slate-300 focus:border-blue-800 text-slate-900 pl-12 pr-4 py-3.5 rounded-xl text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-800/10 transition"
                     />
                   </div>
@@ -323,12 +328,12 @@ export default function SalaryDashboard() {
                   </div>
                 </div>
 
-                {/* Grid for Steps 2 & 3 */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-100">
+                {/* Grid for Steps 2 & 3 - Perfectly Level */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-100 items-start">
                   
                   {/* Input 2: Years Experience */}
-                  <div>
-                    <label className="text-sm font-bold text-slate-900 block mb-2">
+                  <div className="flex flex-col justify-between h-full">
+                    <label className="text-sm font-bold text-slate-900 block mb-2 min-h-[40px] flex items-center">
                       2. How many years of experience?
                     </label>
                     <select
@@ -337,7 +342,7 @@ export default function SalaryDashboard() {
                         setExpYears(e.target.value);
                         setHasGenerated(true);
                       }}
-                      className="w-full bg-slate-50 border border-slate-300 focus:border-blue-800 text-slate-900 px-4 py-3 rounded-xl text-sm focus:outline-none transition"
+                      className="w-full bg-slate-50 border border-slate-300 focus:border-blue-800 text-slate-900 px-4 py-3.5 rounded-xl text-sm focus:outline-none transition"
                     >
                       <option value="1-3">1–3 Years (Junior / Assistant)</option>
                       <option value="3-6">3–6 Years (Mid-Level)</option>
@@ -347,38 +352,40 @@ export default function SalaryDashboard() {
                   </div>
 
                   {/* Input 3: Location & Setup (Natural Language) */}
-                  <div>
-                    <label className="text-sm font-bold text-slate-900 block mb-2">
-                      3. Where is the role based and setup? (Natural language)
+                  <div className="flex flex-col justify-between h-full">
+                    <label className="text-sm font-bold text-slate-900 block mb-2 min-h-[40px] flex items-center">
+                      3. Type location and is the role Based in Office, Hybrid or remote.
                     </label>
-                    <div className="relative">
-                      <MapPin className="absolute left-3.5 top-3.5 w-4 h-4 text-blue-800" />
-                      <input
-                        type="text"
-                        value={locationNatural}
-                        onChange={(e) => {
-                          setLocationNatural(e.target.value);
-                          setHasGenerated(true);
-                        }}
-                        placeholder="e.g. London hybrid 3 days, Manchester remote, London in-office..."
-                        className="w-full bg-slate-50 border border-slate-300 focus:border-blue-800 text-slate-900 pl-10 pr-4 py-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-800/10 transition"
-                      />
+                    <div>
+                      <div className="relative">
+                        <MapPin className="absolute left-3.5 top-3.5 w-4 h-4 text-blue-800" />
+                        <input
+                          type="text"
+                          value={locationNatural}
+                          onChange={(e) => {
+                            setLocationNatural(e.target.value);
+                            setHasGenerated(true);
+                          }}
+                          placeholder="e.g. Leeds, 2 days in the office"
+                          className="w-full bg-slate-50 border border-slate-300 focus:border-blue-800 text-slate-900 pl-10 pr-4 py-3.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-800/10 transition"
+                        />
+                      </div>
+                      <span className="text-[11px] text-slate-500 mt-1 block">
+                        Parsed: <strong className="text-slate-800">{parsedLocation.regionName}</strong> ({parsedLocation.derivedStyle})
+                      </span>
                     </div>
-                    <span className="text-[11px] text-slate-500 mt-1 block">
-                      Parsed: <strong className="text-slate-800">{parsedLocation.regionName}</strong> ({parsedLocation.derivedStyle})
-                    </span>
                   </div>
 
                 </div>
 
               </div>
 
-              {/* Action Button */}
-              <div className="mt-6 pt-4 flex justify-end border-t border-slate-100">
+              {/* Action Button - Centered */}
+              <div className="mt-8 pt-4 flex justify-center border-t border-slate-100">
                 <button
                   onClick={handleGenerate}
                   disabled={isGenerating}
-                  className="w-full sm:w-auto bg-blue-900 hover:bg-blue-800 text-white font-bold text-sm px-7 py-3.5 rounded-xl shadow-sm transition flex items-center justify-center space-x-2"
+                  className="bg-blue-900 hover:bg-blue-800 text-white font-bold text-sm px-8 py-3.5 rounded-xl shadow-sm transition flex items-center justify-center space-x-2"
                 >
                   {isGenerating ? (
                     <RefreshCw className="w-4 h-4 animate-spin" />
@@ -473,7 +480,7 @@ export default function SalaryDashboard() {
                     <div>
                       <h4 className="text-sm font-bold text-slate-900">Market Demand & Availability</h4>
                       <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
-                        At median salary (<strong className="text-slate-900">{formatCurrency(p50)}</strong>), candidate availability for <strong className="text-slate-900">{activeRoleData.title}</strong> is rated as <span className="text-blue-900 font-bold">{rawRegionData.demand}</span> with a <strong className="text-emerald-700">{rawRegionData.yoy}</strong> year-on-year market trend.
+                        At median salary (<strong className="text-slate-900">{formatCurrency(p50)}</strong>), candidate availability for <strong className="text-slate-900">{activeRoleData.title}</strong> is currently rated as <span className="text-blue-900 font-bold">{rawRegionData.demand}</span> with a <strong className="text-emerald-700">{rawRegionData.yoy}</strong> year-on-year market trend.
                       </p>
                     </div>
                   </div>
@@ -583,11 +590,13 @@ export default function SalaryDashboard() {
       <footer className="border-t border-slate-200 bg-white py-8 text-center text-xs text-slate-500">
         <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-3">
-            <img 
-              src="https://s3-eu-west-1.amazonaws.com/rss-websites/libertytowers.co.uk/05-03-2025-84d6f95879f38981b06deb3d3b3c1ac753eaf0ab.png" 
-              alt="Liberty Towers" 
-              className="h-6 w-auto opacity-80"
-            />
+            <div className="bg-[#0b1324] px-2.5 py-1 rounded-lg border border-slate-800">
+              <img 
+                src="https://s3-eu-west-1.amazonaws.com/rss-websites/libertytowers.co.uk/05-03-2025-84d6f95879f38981b06deb3d3b3c1ac753eaf0ab.png" 
+                alt="Liberty Towers" 
+                className="h-5 w-auto object-contain"
+              />
+            </div>
             <span>Recruitment without borders. Talent without compromise.</span>
           </div>
           <span>© 2026 Liberty Towers | Executive Search</span>
