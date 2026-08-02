@@ -66,19 +66,16 @@ export default function SalaryDashboard() {
     let multiplier = 1.0;
     let isOverseasEU = false;
 
-    if (
-      locLower.includes('spain') || locLower.includes('malta') || locLower.includes('gibraltar') ||
-      locLower.includes('poland') || locLower.includes('portugal') || locLower.includes('europe') ||
-      locLower.includes('eu') || locLower.includes('offshore') || locLower.includes('overseas') ||
-      (locLower.includes('remote') && !locLower.includes('us') && !locLower.includes('usa') && !locLower.includes('london'))
-    ) {
+    // Word boundary check for US vs EU/Spain/Remote
+    const isUS = /\b(us|usa|united states|new york|wall street|silicon valley)\b/.test(locLower);
+    const isEU = /\b(spain|spanish|malta|gibraltar|poland|portugal|europe|eu|offshore|overseas|remote)\b/.test(locLower);
+
+    if (isEU && !isUS) {
       regionKey = 'eu_remote';
-      regionName = 'European & Overseas Remote (Spain/EU/Offshore)';
-      multiplier = 0.72; // Realistic EU / Overseas Remote Pay (e.g. Spain €35k-€44k)
+      regionName = 'European & Overseas Remote (Spain/EU)';
+      multiplier = 0.72; // Realistic EU / Spain Remote Pay (~€35k-€44k EUR)
       isOverseasEU = true;
-    } else if (
-      locLower.includes('us') || locLower.includes('usa') || locLower.includes('new york') || locLower.includes('silicon valley')
-    ) {
+    } else if (isUS) {
       regionKey = 'us_remote';
       regionName = 'US & Wall Street Remote';
       multiplier = 1.30;
@@ -113,6 +110,11 @@ export default function SalaryDashboard() {
       regionKey = 'london';
       regionName = 'London & City Hubs';
       multiplier = 1.0;
+    } else if (locLower.includes('remote')) {
+      regionKey = 'eu_remote';
+      regionName = 'European & Overseas Remote (Spain/EU)';
+      multiplier = 0.72;
+      isOverseasEU = true;
     }
 
     // Work style extraction from text
@@ -688,12 +690,12 @@ export default function SalaryDashboard() {
           </div>
         ) : (
           /* Full Directory View */
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-              <h2 className="text-lg font-bold text-slate-900">Pre-cached Industry Roles</h2>
+          <div className="bg-[#111827] text-white border border-slate-800 rounded-2xl p-6 space-y-4">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+              <h2 className="text-lg font-bold">Pre-cached Industry Roles</h2>
               <button
                 onClick={() => setViewMode('guided')}
-                className="text-xs text-blue-900 font-semibold"
+                className="text-xs text-amber-400 font-semibold"
               >
                 ← Simple Assistant
               </button>
@@ -708,13 +710,13 @@ export default function SalaryDashboard() {
                     setViewMode('guided');
                     setHasGenerated(true);
                   }}
-                  className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-blue-800 cursor-pointer transition flex items-center justify-between"
+                  className="p-3.5 rounded-xl bg-[#0b1120] border border-slate-800 hover:border-amber-500 cursor-pointer transition flex items-center justify-between"
                 >
                   <div>
-                    <span className="text-[10px] font-semibold text-blue-900 uppercase block">{r.sector}</span>
-                    <h4 className="text-sm font-bold text-slate-900">{r.title}</h4>
+                    <span className="text-[10px] font-semibold text-amber-400 uppercase block">{r.sector}</span>
+                    <h4 className="text-sm font-bold text-white">{r.title}</h4>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-slate-400" />
+                  <ChevronRight className="w-4 h-4 text-slate-500" />
                 </div>
               ))}
             </div>
