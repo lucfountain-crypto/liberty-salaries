@@ -58,7 +58,7 @@ export default function SalaryDashboard() {
   // Pre-cached roles from JSON
   const predefinedRoles = salaryData.roles;
 
-  // Real-world Regional & Overseas Remote Location Parser
+  // Real-world Regional, UK Remote & Overseas Location Parser
   const parsedLocation = useMemo(() => {
     const locLower = (locationNatural || 'London').toLowerCase();
     let regionKey = 'london';
@@ -66,14 +66,15 @@ export default function SalaryDashboard() {
     let multiplier = 1.0;
     let isOverseasEU = false;
 
-    // Word boundary check for US vs EU/Spain/Remote
+    // Word boundary checks for UK vs EU vs US
     const isUS = /\b(us|usa|united states|new york|wall street|silicon valley)\b/.test(locLower);
-    const isEU = /\b(spain|spanish|malta|gibraltar|poland|portugal|europe|eu|offshore|overseas|remote)\b/.test(locLower);
+    const isExplicitEU = /\b(spain|spanish|malta|gibraltar|poland|portugal|germany|france|italy|europe|eu|offshore|overseas)\b/.test(locLower);
+    const isUKExplicit = /\b(uk|united kingdom|britain|british|england|london|manchester|leeds|birmingham|scotland)\b/.test(locLower);
 
-    if (isEU && !isUS) {
+    if (isExplicitEU && !isUS && !isUKExplicit) {
       regionKey = 'eu_remote';
-      regionName = 'European & Overseas Remote (Spain/EU)';
-      multiplier = 0.72; // Realistic EU / Spain Remote Pay (~€35k-€44k EUR)
+      regionName = 'European & Overseas Remote';
+      multiplier = 0.72; // Realistic EU Remote Pay (~€35k-€44k EUR)
       isOverseasEU = true;
     } else if (isUS) {
       regionKey = 'us_remote';
@@ -100,6 +101,11 @@ export default function SalaryDashboard() {
       regionKey = 'southeast';
       regionName = 'South East England';
       multiplier = 0.88;
+    } else if (locLower.includes('remote') && !isExplicitEU) {
+      // UK National Remote
+      regionKey = 'uk_remote';
+      regionName = 'UK National Remote';
+      multiplier = 0.92;
     } else if (
       locLower.includes('london') || locLower.includes('mayfair') || locLower.includes('canary wharf') || 
       locLower.includes("lloyd's") || locLower.includes('city') || locLower.includes('square mile') || 
@@ -110,11 +116,6 @@ export default function SalaryDashboard() {
       regionKey = 'london';
       regionName = 'London & City Hubs';
       multiplier = 1.0;
-    } else if (locLower.includes('remote')) {
-      regionKey = 'eu_remote';
-      regionName = 'European & Overseas Remote (Spain/EU)';
-      multiplier = 0.72;
-      isOverseasEU = true;
     }
 
     // Work style extraction from text
@@ -160,7 +161,7 @@ export default function SalaryDashboard() {
       sector = "iGaming, Gaming & Digital Media";
       baseP10 = 26000; baseP50 = 36000; baseP90 = 52000;
       basePct = 88; bonusPct = 12;
-      description = "Analyzes player lifecycle, retention campaigns, churn reduction metrics, and promotional engagement across gaming platforms.";
+      description = "Analyses player lifecycle, retention campaigns, churn reduction metrics, and promotional engagement across gaming platforms.";
       demand = "High Remote Talent Availability";
       yoy = "+3.2%";
       hiringInsight = "European & offshore remote hubs (Spain, Malta, Gibraltar) command lower base pay rates (~€28k-€44k EUR). High applicant volume for remote roles.";
@@ -190,7 +191,7 @@ export default function SalaryDashboard() {
       sector = "Operations, Change & Business Transformation";
       baseP10 = 42000; baseP50 = 68000; baseP90 = 110000;
       basePct = 85; bonusPct = 15;
-      description = "Optimizes business workflows, platform migrations, operational efficiency, and cross-functional delivery.";
+      description = "Optimises business workflows, platform migrations, operational efficiency, and cross-functional delivery.";
       demand = "High Demand for Process Specialists";
       yoy = "+4.8%";
       hiringInsight = "Strong demand in financial services and corporate ops. Proven track record in cost-reduction or systems rollout is key.";
@@ -536,7 +537,7 @@ export default function SalaryDashboard() {
                             setLocationNatural(e.target.value);
                             setHasGenerated(true);
                           }}
-                          placeholder="e.g. Spain, Remote or London 2 days office"
+                          placeholder="e.g. UK Remote, Spain Remote, or London 2 days office"
                           className="w-full bg-slate-50 border border-slate-300 focus:border-blue-800 text-slate-900 pl-10 pr-4 py-3.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-800/10 transition h-[48px]"
                         />
                       </div>
