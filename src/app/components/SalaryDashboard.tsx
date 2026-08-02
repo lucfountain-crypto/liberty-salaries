@@ -194,7 +194,7 @@ export default function SalaryDashboard() {
     '1-3': { label: '1–3 Years (Junior / Assistant)', multiplier: 0.72 },
     '3-6': { label: '3–6 Years (Mid-Level)', multiplier: 0.88 },
     '6-10': { label: '6–10 Years (Senior)', multiplier: 1.00 },
-    '10+': { label: '10+ Years (Director / Head)', multiplier: 1.35 }
+    '10+': { label: '10+ Years (Highly Experienced)', multiplier: 1.35 }
   };
 
   const currentExpMeta = expMultipliers[expYears] || expMultipliers['1-3'];
@@ -368,7 +368,7 @@ export default function SalaryDashboard() {
                       <option value="1-3">1–3 Years (Junior / Assistant)</option>
                       <option value="3-6">3–6 Years (Mid-Level)</option>
                       <option value="6-10">6–10 Years (Senior)</option>
-                      <option value="10+">10+ Years (Director / Head)</option>
+                      <option value="10+">10+ Years (Highly Experienced)</option>
                     </select>
                   </div>
 
