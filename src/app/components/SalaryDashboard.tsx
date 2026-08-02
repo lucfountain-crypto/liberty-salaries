@@ -165,11 +165,11 @@ export default function SalaryDashboard() {
       inputLower.includes('client manager')
     ) {
       sector = "Insurance & Commercial Broking";
-      baseP10 = 36000; baseP50 = 52000; baseP90 = 85000;
+      baseP10 = 42000; baseP50 = 58000; baseP90 = 92000;
       basePct = 85; bonusPct = 15;
       description = "Manages commercial client policy portfolios, renewal placements, Lloyd's/company market negotiations, and broker client accounts.";
       demand = "High Demand for Experienced Commercial Handlers";
-      yoy = "+5.2%";
+      yoy = "+5.8%";
       hiringInsight = "Competitive broking market. Experienced handlers with Acturis/Open GI mastery and strong insurer relationships command premium London packages.";
     }
     // 2. Gaming, iGaming, Sportsbook & Retention Analyst
@@ -318,10 +318,10 @@ export default function SalaryDashboard() {
 
   // Experience level multipliers
   const expMultipliers: Record<string, { label: string; multiplier: number }> = {
-    '1-3': { label: '1–3 Years (Junior / Assistant)', multiplier: 0.85 },
-    '3-6': { label: '3–6 Years (Mid-Level)', multiplier: 1.00 },
-    '6-10': { label: '6–10 Years (Senior)', multiplier: 1.25 },
-    '10+': { label: '10+ Years (Highly Experienced)', multiplier: 1.50 }
+    '1-3': { label: '1–3 Years (Junior / Assistant)', multiplier: 0.80 },
+    '3-6': { label: '3–6 Years (Mid-Level Specialist)', multiplier: 1.00 },
+    '6-10': { label: '6–10 Years (Senior Account Exec)', multiplier: 1.25 },
+    '10+': { label: '10+ Years (Highly Experienced / Lead)', multiplier: 1.55 }
   };
 
   const currentExpMeta = expMultipliers[expYears] || expMultipliers['1-3'];
