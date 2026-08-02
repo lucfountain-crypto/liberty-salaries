@@ -130,7 +130,7 @@ export default function SalaryDashboard() {
 
   // Role Knowledge Base / Heuristic AI Parser for ANY job title
   const activeRoleData = useMemo(() => {
-    const titleClean = roleInput.trim() || 'Risk Modeling & Pricing Actuary';
+    const titleClean = roleInput.trim() || 'Risk Modelling & Pricing Actuary';
     const inputLower = titleClean.toLowerCase();
 
     // Check if matches one of our pre-cached roles
@@ -150,7 +150,7 @@ export default function SalaryDashboard() {
     let baseP90 = 70000;
     let basePct = 90;
     let bonusPct = 10;
-    let description = `Provides administrative, organizational, and operational support for business leaders.`;
+    let description = `Provides administrative, organisational, and operational support for business leaders.`;
     let demand = "High Candidate Availability (Abundant Talent)";
     let yoy = "+3.8%";
     let hiringInsight = "High active applicant volume on market release. Rigorous screening required to shortlist top 5% performers.";
@@ -240,7 +240,7 @@ export default function SalaryDashboard() {
       sector = "Human Resources & Talent Leadership";
       baseP10 = 38000; baseP50 = 62000; baseP90 = 105000;
       basePct = 88; bonusPct = 12;
-      description = "Leads talent acquisition, organizational development, employee retention, and compensation strategy.";
+      description = "Leads talent acquisition, organisational development, employee retention, and compensation strategy.";
       demand = "High Candidate Availability";
       yoy = "+4.2%";
       hiringInsight = "Strong active market response; pre-screening focuses on strategic ER experience and sector alignment.";
@@ -465,7 +465,7 @@ export default function SalaryDashboard() {
                         setRoleInput(e.target.value);
                         setHasGenerated(true);
                       }}
-                      placeholder="Example: Risk Modeling & Pricing Actuary"
+                      placeholder="Example: Risk Modelling & Pricing Actuary"
                       className="w-full bg-slate-50 border border-slate-300 focus:border-blue-800 text-slate-900 pl-12 pr-4 py-3.5 rounded-xl text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-800/10 transition"
                     />
                   </div>

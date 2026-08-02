@@ -154,7 +154,7 @@
       "title": "M&A Corporate Advisory",
       "sector": "Investment Banking & Capital Markets",
       "category": "Corporate Finance",
-      "description": "Leads deal execution, valuation modeling, client pitch decks, and deal negotiation for buy-side/sell-side transactions.",
+      "description": "Leads deal execution, valuation modelling, client pitch decks, and deal negotiation for buy-side/sell-side transactions.",
       "regional_data": {
         "london": { "p10": 140000, "p50": 190000, "p90": 280000, "base_pct": 55, "bonus_pct": 45, "demand": "High", "yoy": "+6.8%" },
         "south_east": { "p10": 120000, "p50": 160000, "p90": 235000, "base_pct": 60, "bonus_pct": 40, "demand": "Medium", "yoy": "+5.0%" },
@@ -208,7 +208,7 @@
       "title": "Graduate Quant Analyst",
       "sector": "Graduates & Operations",
       "category": "Graduate Entry",
-      "description": "Entry-level quantitative modeling, backtesting, and market data analysis for STEM top graduates.",
+      "description": "Entry-level quantitative modelling, backtesting, and market data analysis for STEM top graduates.",
       "regional_data": {
         "london": { "p10": 55000, "p50": 75000, "p90": 110000, "base_pct": 75, "bonus_pct": 25, "demand": "High", "yoy": "+7.0%" },
         "south_east": { "p10": 48000, "p50": 65000, "p90": 95000, "base_pct": 80, "bonus_pct": 20, "demand": "Medium", "yoy": "+5.5%" },
