@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import salaryData from '@/data/salaries.json';
 import { 
   Search, 
@@ -28,11 +28,31 @@ export default function SalaryDashboard() {
   const [expYears, setExpYears] = useState<string>('1-3'); // '1-3', '3-6', '6-10', '10+'
   const [locationNatural, setLocationNatural] = useState<string>('London, 3 days hybrid');
   
-  // App view modes: 'guided' (simple natural language) vs 'full' (all roles matrix)
+  // App view modes
   const [viewMode, setViewMode] = useState<'guided' | 'full'>('guided');
   const [hasGenerated, setHasGenerated] = useState<boolean>(true);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
+
+  // Form submission state
+  const [leadName, setLeadName] = useState<string>('');
+  const [leadContact, setLeadContact] = useState<string>('');
+  const [leadQuery, setLeadQuery] = useState<string>('');
+  const [leadSubmitted, setLeadSubmitted] = useState<boolean>(false);
+
+  // URL Magic Links support: ?role=...&location=...&exp=...
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const urlRole = params.get('role') || params.get('job');
+      const urlLocation = params.get('location') || params.get('loc');
+      const urlExp = params.get('exp') || params.get('tier');
+
+      if (urlRole) setRoleInput(urlRole);
+      if (urlLocation) setLocationNatural(urlLocation);
+      if (urlExp && ['1-3', '3-6', '6-10', '10+'].includes(urlExp)) setExpYears(urlExp);
+    }
+  }, []);
 
   // Pre-cached roles from JSON
   const predefinedRoles = salaryData.roles;
@@ -44,22 +64,42 @@ export default function SalaryDashboard() {
     let regionName = "London & City Hubs";
     let multiplier = 1.0;
 
-    if (locLower.includes('manchester') || locLower.includes('leeds') || locLower.includes('north') || locLower.includes('birmingham')) {
+    if (
+      locLower.includes('manchester') || locLower.includes('leeds') || 
+      locLower.includes('north') || locLower.includes('birmingham') || locLower.includes('liverpool')
+    ) {
       regionKey = 'north';
       regionName = 'North UK (Manchester/Leeds)';
       multiplier = 0.80;
-    } else if (locLower.includes('scotland') || locLower.includes('edinburgh') || locLower.includes('glasgow')) {
+    } else if (
+      locLower.includes('scotland') || locLower.includes('edinburgh') || 
+      locLower.includes('glasgow') || locLower.includes('aberdeen')
+    ) {
       regionKey = 'scotland';
       regionName = 'Scotland & Regional';
       multiplier = 0.82;
-    } else if (locLower.includes('south') || locLower.includes('surrey') || locLower.includes('kent') || locLower.includes('essex')) {
+    } else if (
+      locLower.includes('south') || locLower.includes('surrey') || 
+      locLower.includes('kent') || locLower.includes('essex') || locLower.includes('reading')
+    ) {
       regionKey = 'southeast';
       regionName = 'South East England';
       multiplier = 0.88;
-    } else if (locLower.includes('us') || locLower.includes('new york') || locLower.includes('remote') || locLower.includes('overseas') || locLower.includes('global')) {
+    } else if (
+      locLower.includes('us') || locLower.includes('new york') || 
+      locLower.includes('remote') || locLower.includes('overseas') || locLower.includes('global')
+    ) {
       regionKey = 'us_remote';
       regionName = 'US / Overseas & Remote';
       multiplier = 1.25;
+    } else if (
+      locLower.includes('london') || locLower.includes('mayfair') || 
+      locLower.includes('canary wharf') || locLower.includes("lloyd's") || 
+      locLower.includes('ec3') || locLower.includes('ec2') || locLower.includes('city')
+    ) {
+      regionKey = 'london';
+      regionName = 'London & City Hubs';
+      multiplier = 1.0;
     }
 
     // Work style extraction from text
@@ -90,9 +130,9 @@ export default function SalaryDashboard() {
 
     // Universal Heuristic Engine for ANY custom job title
     let sector = "Corporate & Executive Support";
-    let baseP10 = 32000;
-    let baseP50 = 45000;
-    let baseP90 = 65000;
+    let baseP10 = 34000;
+    let baseP50 = 48000;
+    let baseP90 = 70000;
     let basePct = 90;
     let bonusPct = 10;
     let description = `Provides administrative, organizational, and operational support for business leaders.`;
@@ -108,6 +148,14 @@ export default function SalaryDashboard() {
       demand = "High Candidate Availability (Swamped with Applicants)";
       yoy = "+3.5%";
       hiringInsight = "Roles attract huge active applicant volumes. Liberty Towers pre-screens and filters for candidate stability, C-suite discretion, and culture fit.";
+    } else if (inputLower.includes('architect') || inputLower.includes('design') || inputLower.includes('building') || inputLower.includes('property') || inputLower.includes('surveyor')) {
+      sector = "Architecture, Property & Built Environment";
+      baseP10 = 35000; baseP50 = 52000; baseP90 = 85000;
+      basePct = 90; bonusPct = 10;
+      description = "Drives architectural design, project coordination, planning compliance, and client stakeholder management.";
+      demand = "High Demand for Experienced Technicians";
+      yoy = "+4.2%";
+      hiringInsight = "Steady market demand. Candidates with REVIT/BIM proficiency and proven project delivery command premium packages.";
     } else if (inputLower.includes('actuary') || inputLower.includes('pricing') || inputLower.includes('risk model')) {
       sector = "Insurance & Reinsurance";
       baseP10 = 65000; baseP50 = 105000; baseP90 = 165000;
@@ -191,9 +239,9 @@ export default function SalaryDashboard() {
 
   // Experience level multipliers
   const expMultipliers: Record<string, { label: string; multiplier: number }> = {
-    '1-3': { label: '1–3 Years (Junior / Assistant)', multiplier: 0.88 },
+    '1-3': { label: '1–3 Years (Junior / Assistant)', multiplier: 0.85 },
     '3-6': { label: '3–6 Years (Mid-Level)', multiplier: 1.00 },
-    '6-10': { label: '6–10 Years (Senior)', multiplier: 1.18 },
+    '6-10': { label: '6–10 Years (Senior)', multiplier: 1.20 },
     '10+': { label: '10+ Years (Highly Experienced)', multiplier: 1.45 }
   };
 
@@ -240,6 +288,18 @@ export default function SalaryDashboard() {
   const handleQuickSelect = (roleTitle: string) => {
     setRoleInput(roleTitle);
     handleGenerate();
+  };
+
+  const handleLeadSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLeadSubmitted(true);
+    setTimeout(() => {
+      setShowModal(false);
+      setLeadSubmitted(false);
+      setLeadName('');
+      setLeadContact('');
+      setLeadQuery('');
+    }, 2000);
   };
 
   return (
@@ -580,7 +640,7 @@ export default function SalaryDashboard() {
 
       </main>
 
-      {/* Advisory Modal */}
+      {/* Advisory Lead Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 shadow-xl relative text-slate-900">
@@ -589,29 +649,57 @@ export default function SalaryDashboard() {
               Discuss custom benchmarking or candidate shortlists for your team.
             </p>
 
-            <form onSubmit={(e) => { e.preventDefault(); alert('Thank you! A Liberty Towers specialist will reach out shortly.'); setShowModal(false); }} className="space-y-4 mt-5">
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1">Your Name / Company</label>
-                <input required type="text" placeholder="e.g. Sarah / Acme Corp" className="w-full bg-slate-50 border border-slate-300 px-3.5 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-800" />
+            {leadSubmitted ? (
+              <div className="my-8 text-center py-6 bg-blue-50 border border-blue-200 rounded-xl">
+                <CheckCircle2 className="w-10 h-10 text-blue-900 mx-auto mb-2" />
+                <h4 className="font-bold text-slate-900 text-base">Request Received!</h4>
+                <p className="text-xs text-slate-600 mt-1">A Liberty Towers executive specialist will contact you shortly.</p>
               </div>
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1">Work Email or Phone</label>
-                <input required type="text" placeholder="s.jenkins@company.com" className="w-full bg-slate-50 border border-slate-300 px-3.5 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-800" />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1">Benchmark Query</label>
-                <textarea rows={3} placeholder={`Query regarding ${activeRoleData.title} compensation...`} className="w-full bg-slate-50 border border-slate-300 px-3.5 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-800 text-xs" />
-              </div>
+            ) : (
+              <form onSubmit={handleLeadSubmit} className="space-y-4 mt-5">
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 block mb-1">Your Name / Company</label>
+                  <input 
+                    required 
+                    type="text" 
+                    value={leadName}
+                    onChange={(e) => setLeadName(e.target.value)}
+                    placeholder="e.g. Sarah / Acme Corp" 
+                    className="w-full bg-slate-50 border border-slate-300 px-3.5 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-800" 
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 block mb-1">Work Email or Phone</label>
+                  <input 
+                    required 
+                    type="text" 
+                    value={leadContact}
+                    onChange={(e) => setLeadContact(e.target.value)}
+                    placeholder="s.jenkins@company.com" 
+                    className="w-full bg-slate-50 border border-slate-300 px-3.5 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-800" 
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 block mb-1">Benchmark Query</label>
+                  <textarea 
+                    rows={3} 
+                    value={leadQuery}
+                    onChange={(e) => setLeadQuery(e.target.value)}
+                    placeholder={`Query regarding ${activeRoleData.title} compensation...`} 
+                    className="w-full bg-slate-50 border border-slate-300 px-3.5 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-800 text-xs" 
+                  />
+                </div>
 
-              <div className="flex items-center justify-end space-x-3 pt-2">
-                <button type="button" onClick={() => setShowModal(false)} className="text-xs text-slate-500 hover:text-slate-900 px-3 py-2">
-                  Cancel
-                </button>
-                <button type="submit" className="bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs px-5 py-2 rounded-lg">
-                  Submit Request
-                </button>
-              </div>
-            </form>
+                <div className="flex items-center justify-end space-x-3 pt-2">
+                  <button type="button" onClick={() => setShowModal(false)} className="text-xs text-slate-500 hover:text-slate-900 px-3 py-2">
+                    Cancel
+                  </button>
+                  <button type="submit" className="bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs px-5 py-2 rounded-lg shadow-sm">
+                    Submit Request
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}
