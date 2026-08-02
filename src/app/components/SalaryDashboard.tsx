@@ -285,7 +285,7 @@ export default function SalaryDashboard() {
       <section className="bg-white border-b border-slate-200 py-8 sm:py-10 px-4 sm:px-6 lg:px-8 text-center">
         <div className="max-w-3xl mx-auto">
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Liberty Towers Salary Benchmarks 2026
+            LT Salary Benchmarks 2026
           </h1>
           <p className="mt-2 text-sm text-slate-600">
             Real-time UK salary percentiles, market demand, and compensation breakdowns.
