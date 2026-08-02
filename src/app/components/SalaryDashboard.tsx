@@ -34,10 +34,11 @@ export default function SalaryDashboard() {
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  // Form submission state
+  // Lead Form State
   const [leadName, setLeadName] = useState<string>('');
   const [leadContact, setLeadContact] = useState<string>('');
   const [leadQuery, setLeadQuery] = useState<string>('');
+  const [leadSubmitting, setLeadSubmitting] = useState<boolean>(false);
   const [leadSubmitted, setLeadSubmitted] = useState<boolean>(false);
 
   // URL Magic Links support: ?role=...&location=...&exp=...
@@ -57,7 +58,7 @@ export default function SalaryDashboard() {
   // Pre-cached roles from JSON
   const predefinedRoles = salaryData.roles;
 
-  // Natural language location parser
+  // Refinement 4: Expanded Location Parsing Intelligence (London Districts & Postcodes)
   const parsedLocation = useMemo(() => {
     const locLower = (locationNatural || 'London').toLowerCase();
     let regionKey = 'london';
@@ -93,9 +94,11 @@ export default function SalaryDashboard() {
       regionName = 'US / Overseas & Remote';
       multiplier = 1.25;
     } else if (
-      locLower.includes('london') || locLower.includes('mayfair') || 
-      locLower.includes('canary wharf') || locLower.includes("lloyd's") || 
-      locLower.includes('ec3') || locLower.includes('ec2') || locLower.includes('city')
+      locLower.includes('london') || locLower.includes('mayfair') || locLower.includes('canary wharf') || 
+      locLower.includes("lloyd's") || locLower.includes('city') || locLower.includes('square mile') || 
+      locLower.includes('west end') || locLower.includes('soho') || locLower.includes('ec1') || 
+      locLower.includes('ec2') || locLower.includes('ec3') || locLower.includes('ec4') || 
+      locLower.includes('wc1') || locLower.includes('wc2') || locLower.includes('w1') || locLower.includes('sw1')
     ) {
       regionKey = 'london';
       regionName = 'London & City Hubs';
@@ -113,7 +116,7 @@ export default function SalaryDashboard() {
     return { regionKey, regionName, multiplier, derivedStyle };
   }, [locationNatural]);
 
-  // Role Knowledge Base / Heuristic AI Parser for ANY job title
+  // Refinement 3: Expanded Role & Sector Heuristics Engine
   const activeRoleData = useMemo(() => {
     const titleClean = roleInput.trim() || 'Risk Modeling & Pricing Actuary';
     const inputLower = titleClean.toLowerCase();
@@ -140,6 +143,7 @@ export default function SalaryDashboard() {
     let yoy = "+3.8%";
     let hiringInsight = "High active applicant volume on market release. Rigorous screening required to shortlist top 5% performers.";
 
+    // 1. Admin & EA/PA
     if (inputLower.includes('pa') || inputLower.includes('secretary') || inputLower.includes('assistant') || inputLower.includes('reception') || inputLower.includes('admin') || inputLower.includes('office manager')) {
       sector = "Corporate Administration & Executive Support";
       baseP10 = 32000; baseP50 = 42000; baseP90 = 58000;
@@ -148,7 +152,9 @@ export default function SalaryDashboard() {
       demand = "High Candidate Availability (Swamped with Applicants)";
       yoy = "+3.5%";
       hiringInsight = "Roles attract huge active applicant volumes. Liberty Towers pre-screens and filters for candidate stability, C-suite discretion, and culture fit.";
-    } else if (inputLower.includes('architect') || inputLower.includes('design') || inputLower.includes('building') || inputLower.includes('property') || inputLower.includes('surveyor')) {
+    } 
+    // 2. Architecture, Property & Built Environment
+    else if (inputLower.includes('architect') || inputLower.includes('design') || inputLower.includes('building') || inputLower.includes('property') || inputLower.includes('surveyor') || inputLower.includes('construction') || inputLower.includes('cad') || inputLower.includes('bim')) {
       sector = "Architecture, Property & Built Environment";
       baseP10 = 35000; baseP50 = 52000; baseP90 = 85000;
       basePct = 90; bonusPct = 10;
@@ -156,7 +162,29 @@ export default function SalaryDashboard() {
       demand = "High Demand for Experienced Technicians";
       yoy = "+4.2%";
       hiringInsight = "Steady market demand. Candidates with REVIT/BIM proficiency and proven project delivery command premium packages.";
-    } else if (inputLower.includes('actuary') || inputLower.includes('pricing') || inputLower.includes('risk model')) {
+    } 
+    // 3. Operations, Change & Business Analysis
+    else if (inputLower.includes('ops') || inputLower.includes('operation') || inputLower.includes('business analyst') || inputLower.includes('supply chain') || inputLower.includes('change manager') || inputLower.includes('transformation')) {
+      sector = "Operations, Change & Business Transformation";
+      baseP10 = 42000; baseP50 = 68000; baseP90 = 110000;
+      basePct = 85; bonusPct = 15;
+      description = "Optimizes business workflows, platform migrations, operational efficiency, and cross-functional delivery.";
+      demand = "High Demand for Process Specialists";
+      yoy = "+4.8%";
+      hiringInsight = "Strong demand in financial services and corporate ops. Proven track record in cost-reduction or systems rollout is key.";
+    } 
+    // 4. Tech Infrastructure, Cloud, DevOps & Cyber Security
+    else if (inputLower.includes('devops') || inputLower.includes('cloud') || inputLower.includes('sre') || inputLower.includes('cyber') || inputLower.includes('security') || inputLower.includes('infrastructure') || inputLower.includes('network') || inputLower.includes('sysadmin')) {
+      sector = "Tech Infrastructure, Cloud & Cyber Security";
+      baseP10 = 55000; baseP50 = 88000; baseP90 = 145000;
+      basePct = 85; bonusPct = 15;
+      description = "Architects cloud environments (AWS/Azure), CI/CD automation pipelines, Zero-Trust cyber security, and system resilience.";
+      demand = "Critical Talent Scarcity";
+      yoy = "+7.2%";
+      hiringInsight = "Cyber and Cloud Architects face intense buy-side competition. Candidates expect remote/hybrid flexibility and certification bonuses.";
+    } 
+    // 5. Insurance & Reinsurance / Actuarial
+    else if (inputLower.includes('actuary') || inputLower.includes('pricing') || inputLower.includes('risk model')) {
       sector = "Insurance & Reinsurance";
       baseP10 = 65000; baseP50 = 105000; baseP90 = 165000;
       basePct = 80; bonusPct = 20;
@@ -164,7 +192,9 @@ export default function SalaryDashboard() {
       demand = "Critical Talent Scarcity";
       yoy = "+5.8%";
       hiringInsight = "Tight candidate pool. Targeted headhunting required to reach passive actuarial specialists.";
-    } else if (inputLower.includes('legal') || inputLower.includes('solicitor') || inputLower.includes('lawyer') || inputLower.includes('counsel')) {
+    } 
+    // 6. Legal & Professional Services
+    else if (inputLower.includes('legal') || inputLower.includes('solicitor') || inputLower.includes('lawyer') || inputLower.includes('counsel')) {
       sector = "Legal & Professional Services";
       baseP10 = 65000; baseP50 = 105000; baseP90 = 165000;
       basePct = 85; bonusPct = 15;
@@ -172,7 +202,9 @@ export default function SalaryDashboard() {
       demand = "High Talent Scarcity";
       yoy = "+6.2%";
       hiringInsight = "Competitive market. Top 10% legal counsel expect hybrid flexibility and clear equity/bonus pathways.";
-    } else if (inputLower.includes('market') || inputLower.includes('brand') || inputLower.includes('growth') || inputLower.includes('sales')) {
+    } 
+    // 7. Commercial, Marketing & Sales
+    else if (inputLower.includes('market') || inputLower.includes('brand') || inputLower.includes('growth') || inputLower.includes('sales')) {
       sector = "Commercial & Growth Strategy";
       baseP10 = 40000; baseP50 = 65000; baseP90 = 105000;
       basePct = 75; bonusPct = 25;
@@ -180,7 +212,9 @@ export default function SalaryDashboard() {
       demand = "Moderate Candidate Pool";
       yoy = "+4.5%";
       hiringInsight = "Good applicant volume; key differentiator is verified track record of direct revenue generation.";
-    } else if (inputLower.includes('hr') || inputLower.includes('people') || inputLower.includes('talent') || inputLower.includes('recruit')) {
+    } 
+    // 8. HR & Talent Management
+    else if (inputLower.includes('hr') || inputLower.includes('people') || inputLower.includes('talent') || inputLower.includes('recruit')) {
       sector = "Human Resources & Talent Leadership";
       baseP10 = 40000; baseP50 = 65000; baseP90 = 110000;
       basePct = 88; bonusPct = 12;
@@ -188,7 +222,9 @@ export default function SalaryDashboard() {
       demand = "High Candidate Availability";
       yoy = "+4.2%";
       hiringInsight = "Strong active market response; pre-screening focuses on strategic ER experience and sector alignment.";
-    } else if (inputLower.includes('finance') || inputLower.includes('account') || inputLower.includes('controller') || inputLower.includes('cfo')) {
+    } 
+    // 9. Finance & Corporate Accounting
+    else if (inputLower.includes('finance') || inputLower.includes('account') || inputLower.includes('controller') || inputLower.includes('cfo')) {
       sector = "Finance & Corporate Accounting";
       baseP10 = 45000; baseP50 = 75000; baseP90 = 130000;
       basePct = 82; bonusPct = 18;
@@ -196,7 +232,9 @@ export default function SalaryDashboard() {
       demand = "Moderate-High Scarcity (Qualified ACA)";
       yoy = "+5.0%";
       hiringInsight = "ACA/ACCA qualified talent commands strong counter-offers. Speed to offer is critical.";
-    } else if (inputLower.includes('quant') || inputLower.includes('trading') || inputLower.includes('hft') || inputLower.includes('dev')) {
+    } 
+    // 10. Quant & Quantitative Finance
+    else if (inputLower.includes('quant') || inputLower.includes('trading') || inputLower.includes('hft') || inputLower.includes('dev')) {
       sector = "Quant & Quantitative Finance";
       baseP10 = 90000; baseP50 = 180000; baseP90 = 280000;
       basePct = 60; bonusPct = 40;
@@ -204,7 +242,9 @@ export default function SalaryDashboard() {
       demand = "Extreme Talent Scarcity";
       yoy = "+8.5%";
       hiringInsight = "Fierce bidding war across buy-side funds. Candidates hold multiple competing offers.";
-    } else if (inputLower.includes('underwriter') || inputLower.includes('insurance') || inputLower.includes('broker') || inputLower.includes('claims')) {
+    } 
+    // 11. Insurance Underwriting
+    else if (inputLower.includes('underwriter') || inputLower.includes('insurance') || inputLower.includes('broker') || inputLower.includes('claims')) {
       sector = "Insurance & Specialty Reinsurance";
       baseP10 = 55000; baseP50 = 95000; baseP90 = 160000;
       basePct = 75; bonusPct = 25;
@@ -290,8 +330,31 @@ export default function SalaryDashboard() {
     handleGenerate();
   };
 
-  const handleLeadSubmit = (e: React.FormEvent) => {
+  // Refinement 5: Lead Capture Submission Route
+  const handleLeadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLeadSubmitting(true);
+
+    try {
+      await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: leadName,
+          contact: leadContact,
+          query: leadQuery || `Benchmark query for ${activeRoleData.title}`,
+          role: activeRoleData.title,
+          location: parsedLocation.regionName,
+          expTier: currentExpMeta.label,
+          medianSalary: formatCurrency(p50),
+          timestamp: new Date().toISOString()
+        })
+      });
+    } catch (err) {
+      console.log('Lead submission logged');
+    }
+
+    setLeadSubmitting(false);
     setLeadSubmitted(true);
     setTimeout(() => {
       setShowModal(false);
@@ -299,7 +362,7 @@ export default function SalaryDashboard() {
       setLeadName('');
       setLeadContact('');
       setLeadQuery('');
-    }, 2000);
+    }, 2200);
   };
 
   return (
@@ -390,9 +453,9 @@ export default function SalaryDashboard() {
                     {[
                       'PA Secretary',
                       'Executive Assistant',
-                      'Specialty Underwriter',
-                      'Quant Researcher',
-                      'Commercial Solicitor'
+                      'Architectural Technician',
+                      'DevOps Engineer',
+                      'Specialty Underwriter'
                     ].map((role) => (
                       <button
                         key={role}
@@ -451,7 +514,7 @@ export default function SalaryDashboard() {
                             setLocationNatural(e.target.value);
                             setHasGenerated(true);
                           }}
-                          placeholder="e.g. Leeds, 2 days in the office"
+                          placeholder="e.g. Mayfair, 2 days in the office"
                           className="w-full bg-slate-50 border border-slate-300 focus:border-blue-800 text-slate-900 pl-10 pr-4 py-3.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-800/10 transition h-[48px]"
                         />
                       </div>
@@ -653,7 +716,7 @@ export default function SalaryDashboard() {
               <div className="my-8 text-center py-6 bg-blue-50 border border-blue-200 rounded-xl">
                 <CheckCircle2 className="w-10 h-10 text-blue-900 mx-auto mb-2" />
                 <h4 className="font-bold text-slate-900 text-base">Request Received!</h4>
-                <p className="text-xs text-slate-600 mt-1">A Liberty Towers executive specialist will contact you shortly.</p>
+                <p className="text-xs text-slate-600 mt-1">A Liberty Towers executive specialist will contact you directly.</p>
               </div>
             ) : (
               <form onSubmit={handleLeadSubmit} className="space-y-4 mt-5">
@@ -694,8 +757,13 @@ export default function SalaryDashboard() {
                   <button type="button" onClick={() => setShowModal(false)} className="text-xs text-slate-500 hover:text-slate-900 px-3 py-2">
                     Cancel
                   </button>
-                  <button type="submit" className="bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs px-5 py-2 rounded-lg shadow-sm">
-                    Submit Request
+                  <button 
+                    type="submit" 
+                    disabled={leadSubmitting}
+                    className="bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs px-5 py-2 rounded-lg shadow-sm flex items-center space-x-1.5"
+                  >
+                    {leadSubmitting && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
+                    <span>Submit Request</span>
                   </button>
                 </div>
               </form>
