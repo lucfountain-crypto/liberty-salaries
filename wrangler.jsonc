@@ -1,6 +1,12 @@
 {
   "name": "liberty-salaries",
   "compatibility_date": "2026-08-02",
+  "routes": [
+    {
+      "pattern": "salaries.liberty-towers.org",
+      "custom_domain": true
+    }
+  ],
   "assets": {
     "directory": "./out"
   }
