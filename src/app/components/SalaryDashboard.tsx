@@ -569,6 +569,16 @@ export default function SalaryDashboard() {
 
             </div>
 
+            {/* Google AdSense Leaderboard Slot */}
+            <div className="bg-slate-100 border border-slate-200 border-dashed rounded-xl p-4 text-center">
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 block mb-1">
+                ADVERTISEMENT • GOOGLE ADSENSE High-eCPM B2B PARTNER
+              </span>
+              <div className="h-[90px] flex items-center justify-center bg-white rounded-lg border border-slate-200 text-xs text-slate-500">
+                <span>Enterprise HR, Payroll & Wealth Management Ads (Auto-Served by Google AdSense)</span>
+              </div>
+            </div>
+
             {/* Benchmark Results Output Card */}
             {hasGenerated && (
               <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
