@@ -874,7 +874,13 @@ export default function SalaryDashboard() {
             </div>
             <span>Recruitment without borders. Talent without compromise.</span>
           </div>
-          <span>© 2026 Liberty Towers | Executive Search</span>
+          <div className="flex flex-wrap items-center justify-center gap-4 text-slate-600">
+            <a href="/privacy" className="hover:underline hover:text-blue-900 transition font-medium">Privacy Policy</a>
+            <span>•</span>
+            <a href="/ads.txt" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-blue-900 transition font-medium">ads.txt</a>
+            <span>•</span>
+            <span>© 2026 Liberty Towers | Executive Search</span>
+          </div>
         </div>
       </footer>
 
