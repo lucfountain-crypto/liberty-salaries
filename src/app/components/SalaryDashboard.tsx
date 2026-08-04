@@ -131,7 +131,17 @@ export default function SalaryDashboard() {
 
   // Role Knowledge Base / Heuristic AI Parser for ANY job title
   const activeRoleData = useMemo(() => {
-    const titleClean = roleInput.trim() || 'Finance Manager, Property';
+    let rawTitle = roleInput.trim();
+    // Clean natural language artifacts or instructions in parentheses
+    rawTitle = rawTitle.replace(/\(.*?\)/g, (match) => {
+      if (match.toLowerCase().includes('unless') || match.toLowerCase().includes('box') || match.toLowerCase().includes('tell me') || match.toLowerCase().includes('natural')) {
+        return '';
+      }
+      return match;
+    });
+    rawTitle = rawTitle.replace(/unless otherwise stated.*$/gi, '');
+    rawTitle = rawTitle.replace(/tell me what role.*$/gi, '');
+    const titleClean = rawTitle.trim() || 'Finance Manager, Property';
     const inputLower = titleClean.toLowerCase();
 
     // Check if matches one of our pre-cached roles
@@ -145,16 +155,16 @@ export default function SalaryDashboard() {
     }
 
     // Universal Heuristic Engine for ANY custom job title
-    let sector = "Corporate & Executive Support";
-    let baseP10 = 34000;
-    let baseP50 = 48000;
-    let baseP90 = 70000;
-    let basePct = 90;
-    let bonusPct = 10;
-    let description = `Provides administrative, organisational, and operational support for business leaders.`;
-    let demand = "High Candidate Availability (Abundant Talent)";
-    let yoy = "+3.8%";
-    let hiringInsight = "High active applicant volume on market release. Rigorous screening required to shortlist top 5% performers.";
+    let sector = "Corporate & Professional Services";
+    let baseP10 = 40000;
+    let baseP50 = 62000;
+    let baseP90 = 95000;
+    let basePct = 88;
+    let bonusPct = 12;
+    let description = "Drives strategic operational delivery, commercial execution, and key stakeholder performance within this domain.";
+    let demand = "Moderate Candidate Availability";
+    let yoy = "+4.2%";
+    let hiringInsight = "Steady market demand. Candidates with proven track record and domain expertise command strong market positioning.";
 
     // Check for Executive Director level titles (Director, CMO, CFO, VP, Chief, Head of, Partner)
     const isDirectorLevel = inputLower.includes('director') || inputLower.includes('cmo') || inputLower.includes('cfo') || inputLower.includes('cro') || inputLower.includes('vp') || inputLower.includes('head of') || inputLower.includes('chief') || inputLower.includes('partner');
@@ -302,18 +312,60 @@ export default function SalaryDashboard() {
       yoy = "+4.2%";
       hiringInsight = "Strong active market response; pre-screening focuses on strategic ER experience and sector alignment.";
     } 
-    // 12. Finance & Corporate Accounting
-    else if (inputLower.includes('finance') || inputLower.includes('accountant') || inputLower.includes('accounting') || inputLower.includes('controller')) {
-      sector = "Finance & Corporate Accounting";
-      baseP10 = 45000; baseP50 = 75000; baseP90 = 130000;
-      basePct = 82; bonusPct = 18;
-      description = "Oversees financial planning & analysis (FP&A), statutory reporting, tax governance, and audit compliance.";
-      demand = "Moderate-High Scarcity (Qualified ACA)";
-      yoy = "+5.0%";
-      hiringInsight = "ACA/ACCA qualified talent commands strong counter-offers. Speed to offer is critical.";
+    // 12. Finance, Audit, Tax & Accounting
+    else if (
+      inputLower.includes('finance') || 
+      inputLower.includes('accountant') || 
+      inputLower.includes('accounting') || 
+      inputLower.includes('accountancy') || 
+      inputLower.includes('controller') || 
+      inputLower.includes('audit') || 
+      inputLower.includes('auditor') || 
+      inputLower.includes('tax') || 
+      inputLower.includes('treasury') || 
+      inputLower.includes('compliance') || 
+      inputLower.includes('risk') || 
+      inputLower.includes('governance')
+    ) {
+      if (inputLower.includes('audit') || inputLower.includes('auditor')) {
+        sector = "Audit, Governance & Risk";
+        baseP10 = 48000; baseP50 = 75000; baseP90 = 120000;
+        basePct = 85; bonusPct = 15;
+        description = "Evaluates internal control frameworks, financial reporting integrity, regulatory compliance, and audit risk governance.";
+        demand = "High Talent Scarcity (Qualified ACA / ACCA / CIA)";
+        yoy = "+5.4%";
+        hiringInsight = "Big 4 / Top 10 trained auditors and ACA/ACCA qualified audit managers command strong market demand across City practice and corporate industry.";
+      } else {
+        sector = "Finance & Corporate Accounting";
+        baseP10 = 45000; baseP50 = 75000; baseP90 = 130000;
+        basePct = 82; bonusPct = 18;
+        description = "Oversees financial planning & analysis (FP&A), statutory reporting, tax governance, and balance sheet control.";
+        demand = "Moderate-High Scarcity (Qualified ACA)";
+        yoy = "+5.0%";
+        hiringInsight = "ACA/ACCA qualified talent commands strong counter-offers. Speed to offer is critical.";
+      }
     } 
-    // 13. Quant & Quantitative Finance
-    else if (inputLower.includes('quant') || inputLower.includes('trading') || inputLower.includes('hft') || inputLower.includes('dev')) {
+    // 13. Software Engineering & Technology
+    else if (
+      inputLower.includes('developer') || 
+      inputLower.includes('software') || 
+      inputLower.includes('frontend') || 
+      inputLower.includes('backend') || 
+      inputLower.includes('fullstack') || 
+      inputLower.includes('full stack') || 
+      inputLower.includes('engineer') || 
+      inputLower.includes('programmer')
+    ) {
+      sector = "Tech & Software Engineering";
+      baseP10 = 52000; baseP50 = 82000; baseP90 = 135000;
+      basePct = 85; bonusPct = 15;
+      description = "Engineers scalable software platforms, microservices architecture, API integrations, and core product code.";
+      demand = "High Demand for Experienced Engineers";
+      yoy = "+6.2%";
+      hiringInsight = "Strong competition for senior engineers with modern framework proficiency and cloud deployment experience.";
+    }
+    // 14. Quant & Quantitative Finance
+    else if (inputLower.includes('quant') || inputLower.includes('hft') || inputLower.includes('prop trading') || inputLower.includes('alpha researcher')) {
       sector = "Quant & Quantitative Finance";
       baseP10 = 90000; baseP50 = 180000; baseP90 = 280000;
       basePct = 60; bonusPct = 40;
@@ -322,7 +374,7 @@ export default function SalaryDashboard() {
       yoy = "+8.5%";
       hiringInsight = "Fierce bidding war across buy-side funds. Candidates hold multiple competing offers.";
     } 
-    // 14. Insurance Underwriting
+    // 15. Insurance Underwriting
     else if (inputLower.includes('underwriter') || inputLower.includes('insurance') || inputLower.includes('broker') || inputLower.includes('claims')) {
       sector = "Insurance & Specialty Reinsurance";
       baseP10 = 55000; baseP50 = 95000; baseP90 = 160000;
