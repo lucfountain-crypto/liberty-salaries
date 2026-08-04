@@ -156,19 +156,111 @@ export default function SalaryDashboard() {
     }
 
     // Universal Heuristic Engine for ANY custom job title
-    let sector = "Corporate & Professional Services";
-    let baseP10 = 40000;
-    let baseP50 = 62000;
-    let baseP90 = 95000;
-    let basePct = 88;
-    let bonusPct = 12;
-    let description = "Drives strategic operational delivery, commercial execution, and key stakeholder performance within this domain.";
+    let sector = "General Commercial & Industrial Operations";
+    let baseP10 = 26000;
+    let baseP50 = 38000;
+    let baseP90 = 55000;
+    let basePct = 90;
+    let bonusPct = 10;
+    let description = "Executes operational, administrative, or functional delivery within this domain.";
     let demand = "Moderate Candidate Availability";
     let yoy = "1–4%";
-    let hiringInsight = "Steady market demand. Candidates with proven track record and domain expertise command strong market positioning.";
+    let hiringInsight = "Broad market candidate availability. Compensation varies based on specialist certifications, supervisory duties, and industry sector.";
+    let maxExpMultiplier = 1.30;
 
     // Check for Executive Director level titles (Director, CMO, CFO, VP, Chief, Head of, Partner) with word boundaries
     const isDirectorLevel = /\b(director|cmo|cfo|cro|vp|head of|chief|partner)\b/i.test(inputLower);
+
+    // INDUSTRIAL, DRIVING, LOGISTICS & OPERATIONAL BRANCHES
+
+    // A. Heavy Freight, HGV Class 1 & Artic Lorry Driving (Big Goods - High Salary)
+    if (/\b(hgv|lgv|artic|articulated|lorry|class 1|c\+e|big goods|heavy goods|tanker driver|haulage|heavy driver)\b/i.test(inputLower)) {
+      sector = "Heavy Freight, Haulage & HGV Transport";
+      baseP10 = 38000; baseP50 = 48000; baseP90 = 62000;
+      basePct = 92; bonusPct = 8;
+      description = "Operates Class 1 (C+E) articulated heavy goods vehicles, long-haul freight, bulk cargo logistics, and tachograph-compliant transport.";
+      demand = "High Scarcity (Licensed HGV Class 1 Drivers)";
+      yoy = "1–4%";
+      hiringInsight = "Severe UK driver shortage for Class 1 (C+E) articulated lorry drivers commands premium pay scales. Night shift allowances, tramping pay, and hazard premiums significantly increase gross compensation.";
+      maxExpMultiplier = 1.30;
+    }
+    // B. Van Driver, Light Commercial Transport & Delivery
+    else if (/\b(van driver|courier|delivery driver|light goods|sprinter driver|parcel driver)\b/i.test(inputLower)) {
+      sector = "Logistics, Warehousing & Light Transport";
+      baseP10 = 25000; baseP50 = 30000; baseP90 = 38000;
+      basePct = 95; bonusPct = 5;
+      description = "Operates light commercial vehicles, parcel delivery routing, last-mile logistics, and customer freight dispatch.";
+      demand = "High Demand for Licensed Light Commercial Drivers";
+      yoy = "1–4%";
+      hiringInsight = "Steady demand across e-commerce and regional distribution networks. Clean driving record and multi-drop routing efficiency command top end of grade.";
+      maxExpMultiplier = 1.20;
+    }
+    // C. Forklift Truck, Materials Handling & Warehouse Logistics
+    else if (/\b(forklift|flt|reach truck|counterbalance|materials handling|warehouse|picker|packer|logistics operative|yard operative)\b/i.test(inputLower)) {
+      sector = "Logistics, Warehousing & Distribution";
+      baseP10 = 25000; baseP50 = 31000; baseP90 = 40000;
+      basePct = 95; bonusPct = 5;
+      description = "Operates counterbalance or reach forklift trucks, materials handling equipment, stock movement, and warehouse loading systems.";
+      demand = "High Scarcity (FLT Certified Operatives)";
+      yoy = "1–4%";
+      hiringInsight = "Certified forklift operators (ITSSAR/RTITB) and warehouse team leads are in high demand across regional distribution centers.";
+      maxExpMultiplier = 1.20;
+    }
+    // D. Cleaning, Facilities, Janitorial & Domestic Support Services
+    else if (/\b(cleaner|cleaning|janitor|caretaker|housekeeper|facilities operative|domestic|sanitation|window cleaner)\b/i.test(inputLower)) {
+      sector = "Facilities, Property & Support Services";
+      baseP10 = 24000; baseP50 = 27000; baseP90 = 34000;
+      basePct = 98; bonusPct = 2;
+      description = "Maintains environmental cleanliness, hygiene standards, facility sanitation, and site support operations across commercial and residential premises.";
+      demand = "High Candidate Availability";
+      yoy = "1–4%";
+      hiringInsight = "Pay scales closely track UK Real Living Wage / National Living Wage benchmarks, with supervisory and multi-site mobile roles reaching higher bands.";
+      maxExpMultiplier = 1.15;
+    }
+    // E. Industrial Manufacturing, Factory & Production Operatives
+    else if (/\b(factory|assembly|production operative|machine operator|manufacturing operative|plant operative|assembler)\b/i.test(inputLower)) {
+      sector = "Industrial Manufacturing & Production";
+      baseP10 = 24000; baseP50 = 29000; baseP90 = 36000;
+      basePct = 95; bonusPct = 5;
+      description = "Operates industrial production machinery, assembly lines, quality check processes, and manufacturing plant operations.";
+      demand = "Moderate Candidate Availability";
+      yoy = "1–4%";
+      hiringInsight = "Shift patterns (rotating continental / night shifts) typically attract 15–25% shift premium over standard base rates.";
+      maxExpMultiplier = 1.20;
+    }
+    // F. Skilled Trades, Construction & Industrial Maintenance
+    else if (/\b(electrician|plumber|carpenter|builder|mechanic|fitter|welder|handyman|maintenance technician|maintenance engineer|tradesperson|gas engineer|pipefitter)\b/i.test(inputLower)) {
+      sector = "Skilled Trades & Industrial Engineering";
+      baseP10 = 30000; baseP50 = 42000; baseP90 = 58000;
+      basePct = 92; bonusPct = 8;
+      description = "Executes technical trade installation, mechanical/electrical maintenance, diagnostics, and facility engineering operations.";
+      demand = "High Scarcity (Certified Trades)";
+      yoy = "1–4%";
+      hiringInsight = "Certified trade professionals (Gas Safe, NVQ Level 3, 18th Edition) command strong premium rates across commercial and industrial sectors.";
+      maxExpMultiplier = 1.35;
+    }
+    // G. Hospitality, Retail, Catering & Customer Services
+    else if (/\b(chef|cook|waiter|waitress|bartender|barista|retail assistant|store assistant|cashier|customer service|call centre)\b/i.test(inputLower)) {
+      sector = "Hospitality, Retail & Customer Services";
+      baseP10 = 24000; baseP50 = 28000; baseP90 = 38000;
+      basePct = 95; bonusPct = 5;
+      description = "Delivers customer service, retail operations, food preparation, or frontline service execution.";
+      demand = "High Candidate Availability";
+      yoy = "1–4%";
+      hiringInsight = "Frontline roles track retail and hospitality pay agreements; head chefs and store managers command higher salary tiers.";
+      maxExpMultiplier = 1.25;
+    }
+    // H. Healthcare & Social Care Support
+    else if (/\b(carer|care assistant|healthcare assistant|nurse|nursing|support worker|care worker)\b/i.test(inputLower)) {
+      sector = "Healthcare & Care Services";
+      baseP10 = 24500; baseP50 = 31000; baseP90 = 45000;
+      basePct = 95; bonusPct = 5;
+      description = "Provides clinical care, patient support, elderly or disability care, and social care service delivery.";
+      demand = "High Demand for Registered Care Staff";
+      yoy = "1–4%";
+      hiringInsight = "High demand for qualified healthcare workers across NHS and private care providers.";
+      maxExpMultiplier = 1.30;
+    }
 
     // 1. Audit, Governance & Risk - Distinct sub-role definitions
     if (/\b(part qualified|pq auditor|pq audit)\b/i.test(inputLower)) {
@@ -371,8 +463,9 @@ export default function SalaryDashboard() {
       id: `custom-${inputLower.replace(/[^a-z0-9]/g, '-')}`,
       title: titleClean.replace(/\b\w/g, l => l.toUpperCase()),
       sector: sector,
-      category: "Executive Benchmark",
+      category: isDirectorLevel ? "Executive Benchmark" : "Market Benchmark",
       description: description,
+      maxExpMultiplier: maxExpMultiplier,
       regional_data: {
         [parsedLocation.regionKey]: {
           p10: Math.round(baseP10 * regMult),
@@ -393,11 +486,25 @@ export default function SalaryDashboard() {
     '1-3': { label: '1–3 Years (Junior / Associate)', multiplier: 0.80 },
     '3-6': { label: '3–6 Years (Mid-Level Specialist)', multiplier: 1.00 },
     '6-10': { label: '6–10 Years (Senior Lead)', multiplier: 1.25 },
-    '10+': { label: '10+ Years (Highly Experienced / Executive Director)', multiplier: 1.50 }
+    '10+': { label: '10+ Years (Highly Experienced / Senior Lead)', multiplier: 1.50 }
   };
 
-  const currentExpMeta = expMultipliers[expYears] || expMultipliers['1-3'];
-  const multiplier = currentExpMeta.multiplier;
+  const currentExpMeta = useMemo(() => {
+    const raw = expMultipliers[expYears] || expMultipliers['1-3'];
+    if (expYears === '10+') {
+      const titleLower = roleInput.toLowerCase();
+      const isExec = /\b(director|cmo|cfo|cro|vp|head of|chief|partner|managing director|md)\b/i.test(titleLower);
+      return {
+        ...raw,
+        label: isExec ? '10+ Years (Highly Experienced / Executive Director)' : '10+ Years (Highly Experienced / Senior Lead)'
+      };
+    }
+    return raw;
+  }, [expYears, roleInput]);
+
+  const rawMultiplier = currentExpMeta.multiplier;
+  const maxCap = (activeRoleData as any).maxExpMultiplier || 1.50;
+  const multiplier = Math.min(rawMultiplier, maxCap);
 
   // Active region data
   const rawRegionData = activeRoleData.regional_data[parsedLocation.regionKey as keyof typeof activeRoleData.regional_data] || {
@@ -418,8 +525,8 @@ export default function SalaryDashboard() {
   const nmwFloor = parsedLocation.isOverseasEU ? 18000 : (parsedLocation.regionKey === 'london' ? 28000 : 25000);
   
   const p10 = Math.max(nmwFloor, Math.round((rawRegionData.p10 * multiplier * styleMultiplier) / 500) * 500);
-  const p50 = Math.max(p10 + 4000, Math.round((rawRegionData.p50 * multiplier * styleMultiplier) / 500) * 500);
-  const p90 = Math.max(p50 + 8000, Math.round((rawRegionData.p90 * multiplier * styleMultiplier) / 500) * 500);
+  const p50 = Math.max(p10 + 2000, Math.round((rawRegionData.p50 * multiplier * styleMultiplier) / 500) * 500);
+  const p90 = Math.max(p50 + 4000, Math.round((rawRegionData.p90 * multiplier * styleMultiplier) / 500) * 500);
 
   const basePct = rawRegionData.base_pct || 90;
   const bonusPct = rawRegionData.bonus_pct || 10;
