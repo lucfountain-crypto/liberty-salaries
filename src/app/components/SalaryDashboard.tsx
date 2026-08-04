@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 
 export default function SalaryDashboard() {
-  // Conversational Form State (Clean default placeholders)
+  // Conversational Form State
   const [roleInput, setRoleInput] = useState<string>('');
   const [expYears, setExpYears] = useState<string>('1-3'); // '1-3', '3-6', '6-10', '10+'
   const [locationNatural, setLocationNatural] = useState<string>('');
@@ -60,7 +60,7 @@ export default function SalaryDashboard() {
 
   // Real-world Regional, UK Remote & Overseas Location Parser
   const parsedLocation = useMemo(() => {
-    const locLower = (locationNatural || 'London').toLowerCase();
+    const locLower = (locationNatural || 'London, hybrid').toLowerCase();
     let regionKey = 'london';
     let regionName = "London & City Hubs";
     let multiplier = 1.0;
@@ -74,7 +74,7 @@ export default function SalaryDashboard() {
     if (isExplicitEU && !isUS && !isUKExplicit) {
       regionKey = 'eu_remote';
       regionName = 'European & Overseas Remote';
-      multiplier = 0.72; // Realistic EU Remote Pay (~€35k-€44k EUR)
+      multiplier = 0.72; // European Remote Pay (~0.72x London)
       isOverseasEU = true;
     } else if (isUS) {
       regionKey = 'us_remote';
@@ -141,11 +141,12 @@ export default function SalaryDashboard() {
     });
     rawTitle = rawTitle.replace(/unless otherwise stated.*$/gi, '');
     rawTitle = rawTitle.replace(/tell me what role.*$/gi, '');
-    const titleClean = rawTitle.trim() || 'Finance Manager, Property';
+    const titleClean = rawTitle.trim() || 'Internal Auditor';
     const inputLower = titleClean.toLowerCase();
 
     // Check if matches one of our pre-cached roles
     const predefined = predefinedRoles.find(r => 
+      r.title.toLowerCase() === inputLower ||
       r.title.toLowerCase().includes(inputLower) || 
       inputLower.includes(r.title.toLowerCase())
     );
@@ -163,225 +164,183 @@ export default function SalaryDashboard() {
     let bonusPct = 12;
     let description = "Drives strategic operational delivery, commercial execution, and key stakeholder performance within this domain.";
     let demand = "Moderate Candidate Availability";
-    let yoy = "+4.2%";
+    let yoy = "1–4%";
     let hiringInsight = "Steady market demand. Candidates with proven track record and domain expertise command strong market positioning.";
 
-    // Check for Executive Director level titles (Director, CMO, CFO, VP, Chief, Head of, Partner)
-    const isDirectorLevel = inputLower.includes('director') || inputLower.includes('cmo') || inputLower.includes('cfo') || inputLower.includes('cro') || inputLower.includes('vp') || inputLower.includes('head of') || inputLower.includes('chief') || inputLower.includes('partner');
+    // Check for Executive Director level titles (Director, CMO, CFO, VP, Chief, Head of, Partner) with word boundaries
+    const isDirectorLevel = /\b(director|cmo|cfo|cro|vp|head of|chief|partner)\b/i.test(inputLower);
 
-    // 1. Legal & Professional Services (City Premium)
-    if (inputLower.includes('legal') || inputLower.includes('solicitor') || inputLower.includes('lawyer') || inputLower.includes('counsel') || inputLower.includes('partner')) {
+    // 1. Audit, Governance & Risk - Distinct sub-role definitions
+    if (/\b(part qualified|pq auditor|pq audit)\b/i.test(inputLower)) {
+      sector = "Audit & Public Practice";
+      baseP10 = 37500; baseP50 = 45000; baseP90 = 52500; // at 1-3 yrs (0.80 mult) -> £30,000 / £36,000 / £42,000
+      basePct = 95; bonusPct = 5;
+      description = "Delivers audit testing, control evaluations, and statutory reporting support while progressing ACA/ACCA professional qualification.";
+      demand = "High Demand for Qualified ACA/ACCA Trainees";
+      yoy = "1–4%";
+      hiringInsight = "London part-qualified external audit ranges approximately £30,000–£42,000 depending on exam passes (ACA/ACCA) and firm size (Big Four / Top 10 vs mid-tier).";
+    }
+    else if (/\b(external audit|external auditor|statutory audit|public practice audit)\b/i.test(inputLower)) {
+      sector = "Audit & Public Practice";
+      baseP10 = 50000; baseP50 = 66000; baseP90 = 80000;
+      basePct = 92; bonusPct = 8;
+      description = "Delivers statutory financial statement audits, internal control assessments, and regulatory assurance for public practice clients across Big Four, Top 10, and mid-tier firms.";
+      demand = "High Scarcity (ACA / ACCA Qualified)";
+      yoy = "1–4%";
+      hiringInsight = "London part-qualified external audit ranges approximately £30,000–£42,000; newly qualified ACA/ACCA external audit averages £51,000–£56,000.";
+    }
+    else if (/\b(it audit|it auditor|cyber audit|technology audit|systems audit)\b/i.test(inputLower)) {
+      sector = "Audit, Governance & Risk";
+      baseP10 = 50000; baseP50 = 72500; baseP90 = 93750;
+      basePct = 88; bonusPct = 12;
+      description = "Audits technology infrastructure, cyber security governance, cloud controls, and automated application systems.";
+      demand = "Constrained for IT & Cyber Specialists";
+      yoy = "1–4%";
+      hiringInsight = "Specialist skills in IT audit, cyber security, cloud controls, and model risk remain difficult to recruit.";
+    }
+    else if (/\b(audit manager|head of audit|audit director|avp audit)\b/i.test(inputLower)) {
+      sector = "Audit, Governance & Risk";
+      baseP10 = 69000; baseP50 = 80250; baseP90 = 105000;
+      basePct = 85; bonusPct = 15;
+      description = "Leads internal or external audit teams, manages risk reporting, and presents governance recommendations to executive audit committees.";
+      demand = "High Scarcity (Experienced Managers)";
+      yoy = "1–4%";
+      hiringInsight = "Audit Manager ranges span £69k–£80k in commerce up to £105k in specialist financial services, with 15–20% variable bonus typical at manager level.";
+    }
+    else if (/\b(internal audit|internal auditor|audit|auditor)\b/i.test(inputLower)) {
+      sector = "Audit, Governance & Risk";
+      baseP10 = 43750; baseP50 = 62500; baseP90 = 81250; // Map at 1-3 yrs (0.80 mult) -> £35,000 / £50,000 / £65,000
+      basePct = 90; bonusPct = 10;
+      description = "Reviews internal controls, risk-management processes, financial governance and regulatory compliance. Identifies control weaknesses and recommends practical improvements.";
+      demand = "Moderate overall; constrained for specialists";
+      yoy = "1–4%";
+      hiringInsight = "Candidate availability is moderate overall, although newly qualified auditors and candidates with financial-services, IT audit, cyber, model-risk or regulatory experience remain harder to secure. Typical bonuses range from 0–10%, with higher variable compensation possible in specialist financial-services positions.";
+    }
+    // 2. Legal & Professional Services (City Premium)
+    else if (/\b(legal|solicitor|lawyer|counsel|partner)\b/i.test(inputLower)) {
       sector = "Legal & Professional Services (City & US Firms)";
-      if (isDirectorLevel || inputLower.includes('partner') || inputLower.includes('general counsel')) {
+      if (isDirectorLevel || /\b(partner|general counsel)\b/i.test(inputLower)) {
         baseP10 = 140000; baseP50 = 220000; baseP90 = 350000;
         basePct = 80; bonusPct = 20;
         description = "Leads corporate governance, high-stakes M&A litigation, regulatory compliance, and partner equity advisory.";
-        demand = "Extreme Talent Scarcity";
-        yoy = "+7.5%";
+        demand = "High Scarcity";
+        yoy = "1–4%";
         hiringInsight = "City and US law firm Partners / General Counsels command top-tier equity packages (£200k-£350k+ base plus profit share).";
       } else {
         baseP10 = 85000; baseP50 = 125000; baseP90 = 185000;
         basePct = 85; bonusPct = 15;
         description = "Advises on corporate transactions, regulatory governance, commercial contracts, and dispute resolution.";
-        demand = "High Talent Scarcity";
-        yoy = "+6.8%";
+        demand = "High Scarcity";
+        yoy = "1–4%";
         hiringInsight = "City NQ/Associate legal counsel in London command premium base scales (£105k-£160k+) driven by US law firm pay benchmarks.";
       }
     }
-    // 2. Investment Banking, Financial Services & Private Equity (Banking Premium)
-    else if (inputLower.includes('bank') || inputLower.includes('banking') || inputLower.includes('m&a') || inputLower.includes('equity') || inputLower.includes('asset management') || inputLower.includes('hedge fund') || inputLower.includes('capital markets') || inputLower.includes('investment')) {
+    // 3. Investment Banking, Financial Services & Private Equity
+    else if (/\b(bank|banking|m&a|equity|asset management|hedge fund|capital markets|investment)\b/i.test(inputLower)) {
       sector = "Investment Banking & Capital Markets";
-      if (isDirectorLevel || inputLower.includes('managing director') || inputLower.includes('md')) {
+      if (isDirectorLevel || /\b(managing director|md)\b/i.test(inputLower)) {
         baseP10 = 160000; baseP50 = 260000; baseP90 = 420000;
         basePct = 50; bonusPct = 50;
         description = "Drives deal origination, M&A execution, institutional capital allocation, and portfolio asset performance.";
-        demand = "Extreme Talent Scarcity";
-        yoy = "+8.0%";
+        demand = "High Scarcity";
+        yoy = "1–4%";
         hiringInsight = "Managing Directors and Partners in Investment Banking expect 50%+ performance bonus allocations alongside substantial base pay.";
       } else {
         baseP10 = 75000; baseP50 = 135000; baseP90 = 210000;
         basePct = 60; bonusPct = 40;
         description = "Executes M&A transactions, financial valuation modeling, client pitch books, and buy-side portfolio management.";
-        demand = "High Talent Scarcity";
-        yoy = "+7.2%";
+        demand = "High Scarcity";
+        yoy = "1–4%";
         hiringInsight = "Investment banking analysts and associates command significant bonus pools (30-50% variable) above base salary.";
       }
     }
-    // 3. Marketing, Brand, Sales & Commercial Leadership
-    else if (inputLower.includes('market') || inputLower.includes('brand') || inputLower.includes('growth') || inputLower.includes('sales') || inputLower.includes('commercial director')) {
+    // 4. Marketing, Brand, Sales & Commercial Leadership
+    else if (/\b(marketing|market|brand|growth|sales|commercial director)\b/i.test(inputLower)) {
       sector = "Commercial, Marketing & Growth Strategy";
       if (isDirectorLevel) {
         baseP10 = 85000; baseP50 = 135000; baseP90 = 195000;
         basePct = 75; bonusPct = 25;
         description = "Leads commercial brand architecture, omni-channel growth strategy, revenue expansion, and executive marketing operations.";
-        demand = "High Demand for Proven Growth Directors";
-        yoy = "+6.2%";
+        demand = "High Demand for Growth Directors";
+        yoy = "1–4%";
         hiringInsight = "Marketing Directors with verified ROI on customer acquisition, brand repositioning, and digital growth command top-tier packages (£120k-£180k+).";
       } else {
         baseP10 = 42000; baseP50 = 68000; baseP90 = 110000;
         basePct = 80; bonusPct = 20;
         description = "Drives brand positioning, campaign execution, digital marketing channels, and client acquisition pipelines.";
-        demand = "Moderate-High Candidate Availability";
-        yoy = "+4.8%";
+        demand = "Moderate Candidate Availability";
+        yoy = "1–4%";
         hiringInsight = "Good active applicant volume. Primary differentiator is demonstrated campaign conversion and sector-specific domain knowledge.";
       }
     }
-    // 4. Insurance Account Handler / Account Executive / Broking
-    else if (
-      inputLower.includes('account handler') || 
-      inputLower.includes('account executive') || 
-      inputLower.includes('broker support') || 
-      inputLower.includes('broking') || 
-      inputLower.includes('client manager')
-    ) {
+    // 5. Insurance Account Handler / Account Executive / Broking
+    else if (/\b(account handler|account executive|broker support|broking|client manager)\b/i.test(inputLower)) {
       sector = "Insurance & Commercial Broking";
       baseP10 = 42000; baseP50 = 58000; baseP90 = 92000;
       basePct = 85; bonusPct = 15;
       description = "Manages commercial client policy portfolios, renewal placements, Lloyd's/company market negotiations, and broker client accounts.";
-      demand = "High Demand for Experienced Commercial Handlers";
-      yoy = "+5.8%";
+      demand = "High Demand for Experienced Handlers";
+      yoy = "1–4%";
       hiringInsight = "Competitive broking market. Experienced handlers with Acturis/Open GI mastery and strong insurer relationships command premium London packages.";
     }
-    // 5. Gaming, iGaming, Sportsbook & Retention Analyst
-    else if (inputLower.includes('gaming') || inputLower.includes('retention') || inputLower.includes('casino') || inputLower.includes('sportsbook') || inputLower.includes('igaming') || inputLower.includes('crm analyst')) {
-      sector = "iGaming, Gaming & Digital Media";
-      baseP10 = 26000; baseP50 = 36000; baseP90 = 52000;
-      basePct = 88; bonusPct = 12;
-      description = "Analyses player lifecycle, retention campaigns, churn reduction metrics, and promotional engagement across gaming platforms.";
-      demand = "High Remote Talent Availability";
-      yoy = "+3.2%";
-      hiringInsight = "European & offshore remote hubs (Spain, Malta, Gibraltar) command lower base pay rates (~€28k-€44k EUR). High applicant volume for remote roles.";
-    }
-    // 6. Admin & EA/PA
-    else if (inputLower.includes('pa') || inputLower.includes('secretary') || inputLower.includes('assistant') || inputLower.includes('reception') || inputLower.includes('admin') || inputLower.includes('office manager')) {
+    // 6. Admin & EA/PA (STRICT WORD BOUNDARY: \bpa\b so "part" never matches)
+    else if (/\b(pa|personal assistant|executive assistant|secretary|receptionist|reception|admin|office manager)\b/i.test(inputLower)) {
       sector = "Corporate Administration & Executive Support";
       baseP10 = 32000; baseP50 = 42000; baseP90 = 58000;
       basePct = 95; bonusPct = 5;
       description = "Manages executive diaries, travel logistics, board coordination, and senior administrative operations.";
-      demand = "High Candidate Availability (Swamped with Applicants)";
-      yoy = "+3.5%";
-      hiringInsight = "Roles attract huge active applicant volumes. Liberty Towers pre-screens and filters for candidate stability, C-suite discretion, and culture fit.";
+      demand = "High Candidate Availability";
+      yoy = "1–4%";
+      hiringInsight = "Roles attract high active applicant volumes. Liberty Towers pre-screens and filters for candidate stability, C-suite discretion, and culture fit.";
     } 
-    // 7. Architecture, Property & Built Environment
-    else if (inputLower.includes('architect') || inputLower.includes('design') || inputLower.includes('building') || inputLower.includes('property') || inputLower.includes('surveyor') || inputLower.includes('construction') || inputLower.includes('cad') || inputLower.includes('bim')) {
-      sector = "Architecture, Property & Built Environment";
-      baseP10 = 38000; baseP50 = 58000; baseP90 = 92000;
-      basePct = 88; bonusPct = 12;
-      description = "Drives property financial management, asset accounting, planning compliance, and development forecasting.";
-      demand = "High Demand for Experienced Property Specialists";
-      yoy = "+4.6%";
-      hiringInsight = "Steady market demand. Finance and Property managers with commercial lease and asset accounting proficiency command premium rates.";
-    } 
-    // 8. Operations, Change & Business Analysis
-    else if (inputLower.includes('ops') || inputLower.includes('operation') || inputLower.includes('business analyst') || inputLower.includes('supply chain') || inputLower.includes('change manager') || inputLower.includes('transformation')) {
-      sector = "Operations, Change & Business Transformation";
-      baseP10 = 42000; baseP50 = 68000; baseP90 = 110000;
-      basePct = 85; bonusPct = 15;
-      description = "Optimises business workflows, platform migrations, operational efficiency, and cross-functional delivery.";
-      demand = "High Demand for Process Specialists";
-      yoy = "+4.8%";
-      hiringInsight = "Strong demand in financial services and corporate ops. Proven track record in cost-reduction or systems rollout is key.";
-    } 
-    // 9. Tech Infrastructure, Cloud, DevOps & Cyber Security
-    else if (inputLower.includes('devops') || inputLower.includes('cloud') || inputLower.includes('sre') || inputLower.includes('cyber') || inputLower.includes('security') || inputLower.includes('infrastructure') || inputLower.includes('network') || inputLower.includes('sysadmin')) {
+    // 7. Tech Infrastructure, Cloud, DevOps & Cyber Security
+    else if (/\b(devops|cloud|sre|cyber|security|infrastructure|network|sysadmin)\b/i.test(inputLower)) {
       sector = "Tech Infrastructure, Cloud & Cyber Security";
       baseP10 = 55000; baseP50 = 88000; baseP90 = 145000;
       basePct = 85; bonusPct = 15;
       description = "Architects cloud environments (AWS/Azure), CI/CD automation pipelines, Zero-Trust cyber security, and system resilience.";
-      demand = "Critical Talent Scarcity";
-      yoy = "+7.2%";
+      demand = "Constrained for Cyber & Cloud Specialists";
+      yoy = "1–4%";
       hiringInsight = "Cyber and Cloud Architects face intense buy-side competition. Candidates expect remote/hybrid flexibility and certification bonuses.";
     } 
-    // 10. Insurance & Reinsurance / Actuarial
-    else if (inputLower.includes('actuary') || inputLower.includes('pricing') || inputLower.includes('risk model')) {
-      sector = "Insurance & Reinsurance";
-      baseP10 = 65000; baseP50 = 105000; baseP90 = 165000;
-      basePct = 80; bonusPct = 20;
-      description = "Develops stochastic risk models, catastrophe pricing frameworks, and capital adequacy reserves.";
-      demand = "Critical Talent Scarcity";
-      yoy = "+5.8%";
-      hiringInsight = "Tight candidate pool. Targeted headhunting required to reach passive actuarial specialists.";
+    // 8. Finance, Controller, Tax & Treasury
+    else if (/\b(finance|accountant|accounting|controller|tax|treasury)\b/i.test(inputLower)) {
+      sector = "Finance & Corporate Accounting";
+      baseP10 = 45000; baseP50 = 75000; baseP90 = 130000;
+      basePct = 82; bonusPct = 18;
+      description = "Oversees financial planning & analysis (FP&A), statutory reporting, tax governance, and balance sheet control.";
+      demand = "Moderate-High Scarcity (Qualified ACA)";
+      yoy = "1–4%";
+      hiringInsight = "ACA/ACCA qualified talent commands strong counter-offers. Speed to offer is critical.";
     } 
-    // 11. HR & Talent Management
-    else if (inputLower.includes('hr') || inputLower.includes('people') || inputLower.includes('talent') || inputLower.includes('recruit')) {
-      sector = "Human Resources & Talent Leadership";
-      baseP10 = 38000; baseP50 = 62000; baseP90 = 105000;
-      basePct = 88; bonusPct = 12;
-      description = "Leads talent acquisition, organisational development, employee retention, and compensation strategy.";
-      demand = "High Candidate Availability";
-      yoy = "+4.2%";
-      hiringInsight = "Strong active market response; pre-screening focuses on strategic ER experience and sector alignment.";
-    } 
-    // 12. Finance, Audit, Tax & Accounting
-    else if (
-      inputLower.includes('finance') || 
-      inputLower.includes('accountant') || 
-      inputLower.includes('accounting') || 
-      inputLower.includes('accountancy') || 
-      inputLower.includes('controller') || 
-      inputLower.includes('audit') || 
-      inputLower.includes('auditor') || 
-      inputLower.includes('tax') || 
-      inputLower.includes('treasury') || 
-      inputLower.includes('compliance') || 
-      inputLower.includes('risk') || 
-      inputLower.includes('governance')
-    ) {
-      if (inputLower.includes('audit') || inputLower.includes('auditor')) {
-        sector = "Audit, Governance & Risk";
-        baseP10 = 48000; baseP50 = 75000; baseP90 = 120000;
-        basePct = 85; bonusPct = 15;
-        description = "Evaluates internal control frameworks, financial reporting integrity, regulatory compliance, and audit risk governance.";
-        demand = "High Talent Scarcity (Qualified ACA / ACCA / CIA)";
-        yoy = "+5.4%";
-        hiringInsight = "Big 4 / Top 10 trained auditors and ACA/ACCA qualified audit managers command strong market demand across City practice and corporate industry.";
-      } else {
-        sector = "Finance & Corporate Accounting";
-        baseP10 = 45000; baseP50 = 75000; baseP90 = 130000;
-        basePct = 82; bonusPct = 18;
-        description = "Oversees financial planning & analysis (FP&A), statutory reporting, tax governance, and balance sheet control.";
-        demand = "Moderate-High Scarcity (Qualified ACA)";
-        yoy = "+5.0%";
-        hiringInsight = "ACA/ACCA qualified talent commands strong counter-offers. Speed to offer is critical.";
-      }
-    } 
-    // 13. Software Engineering & Technology
-    else if (
-      inputLower.includes('developer') || 
-      inputLower.includes('software') || 
-      inputLower.includes('frontend') || 
-      inputLower.includes('backend') || 
-      inputLower.includes('fullstack') || 
-      inputLower.includes('full stack') || 
-      inputLower.includes('engineer') || 
-      inputLower.includes('programmer')
-    ) {
+    // 9. Software Engineering & Technology
+    else if (/\b(developer|software|frontend|backend|fullstack|engineer|programmer)\b/i.test(inputLower)) {
       sector = "Tech & Software Engineering";
       baseP10 = 52000; baseP50 = 82000; baseP90 = 135000;
       basePct = 85; bonusPct = 15;
       description = "Engineers scalable software platforms, microservices architecture, API integrations, and core product code.";
-      demand = "High Demand for Experienced Engineers";
-      yoy = "+6.2%";
+      demand = "High Demand for Senior Engineers";
+      yoy = "1–4%";
       hiringInsight = "Strong competition for senior engineers with modern framework proficiency and cloud deployment experience.";
     }
-    // 14. Quant & Quantitative Finance
-    else if (inputLower.includes('quant') || inputLower.includes('hft') || inputLower.includes('prop trading') || inputLower.includes('alpha researcher')) {
+    // 10. Quant & Quantitative Finance
+    else if (/\b(quant|hft|prop trading|alpha researcher)\b/i.test(inputLower)) {
       sector = "Quant & Quantitative Finance";
       baseP10 = 90000; baseP50 = 180000; baseP90 = 280000;
       basePct = 60; bonusPct = 40;
       description = "Engineers algorithmic trading models, high-frequency execution infrastructure, and strategy research.";
-      demand = "Extreme Talent Scarcity";
-      yoy = "+8.5%";
+      demand = "High Scarcity";
+      yoy = "1–4%";
       hiringInsight = "Fierce bidding war across buy-side funds. Candidates hold multiple competing offers.";
     } 
-    // 15. Insurance Underwriting
-    else if (inputLower.includes('underwriter') || inputLower.includes('insurance') || inputLower.includes('broker') || inputLower.includes('claims')) {
+    // 11. Insurance Underwriting
+    else if (/\b(underwriter|insurance|broker|claims)\b/i.test(inputLower)) {
       sector = "Insurance & Specialty Reinsurance";
       baseP10 = 55000; baseP50 = 95000; baseP90 = 160000;
       basePct = 75; bonusPct = 25;
       description = "Evaluates portfolio risk, Lloyd's syndicate exposure, pricing strategy, and broker client relationships.";
-      demand = "High Talent Scarcity";
-      yoy = "+6.0%";
+      demand = "High Scarcity";
+      yoy = "1–4%";
       hiringInsight = "Lloyd's and company markets face tight supply of profitable book leads. Direct headhunting recommended.";
     }
 
@@ -410,7 +369,7 @@ export default function SalaryDashboard() {
 
   // Experience level multipliers
   const expMultipliers: Record<string, { label: string; multiplier: number }> = {
-    '1-3': { label: '1–3 Years (Junior / Assistant)', multiplier: 0.80 },
+    '1-3': { label: '1–3 Years (Junior / Associate)', multiplier: 0.80 },
     '3-6': { label: '3–6 Years (Mid-Level Specialist)', multiplier: 1.00 },
     '6-10': { label: '6–10 Years (Senior Lead)', multiplier: 1.25 },
     '10+': { label: '10+ Years (Highly Experienced / Executive Director)', multiplier: 1.50 }
@@ -426,23 +385,23 @@ export default function SalaryDashboard() {
     p90: 55000,
     base_pct: 90,
     bonus_pct: 10,
-    demand: "High Candidate Availability",
-    yoy: "+3.8%",
-    hiring_insight: "High active applicant volume on market release."
+    demand: "Moderate Candidate Availability",
+    yoy: "1–4%",
+    hiring_insight: "Moderate active applicant volume."
   };
 
   // Work style adjustment factor
   const styleMultiplier = parsedLocation.derivedStyle === 'remote' ? 1.0 : parsedLocation.derivedStyle === 'onsite' ? 0.97 : 1.0;
 
-  // Calculated final benchmarks (NMW floor only applies to UK/London, NOT European/Overseas Remote)
+  // Calculated final benchmarks
   const nmwFloor = parsedLocation.isOverseasEU ? 18000 : (parsedLocation.regionKey === 'london' ? 28000 : 25000);
   
   const p10 = Math.max(nmwFloor, Math.round((rawRegionData.p10 * multiplier * styleMultiplier) / 500) * 500);
   const p50 = Math.max(p10 + 4000, Math.round((rawRegionData.p50 * multiplier * styleMultiplier) / 500) * 500);
   const p90 = Math.max(p50 + 8000, Math.round((rawRegionData.p90 * multiplier * styleMultiplier) / 500) * 500);
 
-  const basePct = rawRegionData.base_pct || 85;
-  const bonusPct = rawRegionData.bonus_pct || 15;
+  const basePct = rawRegionData.base_pct || 90;
+  const bonusPct = rawRegionData.bonus_pct || 10;
 
   const formatCurrency = (val: number) => {
     return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(val);
@@ -544,7 +503,7 @@ export default function SalaryDashboard() {
             LT Salary Benchmarks 2026
           </h1>
           <p className="mt-2 text-sm text-slate-600">
-            Real-time UK salary percentiles, market demand, and compensation breakdowns.
+            Current UK salary benchmarks, market demand, and compensation insights.
           </p>
         </div>
       </section>
@@ -563,7 +522,7 @@ export default function SalaryDashboard() {
                 {/* Input 1: Role Search */}
                 <div>
                   <label className="text-sm font-bold text-slate-900 block mb-2">
-                    Use Natural language: Tell me what role you are researching?
+                    Tell us which role you are researching.
                   </label>
                   <div className="relative">
                     <Briefcase className="absolute left-4 top-3.5 w-5 h-5 text-blue-800" />
@@ -574,7 +533,7 @@ export default function SalaryDashboard() {
                         setRoleInput(e.target.value);
                         setHasGenerated(true);
                       }}
-                      placeholder="Example: Finance Manager, Property (or you can leave sector blank)"
+                      placeholder="Example: Internal Auditor, External Auditor, IT Auditor..."
                       className="w-full bg-slate-50 border border-slate-300 focus:border-blue-800 text-slate-900 pl-12 pr-4 py-3.5 rounded-xl text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-800/10 transition"
                     />
                   </div>
@@ -582,10 +541,11 @@ export default function SalaryDashboard() {
                   {/* Quick Select Buttons */}
                   <div className="mt-3 flex flex-wrap gap-2">
                     {[
-                      'PA Secretary',
-                      'Executive Assistant',
+                      'Internal Auditor',
+                      'External Auditor',
+                      'IT Auditor',
+                      'Audit Manager',
                       'Commercial Solicitor',
-                      'Investment Banking VP',
                       'Specialty Underwriter'
                     ].map((role) => (
                       <button
@@ -610,7 +570,7 @@ export default function SalaryDashboard() {
                   <div className="flex flex-col">
                     <div className="min-h-[44px] flex items-end pb-2">
                       <label className="text-sm font-bold text-slate-900 leading-tight">
-                        2. How many years of experience?
+                        How many years’ experience are required?
                       </label>
                     </div>
                     <select
@@ -621,18 +581,18 @@ export default function SalaryDashboard() {
                       }}
                       className="w-full bg-slate-50 border border-slate-300 focus:border-blue-800 text-slate-900 px-4 py-3.5 rounded-xl text-sm focus:outline-none transition h-[48px]"
                     >
-                      <option value="1-3">1–3 Years (Junior / Assistant)</option>
+                      <option value="1-3">1–3 Years (Junior / Associate)</option>
                       <option value="3-6">3–6 Years (Mid-Level)</option>
                       <option value="6-10">6–10 Years (Senior)</option>
                       <option value="10+">10+ Years (Highly Experienced)</option>
                     </select>
                   </div>
 
-                  {/* Input 3: Location & Setup (Natural Language) */}
+                  {/* Input 3: Location & Setup */}
                   <div className="flex flex-col">
                     <div className="min-h-[44px] flex items-end pb-2">
                       <label className="text-sm font-bold text-slate-900 leading-tight">
-                        3. Type location and is the role Based in Office, Hybrid or remote.
+                        Enter the location and select whether the role is office-based, hybrid or remote.
                       </label>
                     </div>
                     <div>
@@ -645,7 +605,7 @@ export default function SalaryDashboard() {
                             setLocationNatural(e.target.value);
                             setHasGenerated(true);
                           }}
-                          placeholder="Example: London, Hybrid 2 days"
+                          placeholder="Example: London, hybrid"
                           className="w-full bg-slate-50 border border-slate-300 focus:border-blue-800 text-slate-900 pl-10 pr-4 py-3.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-800/10 transition h-[48px]"
                         />
                       </div>
@@ -719,43 +679,43 @@ export default function SalaryDashboard() {
                   </div>
                 </div>
 
-                {/* 3 Salary Percentile Cards */}
+                {/* 3 Salary Benchmark Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   
-                  {/* 10th Percentile */}
+                  {/* Lower Market */}
                   <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 text-center">
                     <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">
-                      10th Percentile (Min)
+                      Lower Market (Estimated 10th Percentile)
                     </span>
                     <span className="text-2xl font-bold text-slate-800">
                       {formatCurrency(p10)}
                     </span>
-                    <span className="text-[11px] text-slate-500 block mt-1">Entry / Starting range</span>
+                    <span className="text-[11px] text-slate-500 block mt-1">Lower market benchmark</span>
                   </div>
 
-                  {/* 50th Percentile (Median) */}
+                  {/* Market Median */}
                   <div className="bg-blue-50/60 border-2 border-blue-800/40 rounded-xl p-5 text-center relative shadow-sm">
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-900 text-white font-bold text-[10px] uppercase tracking-widest px-3 py-0.5 rounded-full shadow-sm">
                       Market Median
                     </div>
                     <span className="text-xs font-bold text-blue-900 uppercase tracking-wider block mb-1">
-                      50th Percentile (Average)
+                      Market Median (Estimated 50th Percentile)
                     </span>
                     <span className="text-3xl font-extrabold text-blue-950">
                       {formatCurrency(p50)}
                     </span>
-                    <span className="text-[11px] text-blue-900/80 block mt-1">Expected market rate</span>
+                    <span className="text-[11px] text-blue-900/80 block mt-1">Market median benchmark</span>
                   </div>
 
-                  {/* 90th Percentile (Peak) */}
+                  {/* Upper Market */}
                   <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 text-center">
                     <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">
-                      90th Percentile (Peak)
+                      Upper Market (Estimated 90th Percentile)
                     </span>
                     <span className="text-2xl font-bold text-slate-800">
                       {formatCurrency(p90)}
                     </span>
-                    <span className="text-[11px] text-slate-500 block mt-1">Top-tier packages</span>
+                    <span className="text-[11px] text-slate-500 block mt-1">Upper market benchmark</span>
                   </div>
 
                 </div>
@@ -769,7 +729,7 @@ export default function SalaryDashboard() {
                     <div>
                       <h4 className="text-sm font-bold text-slate-900">Market Supply & Candidate Volume</h4>
                       <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
-                        At median salary (<strong className="text-slate-900">{formatCurrency(p50)}</strong>), candidate supply for <strong className="text-slate-900">{activeRoleData.title}</strong> is rated as <span className="text-blue-900 font-bold">{rawRegionData.demand}</span> with a <strong className="text-emerald-700">{rawRegionData.yoy}</strong> year-on-year market trend.
+                        At median salary (<strong className="text-slate-900">{formatCurrency(p50)}</strong>), candidate availability for <strong className="text-slate-900">{activeRoleData.title}</strong> is rated as <span className="text-blue-900 font-bold">{rawRegionData.demand}</span> with a <strong className="text-emerald-700">{rawRegionData.yoy}</strong> year-on-year market trend.
                       </p>
                       {(rawRegionData as any).hiring_insight && (
                         <p className="text-[11px] text-slate-500 mt-1 italic">
@@ -790,7 +750,7 @@ export default function SalaryDashboard() {
                   <div>
                     <h4 className="text-base font-bold">Looking to hire for this role?</h4>
                     <p className="text-xs text-blue-200 mt-1">
-                      Liberty Towers pre-screens and filters top 5% candidates matched to these benchmarks.
+                      Liberty Towers pre-screens candidates against the experience, qualifications and sector requirements of each vacancy.
                     </p>
                   </div>
 

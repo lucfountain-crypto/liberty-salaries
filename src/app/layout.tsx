@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "LT Salary Benchmarks 2026 | Liberty Towers Intelligence",
-  description: "Real-time UK executive salary percentiles, market demand, and compensation breakdowns across Insurance, Quant, Tech, Legal, and Property.",
+  description: "Current UK salary benchmarks, market demand, and compensation insights across Audit, Insurance, Quant, Tech, Legal, and Property.",
 };
 
 export default function RootLayout({
