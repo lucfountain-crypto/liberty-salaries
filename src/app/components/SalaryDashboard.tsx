@@ -155,21 +155,25 @@ export default function SalaryDashboard() {
       return predefined;
     }
 
-    // Universal Heuristic Engine for ANY custom job title
-    let sector = "General Commercial & Industrial Operations";
-    let baseP10 = 26000;
-    let baseP50 = 38000;
-    let baseP90 = 55000;
-    let basePct = 90;
-    let bonusPct = 10;
-    let description = "Executes operational, administrative, or functional delivery within this domain.";
-    let demand = "Moderate Candidate Availability";
-    let yoy = "1–4%";
-    let hiringInsight = "Broad market candidate availability. Compensation varies based on specialist certifications, supervisory duties, and industry sector.";
-    let maxExpMultiplier = 1.30;
+    // Check for Executive Director level titles (Director, CMO, CFO, VP, Chief, Head of, Partner, COO, CEO) with word boundaries
+    const isDirectorLevel = /\b(director|cmo|cfo|cro|coo|ceo|vp|head of|chief|partner|managing director|md)\b/i.test(inputLower);
 
-    // Check for Executive Director level titles (Director, CMO, CFO, VP, Chief, Head of, Partner) with word boundaries
-    const isDirectorLevel = /\b(director|cmo|cfo|cro|vp|head of|chief|partner)\b/i.test(inputLower);
+    // Universal Heuristic Engine for ANY custom job title
+    let sector = isDirectorLevel ? "Executive Leadership & Board Level" : "General Commercial & Industrial Operations";
+    let baseP10 = isDirectorLevel ? 70000 : 26000;
+    let baseP50 = isDirectorLevel ? 98000 : 38000;
+    let baseP90 = isDirectorLevel ? 140000 : 55000;
+    let basePct = isDirectorLevel ? 75 : 90;
+    let bonusPct = isDirectorLevel ? 25 : 10;
+    let description = isDirectorLevel 
+      ? "Provides executive strategy, operational leadership, governance, and business-critical delivery."
+      : "Executes operational, administrative, or functional delivery within this domain.";
+    let demand = isDirectorLevel ? "High Scarcity (Executive Leadership)" : "Moderate Candidate Availability";
+    let yoy = "1–4%";
+    let hiringInsight = isDirectorLevel 
+      ? "Director and C-suite candidates command senior compensation packages including performance bonuses and executive equity."
+      : "Broad market candidate availability. Compensation varies based on specialist certifications, supervisory duties, and industry sector.";
+    let maxExpMultiplier = isDirectorLevel ? 1.50 : 1.30;
 
     // INDUSTRIAL, DRIVING, LOGISTICS & OPERATIONAL BRANCHES
 
@@ -367,16 +371,17 @@ export default function SalaryDashboard() {
         hiringInsight = "Investment banking analysts and associates command significant bonus pools (30-50% variable) above base salary.";
       }
     }
-    // 4. Marketing, Brand, Sales & Commercial Leadership
-    else if (/\b(marketing|market|brand|growth|sales|commercial director)\b/i.test(inputLower)) {
-      sector = "Commercial, Marketing & Growth Strategy";
+    // 4. Marketing, Brand, Sales, Business Development & Commercial Leadership
+    else if (/\b(marketing|market|brand|growth|sales|commercial|business development|biz dev|bd|account director|sales director)\b/i.test(inputLower)) {
+      sector = "Commercial, Sales, Marketing & Business Development";
       if (isDirectorLevel) {
-        baseP10 = 85000; baseP50 = 135000; baseP90 = 195000;
+        baseP10 = 75000; baseP50 = 105000; baseP90 = 150000;
         basePct = 75; bonusPct = 25;
-        description = "Leads commercial brand architecture, omni-channel growth strategy, revenue expansion, and executive marketing operations.";
-        demand = "High Demand for Growth Directors";
+        description = "Leads commercial strategy, business development, omni-channel growth, revenue expansion, and executive sales operations.";
+        demand = "High Demand for Commercial & BD Directors";
         yoy = "1–4%";
-        hiringInsight = "Marketing Directors with verified ROI on customer acquisition, brand repositioning, and digital growth command top-tier packages (£120k-£180k+).";
+        hiringInsight = "Business Development and Commercial Directors with verified ROI on client acquisition and revenue growth command top-tier packages (£120k–£180k+).";
+        maxExpMultiplier = 1.50;
       } else {
         baseP10 = 42000; baseP50 = 68000; baseP90 = 110000;
         basePct = 80; bonusPct = 20;
@@ -384,77 +389,148 @@ export default function SalaryDashboard() {
         demand = "Moderate Candidate Availability";
         yoy = "1–4%";
         hiringInsight = "Good active applicant volume. Primary differentiator is demonstrated campaign conversion and sector-specific domain knowledge.";
+        maxExpMultiplier = 1.30;
       }
     }
     // 5. Insurance Account Handler / Account Executive / Broking
     else if (/\b(account handler|account executive|broker support|broking|client manager)\b/i.test(inputLower)) {
       sector = "Insurance & Commercial Broking";
-      baseP10 = 42000; baseP50 = 58000; baseP90 = 92000;
-      basePct = 85; bonusPct = 15;
-      description = "Manages commercial client policy portfolios, renewal placements, Lloyd's/company market negotiations, and broker client accounts.";
-      demand = "High Demand for Experienced Handlers";
-      yoy = "1–4%";
-      hiringInsight = "Competitive broking market. Experienced handlers with Acturis/Open GI mastery and strong insurer relationships command premium London packages.";
+      if (isDirectorLevel) {
+        baseP10 = 80000; baseP50 = 115000; baseP90 = 165000;
+        basePct = 75; bonusPct = 25;
+        description = "Directs commercial broking operations, key client portfolio placements, insurer relationships, and regional practice leadership.";
+        demand = "High Scarcity (Broking Directors)";
+        yoy = "1–4%";
+        hiringInsight = "Broking Directors with portable books of business and strong market relationships command executive compensation.";
+        maxExpMultiplier = 1.50;
+      } else {
+        baseP10 = 42000; baseP50 = 58000; baseP90 = 92000;
+        basePct = 85; bonusPct = 15;
+        description = "Manages commercial client policy portfolios, renewal placements, Lloyd's/company market negotiations, and broker client accounts.";
+        demand = "High Demand for Experienced Handlers";
+        yoy = "1–4%";
+        hiringInsight = "Competitive broking market. Experienced handlers with Acturis/Open GI mastery and strong insurer relationships command premium London packages.";
+      }
     }
     // 6. Admin & EA/PA (STRICT WORD BOUNDARY: \bpa\b so "part" never matches)
     else if (/\b(pa|personal assistant|executive assistant|secretary|receptionist|reception|admin|office manager)\b/i.test(inputLower)) {
       sector = "Corporate Administration & Executive Support";
-      baseP10 = 32000; baseP50 = 42000; baseP90 = 58000;
-      basePct = 95; bonusPct = 5;
-      description = "Manages executive diaries, travel logistics, board coordination, and senior administrative operations.";
-      demand = "High Candidate Availability";
-      yoy = "1–4%";
-      hiringInsight = "Roles attract high active applicant volumes. Liberty Towers pre-screens and filters for candidate stability, C-suite discretion, and culture fit.";
+      if (isDirectorLevel) {
+        baseP10 = 70000; baseP50 = 95000; baseP90 = 135000;
+        basePct = 85; bonusPct = 15;
+        description = "Directs corporate administration, facilities, C-suite office operations, and executive support infrastructure.";
+        demand = "High Demand for Administration Directors";
+        yoy = "1–4%";
+        hiringInsight = "Heads of Administration and Operations Directors in corporate services command senior management packages.";
+        maxExpMultiplier = 1.50;
+      } else {
+        baseP10 = 32000; baseP50 = 42000; baseP90 = 58000;
+        basePct = 95; bonusPct = 5;
+        description = "Manages executive diaries, travel logistics, board coordination, and senior administrative operations.";
+        demand = "High Candidate Availability";
+        yoy = "1–4%";
+        hiringInsight = "Roles attract high active applicant volumes. Liberty Towers pre-screens and filters for candidate stability, C-suite discretion, and culture fit.";
+      }
     } 
     // 7. Tech Infrastructure, Cloud, DevOps & Cyber Security
-    else if (/\b(devops|cloud|sre|cyber|security|infrastructure|network|sysadmin)\b/i.test(inputLower)) {
+    else if (/\b(devops|cloud|sre|cyber|security|infrastructure|network|sysadmin|ciso)\b/i.test(inputLower)) {
       sector = "Tech Infrastructure, Cloud & Cyber Security";
-      baseP10 = 55000; baseP50 = 88000; baseP90 = 145000;
-      basePct = 85; bonusPct = 15;
-      description = "Architects cloud environments (AWS/Azure), CI/CD automation pipelines, Zero-Trust cyber security, and system resilience.";
-      demand = "Constrained for Cyber & Cloud Specialists";
-      yoy = "1–4%";
-      hiringInsight = "Cyber and Cloud Architects face intense buy-side competition. Candidates expect remote/hybrid flexibility and certification bonuses.";
+      if (isDirectorLevel) {
+        baseP10 = 85000; baseP50 = 120000; baseP90 = 175000;
+        basePct = 80; bonusPct = 20;
+        description = "Directs enterprise infrastructure, cloud architecture (AWS/Azure), Zero-Trust cybersecurity governance, and technical risk management.";
+        demand = "High Scarcity (CISOs & Infrastructure Directors)";
+        yoy = "1–4%";
+        hiringInsight = "CISOs and IT Directors face intense competition and command high executive baselines.";
+        maxExpMultiplier = 1.50;
+      } else {
+        baseP10 = 55000; baseP50 = 88000; baseP90 = 145000;
+        basePct = 85; bonusPct = 15;
+        description = "Architects cloud environments (AWS/Azure), CI/CD automation pipelines, Zero-Trust cyber security, and system resilience.";
+        demand = "Constrained for Cyber & Cloud Specialists";
+        yoy = "1–4%";
+        hiringInsight = "Cyber and Cloud Architects face intense buy-side competition. Candidates expect remote/hybrid flexibility and certification bonuses.";
+      }
     } 
     // 8. Finance, Controller, Tax & Treasury
-    else if (/\b(finance|accountant|accounting|controller|tax|treasury)\b/i.test(inputLower)) {
+    else if (/\b(finance|accountant|accounting|controller|tax|treasury|cfo)\b/i.test(inputLower)) {
       sector = "Finance & Corporate Accounting";
-      baseP10 = 45000; baseP50 = 75000; baseP90 = 130000;
-      basePct = 82; bonusPct = 18;
-      description = "Oversees financial planning & analysis (FP&A), statutory reporting, tax governance, and balance sheet control.";
-      demand = "Moderate-High Scarcity (Qualified ACA)";
-      yoy = "1–4%";
-      hiringInsight = "ACA/ACCA qualified talent commands strong counter-offers. Speed to offer is critical.";
+      if (isDirectorLevel) {
+        baseP10 = 80000; baseP50 = 115000; baseP90 = 165000;
+        basePct = 75; bonusPct = 25;
+        description = "Leads corporate financial strategy, FP&A, capital allocation, statutory reporting, tax governance, and executive board reporting.";
+        demand = "High Scarcity (Finance Directors & CFOs)";
+        yoy = "1–4%";
+        hiringInsight = "Finance Directors and CFOs command strong base salaries with substantial annual equity or performance bonuses.";
+        maxExpMultiplier = 1.50;
+      } else {
+        baseP10 = 45000; baseP50 = 75000; baseP90 = 130000;
+        basePct = 82; bonusPct = 18;
+        description = "Oversees financial planning & analysis (FP&A), statutory reporting, tax governance, and balance sheet control.";
+        demand = "Moderate-High Scarcity (Qualified ACA)";
+        yoy = "1–4%";
+        hiringInsight = "ACA/ACCA qualified talent commands strong counter-offers. Speed to offer is critical.";
+      }
     } 
     // 9. Software Engineering & Technology
-    else if (/\b(developer|software|frontend|backend|fullstack|engineer|programmer)\b/i.test(inputLower)) {
+    else if (/\b(developer|software|frontend|backend|fullstack|engineer|programmer|cto|engineering director)\b/i.test(inputLower)) {
       sector = "Tech & Software Engineering";
-      baseP10 = 52000; baseP50 = 82000; baseP90 = 135000;
-      basePct = 85; bonusPct = 15;
-      description = "Engineers scalable software platforms, microservices architecture, API integrations, and core product code.";
-      demand = "High Demand for Senior Engineers";
-      yoy = "1–4%";
-      hiringInsight = "Strong competition for senior engineers with modern framework proficiency and cloud deployment experience.";
+      if (isDirectorLevel) {
+        baseP10 = 85000; baseP50 = 120000; baseP90 = 175000;
+        basePct = 80; bonusPct = 20;
+        description = "Directs technology vision, software engineering strategy, platform architecture, and engineering organization delivery.";
+        demand = "High Scarcity (Engineering Directors & CTOs)";
+        yoy = "1–4%";
+        hiringInsight = "Engineering Directors and CTOs command premium executive packages with equity and bonus incentives.";
+        maxExpMultiplier = 1.50;
+      } else {
+        baseP10 = 52000; baseP50 = 82000; baseP90 = 135000;
+        basePct = 85; bonusPct = 15;
+        description = "Engineers scalable software platforms, microservices architecture, API integrations, and core product code.";
+        demand = "High Demand for Senior Engineers";
+        yoy = "1–4%";
+        hiringInsight = "Strong competition for senior engineers with modern framework proficiency and cloud deployment experience.";
+      }
     }
     // 10. Quant & Quantitative Finance
     else if (/\b(quant|hft|prop trading|alpha researcher)\b/i.test(inputLower)) {
       sector = "Quant & Quantitative Finance";
-      baseP10 = 90000; baseP50 = 180000; baseP90 = 280000;
-      basePct = 60; bonusPct = 40;
-      description = "Engineers algorithmic trading models, high-frequency execution infrastructure, and strategy research.";
-      demand = "High Scarcity";
-      yoy = "1–4%";
-      hiringInsight = "Fierce bidding war across buy-side funds. Candidates hold multiple competing offers.";
+      if (isDirectorLevel) {
+        baseP10 = 120000; baseP50 = 220000; baseP90 = 350000;
+        basePct = 50; bonusPct = 50;
+        description = "Directs quantitative strategy research, high-frequency execution architecture, alpha generation, and portfolio risk management.";
+        demand = "Critical Scarcity (Quant Directors & Heads of Research)";
+        yoy = "1–4%";
+        hiringInsight = "Quant Directors and Heads of Research receive top-tier buy-side compensation with 50%+ bonus pools.";
+        maxExpMultiplier = 1.50;
+      } else {
+        baseP10 = 90000; baseP50 = 180000; baseP90 = 280000;
+        basePct = 60; bonusPct = 40;
+        description = "Engineers algorithmic trading models, high-frequency execution infrastructure, and strategy research.";
+        demand = "High Scarcity";
+        yoy = "1–4%";
+        hiringInsight = "Fierce bidding war across buy-side funds. Candidates hold multiple competing offers.";
+      }
     } 
     // 11. Insurance Underwriting
     else if (/\b(underwriter|insurance|broker|claims)\b/i.test(inputLower)) {
       sector = "Insurance & Specialty Reinsurance";
-      baseP10 = 55000; baseP50 = 95000; baseP90 = 160000;
-      basePct = 75; bonusPct = 25;
-      description = "Evaluates portfolio risk, Lloyd's syndicate exposure, pricing strategy, and broker client relationships.";
-      demand = "High Scarcity";
-      yoy = "1–4%";
-      hiringInsight = "Lloyd's and company markets face tight supply of profitable book leads. Direct headhunting recommended.";
+      if (isDirectorLevel) {
+        baseP10 = 90000; baseP50 = 135000; baseP90 = 195000;
+        basePct = 70; bonusPct = 30;
+        description = "Directs underwriting portfolio strategy, Lloyd's syndicate exposure, risk appetite, pricing, and broker market relationships.";
+        demand = "High Scarcity (Underwriting Directors & Active Underwriters)";
+        yoy = "1–4%";
+        hiringInsight = "Lloyd's and company market Underwriting Directors command executive packages with significant performance bonuses.";
+        maxExpMultiplier = 1.50;
+      } else {
+        baseP10 = 55000; baseP50 = 95000; baseP90 = 160000;
+        basePct = 75; bonusPct = 25;
+        description = "Evaluates portfolio risk, Lloyd's syndicate exposure, pricing strategy, and broker client relationships.";
+        demand = "High Scarcity";
+        yoy = "1–4%";
+        hiringInsight = "Lloyd's and company markets face tight supply of profitable book leads. Direct headhunting recommended.";
+      }
     }
 
     const regMult = parsedLocation.multiplier;
