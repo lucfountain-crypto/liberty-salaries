@@ -216,23 +216,44 @@ export default function SalaryDashboard() {
       yoy = "1–4%";
       hiringInsight = "Candidate availability is moderate overall, although newly qualified auditors and candidates with financial-services, IT audit, cyber, model-risk or regulatory experience remain harder to secure. Typical bonuses range from 0–10%, with higher variable compensation possible in specialist financial-services positions.";
     }
-    // 2. Legal & Professional Services (City Premium)
-    else if (/\b(legal|solicitor|lawyer|counsel|partner)\b/i.test(inputLower)) {
-      sector = "Legal & Professional Services (City & US Firms)";
-      if (isDirectorLevel || /\b(partner|general counsel)\b/i.test(inputLower)) {
-        baseP10 = 140000; baseP50 = 220000; baseP90 = 350000;
-        basePct = 80; bonusPct = 20;
-        description = "Leads corporate governance, high-stakes M&A litigation, regulatory compliance, and partner equity advisory.";
-        demand = "High Scarcity";
-        yoy = "1–4%";
-        hiringInsight = "City and US law firm Partners / General Counsels command top-tier equity packages (£200k-£350k+ base plus profit share).";
+    // 2. Legal & Professional Services (Separating City/US Premium vs Standard / Regional Practice)
+    else if (/\b(legal|solicitor|lawyer|counsel|partner|attorney|barrister|conveyancer)\b/i.test(inputLower)) {
+      const isCityOrUS = /\b(city|us firm|us law|magic circle|silver circle|wall street|white shoe|us legal)\b/i.test(inputLower);
+
+      if (isCityOrUS) {
+        sector = "Legal & Professional Services (City & US Elite)";
+        if (isDirectorLevel || /\b(partner|general counsel)\b/i.test(inputLower)) {
+          baseP10 = 140000; baseP50 = 220000; baseP90 = 350000;
+          basePct = 80; bonusPct = 20;
+          description = "Leads corporate governance, high-stakes M&A litigation, regulatory compliance, and partner equity advisory across City and US elite law firms.";
+          demand = "High Scarcity";
+          yoy = "1–4%";
+          hiringInsight = "City and US law firm Partners command top-tier compensation (£200k–£350k+ base plus profit share).";
+        } else {
+          baseP10 = 85000; baseP50 = 125000; baseP90 = 185000;
+          basePct = 85; bonusPct = 15;
+          description = "Advises on corporate transactions, regulatory governance, commercial contracts, and high-stakes dispute resolution for City/US firms.";
+          demand = "High Scarcity";
+          yoy = "1–4%";
+          hiringInsight = "City NQ/Associate legal counsel in London command premium base scales (£105k–£160k+) driven by US law firm pay benchmarks.";
+        }
       } else {
-        baseP10 = 85000; baseP50 = 125000; baseP90 = 185000;
-        basePct = 85; bonusPct = 15;
-        description = "Advises on corporate transactions, regulatory governance, commercial contracts, and dispute resolution.";
-        demand = "High Scarcity";
-        yoy = "1–4%";
-        hiringInsight = "City NQ/Associate legal counsel in London command premium base scales (£105k-£160k+) driven by US law firm pay benchmarks.";
+        sector = "Legal & Professional Services";
+        if (isDirectorLevel || /\b(partner|general counsel|head of legal)\b/i.test(inputLower)) {
+          baseP10 = 90000; baseP50 = 135000; baseP90 = 195000;
+          basePct = 85; bonusPct = 15;
+          description = "Leads legal affairs, corporate governance, risk management, and regulatory compliance for commercial organisations or practice groups.";
+          demand = "High Demand for Experienced Counsel";
+          yoy = "1–4%";
+          hiringInsight = "General Counsel and Regional Law Firm Partners average £110k–£180k base pay depending on company turnover or equity structure.";
+        } else {
+          baseP10 = 48000; baseP50 = 72000; baseP90 = 105000;
+          basePct = 88; bonusPct = 12;
+          description = "Advises on corporate transactions, regulatory governance, commercial contracts, employment law, and dispute resolution.";
+          demand = "High Demand for Experienced Practitioners";
+          yoy = "1–4%";
+          hiringInsight = "UK mid-market, regional commercial practices, and in-house roles typically range £50k–£80k for mid-level solicitors, whereas London City/US elite firms command £105k+ base scales.";
+        }
       }
     }
     // 3. Investment Banking, Financial Services & Private Equity
