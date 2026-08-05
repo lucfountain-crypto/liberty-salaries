@@ -144,12 +144,20 @@ export default function SalaryDashboard() {
     const titleClean = rawTitle.trim() || 'Internal Auditor';
     const inputLower = titleClean.toLowerCase();
 
+    const isGraduateInput = /\b(graduate|grad|trainee|intern|internship|junior graduate|entry level)\b/i.test(inputLower);
+
     // Check if matches one of our pre-cached roles
-    const predefined = predefinedRoles.find(r => 
-      r.title.toLowerCase() === inputLower ||
-      r.title.toLowerCase().includes(inputLower) || 
-      inputLower.includes(r.title.toLowerCase())
-    );
+    const predefined = predefinedRoles.find(r => {
+      const titleLower = r.title.toLowerCase();
+      const match = titleLower === inputLower || titleLower.includes(inputLower) || inputLower.includes(titleLower);
+      if (!match) return false;
+      
+      // If user specified graduate/trainee, don't match standard experienced predefined roles
+      const isPredefinedGrad = /\b(graduate|grad|trainee|intern|entry level)\b/i.test(titleLower) || r.category === "Graduate Entry";
+      if (isGraduateInput && !isPredefinedGrad) return false;
+      
+      return true;
+    });
 
     if (predefined) {
       return predefined;
@@ -530,6 +538,39 @@ export default function SalaryDashboard() {
         demand = "High Scarcity";
         yoy = "1–4%";
         hiringInsight = "Lloyd's and company markets face tight supply of profitable book leads. Direct headhunting recommended.";
+      }
+    }
+
+    // Graduate & Entry-Level Calibration Guardrail
+    if (isGraduateInput) {
+      const isSuperCorporateHighPaying = /\b(quant|hft|prop trading|alpha|m&a|investment|bank|banking|city|us firm|us law|magic circle|silver circle|developer|software|fullstack|backend|frontend)\b/i.test(inputLower);
+
+      if (!isSuperCorporateHighPaying) {
+        // Non-supercorporate graduate roles (fashion, marketing, sales, admin, HR, operations, retail, creative, general commercial)
+        // Baseline London figures calibrate at 1-3 yrs (0.80 expMult) to:
+        // Lower Market P10: £25,000 | Median P50: £29,000 | Upper Market P90 (Peak): £35,000
+        baseP10 = 31250;
+        baseP50 = 36250;
+        baseP90 = 43750;
+        maxExpMultiplier = 1.00;
+        basePct = 95;
+        bonusPct = 5;
+        demand = "High Active Applicant Volume (Graduate Level)";
+        hiringInsight = "Graduate and entry-level positions outside of specialist corporate finance, quant, or City law schemes typically range from £25,000 to £35,000 in London & City Hubs. Candidate differentiation rests on campaign portfolios, internship experience, and sector-specific skills.";
+      } else {
+        // High-paying supercorporate / tech / elite legal graduate schemes
+        if (/\b(city|us firm|us law|magic circle|silver circle)\b/i.test(inputLower)) {
+          baseP10 = 55000; baseP50 = 68000; baseP90 = 80000;
+        } else if (/\b(quant|hft|prop trading|alpha)\b/i.test(inputLower)) {
+          baseP10 = 65000; baseP50 = 85000; baseP90 = 115000;
+        } else if (/\b(m&a|investment|bank|banking)\b/i.test(inputLower)) {
+          baseP10 = 55000; baseP50 = 70000; baseP90 = 90000;
+        } else if (/\b(developer|software|fullstack|backend|frontend)\b/i.test(inputLower)) {
+          baseP10 = 38000; baseP50 = 48000; baseP90 = 60000;
+        }
+        maxExpMultiplier = 1.00;
+        demand = "High Scarcity (Top-Tier Corporate Graduate Schemes)";
+        hiringInsight = "Top-tier corporate, City legal, and quantitative finance graduate schemes command premium starting packages (£50k+).";
       }
     }
 
