@@ -870,7 +870,16 @@ export default function SalaryDashboard() {
           </div>
 
           {/* Contact / Switch Action */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <a
+              href="https://www.libertytowers.co.uk/labour-talent-index/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-slate-700 hover:text-blue-900 bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-2 rounded-lg transition flex items-center space-x-1.5 font-medium"
+            >
+              <TrendingUp className="w-3.5 h-3.5 text-blue-800" />
+              <span>LT Index <span className="hidden sm:inline">(Market Sentiment)</span></span>
+            </a>
             <button
               onClick={() => setViewMode(viewMode === 'guided' ? 'full' : 'guided')}
               className="text-xs text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-2 rounded-lg transition flex items-center space-x-1.5"
@@ -1310,6 +1319,8 @@ export default function SalaryDashboard() {
             <span>Recruitment without borders. Talent without compromise.</span>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-4 text-slate-600">
+            <a href="https://www.libertytowers.co.uk/labour-talent-index/" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-blue-900 transition font-medium">LT Index (Market Sentiment)</a>
+            <span>•</span>
             <a href="/privacy" className="hover:underline hover:text-blue-900 transition font-medium">Privacy Policy</a>
             <span>•</span>
             <a href="/ads.txt" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-blue-900 transition font-medium">ads.txt</a>
