@@ -114,7 +114,7 @@ export default function SalaryDashboard() {
       locLower.includes('wc1') || locLower.includes('wc2') || locLower.includes('w1') || locLower.includes('sw1')
     ) {
       regionKey = 'london';
-      regionName = 'London & City Hubs';
+      regionName = 'London';
       multiplier = 1.0;
     }
 
@@ -167,22 +167,33 @@ export default function SalaryDashboard() {
     const isDirectorLevel = /\b(director|cmo|cfo|cro|coo|ceo|vp|head of|chief|partner|managing director|md)\b/i.test(inputLower);
 
     // Universal Heuristic Engine for ANY custom job title
-    let sector = isDirectorLevel ? "Executive Leadership & Board Level" : "General Commercial & Industrial Operations";
+    let sector = isDirectorLevel ? "Senior Leadership" : "General Commercial & Industrial Operations";
     let baseP10 = isDirectorLevel ? 70000 : 26000;
     let baseP50 = isDirectorLevel ? 98000 : 38000;
     let baseP90 = isDirectorLevel ? 140000 : 55000;
     let basePct = isDirectorLevel ? 75 : 90;
     let bonusPct = isDirectorLevel ? 25 : 10;
     let description = isDirectorLevel 
-      ? "Provides executive strategy, operational leadership, governance, and business-critical delivery."
+      ? "Provides senior operational leadership, domain strategy, governance, and business-critical delivery."
       : "Executes operational, administrative, or functional delivery within this domain.";
-    let demand = isDirectorLevel ? "High Scarcity (Executive Leadership)" : "Moderate Candidate Availability";
-    let yoy = "1–4%";
+    let demand = isDirectorLevel ? "Constrained candidate availability for senior leadership" : "Moderate Candidate Availability";
+    let yoy = "Estimated annual salary movement: +1% to +4%";
     let hiringInsight = isDirectorLevel 
-      ? "Director and C-suite candidates command senior compensation packages including performance bonuses and executive equity."
+      ? "Senior leadership candidates command competitive compensation packages including performance bonuses and LTIP incentives."
       : "Broad market candidate availability. Compensation varies based on specialist certifications, supervisory duties, and industry sector.";
     let maxExpMultiplier = isDirectorLevel ? 1.50 : 1.30;
 
+    // DATA, ANALYTICS & AI LEADERSHIP
+    if (/\b(head of data|chief data officer|cdo|data director|head of data analytics|head of data engineering|data science director)\b/i.test(inputLower)) {
+      sector = "Data, Analytics & Technology Leadership";
+      baseP10 = 88000; baseP50 = 112000; baseP90 = 144000; // at 1.25 multiplier (Senior 6-10 yrs) -> £110k / £140k / £180k
+      basePct = 80; bonusPct = 20;
+      description = "Directs enterprise data strategy, governance, analytics, engineering and platform delivery across financial and commercial operations.";
+      demand = "Constrained for leaders combining regulated financial-services experience with enterprise data governance and modern platform or AI delivery.";
+      yoy = "Estimated annual salary movement: +1% to +4%";
+      hiringInsight = "Head of Data responsibilities vary considerably according to team size, global remit and whether the position covers governance, engineering, analytics, data science or AI.";
+      maxExpMultiplier = 1.35;
+    }
     // INDUSTRIAL, DRIVING, LOGISTICS & OPERATIONAL BRANCHES
 
     // A. Heavy Freight, HGV Class 1 & Artic Lorry Driving (Big Goods - High Salary)
@@ -576,9 +587,25 @@ export default function SalaryDashboard() {
 
     const regMult = parsedLocation.multiplier;
 
+    let displayTitle = titleClean.replace(/\b\w/g, l => l.toUpperCase());
+    if (/\bhead of data\b/i.test(inputLower)) {
+      if (/\b(financial|city|bank|banking|markets|asset)\b/i.test(inputLower)) {
+        displayTitle = "Head of Data — Large Financial Services Firm";
+      } else {
+        displayTitle = "Head of Data";
+      }
+    } else if (titleClean.includes(',')) {
+      const parts = titleClean.split(',');
+      const mainRole = parts[0].trim().replace(/\b\w/g, l => l.toUpperCase());
+      const subContext = parts.slice(1).join(' ').trim().replace(/\b\w/g, l => l.toUpperCase());
+      if (subContext) {
+        displayTitle = `${mainRole} — ${subContext}`;
+      }
+    }
+
     return {
       id: `custom-${inputLower.replace(/[^a-z0-9]/g, '-')}`,
-      title: titleClean.replace(/\b\w/g, l => l.toUpperCase()),
+      title: displayTitle,
       sector: sector,
       category: isDirectorLevel ? "Executive Benchmark" : "Market Benchmark",
       description: description,
@@ -885,10 +912,10 @@ export default function SalaryDashboard() {
             {/* Google AdSense Leaderboard Slot */}
             <div className="bg-slate-100 border border-slate-200 border-dashed rounded-xl p-4 text-center">
               <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 block mb-1">
-                ADVERTISEMENT • GOOGLE ADSENSE HIGH-ECPM B2B PARTNER
+                ADVERTISEMENTS
               </span>
-              <div className="h-[90px] flex items-center justify-center bg-white rounded-lg border border-slate-200 text-xs text-slate-500">
-                <span>Enterprise HR, Payroll & Wealth Management Ads (Auto-Served by Google AdSense)</span>
+              <div className="h-[90px] flex items-center justify-center bg-white rounded-lg border border-slate-200 text-xs text-slate-400">
+                <span>Sponsored Links / Advertisements</span>
               </div>
             </div>
 
@@ -904,6 +931,9 @@ export default function SalaryDashboard() {
                         {activeRoleData.sector}
                       </span>
                       <span className="text-xs text-slate-500">• {currentExpMeta.label}</span>
+                      <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200">
+                        Confidence: Medium
+                      </span>
                     </div>
                     <h3 className="text-2xl font-bold text-slate-900 mt-1">
                       {activeRoleData.title}
@@ -924,69 +954,78 @@ export default function SalaryDashboard() {
                   </div>
                 </div>
 
-                {/* 3 Salary Benchmark Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  
-                  {/* Lower Market */}
-                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 text-center">
-                    <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">
-                      Lower Market (Estimated 10th Percentile)
-                    </span>
-                    <span className="text-2xl font-bold text-slate-800">
-                      {formatCurrency(p10)}
-                    </span>
-                    <span className="text-[11px] text-slate-500 block mt-1">Lower market benchmark</span>
-                  </div>
-
-                  {/* Market Median */}
-                  <div className="bg-blue-50/60 border-2 border-blue-800/40 rounded-xl p-5 text-center relative shadow-sm">
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-900 text-white font-bold text-[10px] uppercase tracking-widest px-3 py-0.5 rounded-full shadow-sm">
-                      Market Median
+                {/* Indicative Base Salary Cards */}
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Indicative Base Salary</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    
+                    {/* Lower Hiring Point */}
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 text-center">
+                      <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">
+                        Lower Hiring Point
+                      </span>
+                      <span className="text-2xl font-bold text-slate-800">
+                        {formatCurrency(p10)}
+                      </span>
+                      <span className="text-[11px] text-slate-500 block mt-1">Lower market hiring benchmark</span>
                     </div>
-                    <span className="text-xs font-bold text-blue-900 uppercase tracking-wider block mb-1">
-                      Market Median (Estimated 50th Percentile)
-                    </span>
-                    <span className="text-3xl font-extrabold text-blue-950">
-                      {formatCurrency(p50)}
-                    </span>
-                    <span className="text-[11px] text-blue-900/80 block mt-1">Market median benchmark</span>
-                  </div>
 
-                  {/* Upper Market */}
-                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 text-center">
-                    <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">
-                      Upper Market (Estimated 90th Percentile)
-                    </span>
-                    <span className="text-2xl font-bold text-slate-800">
-                      {formatCurrency(p90)}
-                    </span>
-                    <span className="text-[11px] text-slate-500 block mt-1">Upper market benchmark</span>
-                  </div>
+                    {/* Typical Market Salary */}
+                    <div className="bg-blue-50/60 border-2 border-blue-800/40 rounded-xl p-5 text-center relative shadow-sm">
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-900 text-white font-bold text-[10px] uppercase tracking-widest px-3 py-0.5 rounded-full shadow-sm">
+                        Typical Market
+                      </div>
+                      <span className="text-xs font-bold text-blue-900 uppercase tracking-wider block mb-1">
+                        Typical Market Salary
+                      </span>
+                      <span className="text-3xl font-extrabold text-blue-950">
+                        {formatCurrency(p50)}
+                      </span>
+                      <span className="text-[11px] text-blue-900/80 block mt-1">Mid-market hiring benchmark</span>
+                    </div>
 
+                    {/* Upper / Specialist Market */}
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 text-center">
+                      <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">
+                        Upper / Specialist Market
+                      </span>
+                      <span className="text-2xl font-bold text-slate-800">
+                        {formatCurrency(p90)}
+                      </span>
+                      <span className="text-[11px] text-slate-500 block mt-1">Upper & specialist market benchmark</span>
+                    </div>
+
+                  </div>
                 </div>
 
-                {/* Market Scarcity & Demand Banner */}
+                {/* Candidate Market & Target Bonus Banner */}
                 <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="flex items-start space-x-3">
                     <div className="p-2 bg-blue-100 text-blue-900 rounded-lg shrink-0">
                       <TrendingUp className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold text-slate-900">Market Supply & Candidate Volume</h4>
+                      <h4 className="text-sm font-bold text-slate-900">Candidate Market & Movement</h4>
                       <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
-                        At median salary (<strong className="text-slate-900">{formatCurrency(p50)}</strong>), candidate availability for <strong className="text-slate-900">{activeRoleData.title}</strong> is rated as <span className="text-blue-900 font-bold">{rawRegionData.demand}</span> with a <strong className="text-emerald-700">{rawRegionData.yoy}</strong> year-on-year market trend.
+                        <strong className="text-slate-900">Candidate Market:</strong> {rawRegionData.demand}
+                      </p>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        <strong className="text-slate-800">Salary Movement:</strong> {rawRegionData.yoy}
                       </p>
                       {(rawRegionData as any).hiring_insight && (
-                        <p className="text-[11px] text-slate-500 mt-1 italic">
+                        <p className="text-[11px] text-slate-600 mt-1.5 italic border-t border-slate-200/60 pt-1.5">
                           💡 Recruiter Note: {(rawRegionData as any).hiring_insight}
                         </p>
                       )}
                     </div>
                   </div>
 
-                  <div className="shrink-0 bg-white border border-slate-200 px-4 py-2 rounded-lg text-center">
-                    <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Base vs Bonus Split</span>
-                    <span className="text-xs font-bold text-slate-900">{basePct}% Base / {bonusPct}% Variable</span>
+                  <div className="shrink-0 bg-white border border-slate-200 px-4 py-3 rounded-lg text-center md:min-w-[180px]">
+                    <span className="text-[10px] text-slate-500 uppercase tracking-wider block font-semibold">Typical Target Bonus</span>
+                    <span className="text-xs font-bold text-slate-900 block mt-0.5">
+                      {bonusPct >= 20 ? "15–30% of base salary" : bonusPct >= 10 ? "10–20% of base salary" : "5–10% of base salary"}
+                    </span>
+                    <span className="text-[10px] text-slate-400 block mt-0.5">Excludes LTIP, pension & equity</span>
                   </div>
                 </div>
 
@@ -1007,6 +1046,11 @@ export default function SalaryDashboard() {
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
+
+                {/* Indicative Disclaimer Footer */}
+                <p className="text-[11px] text-slate-500 text-center pt-2 italic leading-relaxed">
+                  Indicative hiring guidance, updated August 2026. Actual compensation depends on responsibilities, organisation size and total reward. Salary figures exclude bonus, pension, LTIP and equity.
+                </p>
 
               </div>
             )}
