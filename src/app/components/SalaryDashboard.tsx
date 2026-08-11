@@ -69,7 +69,7 @@ export default function SalaryDashboard() {
     // Word boundary checks for UK vs EU vs US
     const isUS = /\b(us|usa|united states|new york|wall street|silicon valley)\b/.test(locLower);
     const isExplicitEU = /\b(spain|spanish|malta|gibraltar|poland|portugal|germany|france|italy|europe|eu|offshore|overseas)\b/.test(locLower);
-    const isUKExplicit = /\b(uk|united kingdom|britain|british|england|london|manchester|leeds|birmingham|scotland)\b/.test(locLower);
+    const isUKExplicit = /\b(uk|united kingdom|britain|british|england|london|manchester|leeds|birmingham|northampton|nottingham|leicester|scotland)\b/.test(locLower);
 
     if (isExplicitEU && !isUS && !isUKExplicit) {
       regionKey = 'eu_remote';
@@ -81,24 +81,29 @@ export default function SalaryDashboard() {
       regionName = 'US & Wall Street Remote';
       multiplier = 1.30;
     } else if (
-      locLower.includes('manchester') || locLower.includes('leeds') || 
-      locLower.includes('north') || locLower.includes('birmingham') || locLower.includes('liverpool')
+      /\b(birmingham|nottingham|leicester|northampton|northamptonshire|coventry|derby|stoke|wolverhampton|solihull|midlands|east midlands|west midlands|milton keynes|peterborough|kettering|corby|wellingborough)\b/.test(locLower)
     ) {
-      regionKey = 'north';
+      regionKey = 'midlands';
+      regionName = 'Midlands & Central UK (Birmingham/Nottingham/Northampton)';
+      multiplier = 0.82;
+    } else if (
+      /\b(manchester|leeds|liverpool|sheffield|newcastle|sunderland|teesside|cumbria|carlisle|preston|lancaster|blackpool|bolton|warrington|hull|york|yorkshire|merseyside|lancashire|tyneside)\b/.test(locLower) ||
+      /\b(north|north west|north east|north uk|northern)\b/.test(locLower)
+    ) {
+      regionKey = 'north_uk';
       regionName = 'North UK (Manchester/Leeds)';
       multiplier = 0.80;
     } else if (
-      locLower.includes('scotland') || locLower.includes('edinburgh') || 
-      locLower.includes('glasgow') || locLower.includes('aberdeen')
+      /\b(scotland|edinburgh|glasgow|aberdeen|dundee|inverness|scottish)\b/.test(locLower)
     ) {
       regionKey = 'scotland';
       regionName = 'Scotland & Regional';
       multiplier = 0.82;
     } else if (
-      locLower.includes('south') || locLower.includes('surrey') || 
-      locLower.includes('kent') || locLower.includes('essex') || locLower.includes('reading')
+      /\b(surrey|kent|essex|reading|berkshire|oxford|oxfordshire|cambridge|cambridgeshire|brighton|southampton|portsmouth|guildford|st albans|hertfordshire|herts|sussex|hampshire|bristol|south west)\b/.test(locLower) ||
+      /\b(south|south east|southeast)\b/.test(locLower)
     ) {
-      regionKey = 'southeast';
+      regionKey = 'south_east';
       regionName = 'South East England';
       multiplier = 0.88;
     } else if (locLower.includes('remote') && !isExplicitEU) {
@@ -743,17 +748,40 @@ export default function SalaryDashboard() {
   const maxCap = (activeRoleData as any).maxExpMultiplier || 1.50;
   const multiplier = Math.min(rawMultiplier, maxCap);
 
-  // Active region data
-  const rawRegionData = activeRoleData.regional_data[parsedLocation.regionKey as keyof typeof activeRoleData.regional_data] || {
-    p10: 28000,
-    p50: 38000,
-    p90: 55000,
-    base_pct: 90,
-    bonus_pct: 10,
-    demand: "Moderate Candidate Availability",
-    yoy: "1–4%",
-    hiring_insight: "Moderate active applicant volume."
-  };
+  // Active region data with fallback scaling for predefined dataset
+  const rawRegionData = useMemo(() => {
+    const key = parsedLocation.regionKey;
+    const regData = (activeRoleData.regional_data || {}) as Record<string, any>;
+
+    if (regData[key]) {
+      return regData[key];
+    }
+
+    if (key === 'north' && regData['north_uk']) return regData['north_uk'];
+    if (key === 'southeast' && regData['south_east']) return regData['south_east'];
+
+    const londonData = regData['london'];
+    if (londonData) {
+      const mult = parsedLocation.multiplier;
+      return {
+        ...londonData,
+        p10: Math.round(londonData.p10 * mult),
+        p50: Math.round(londonData.p50 * mult),
+        p90: Math.round(londonData.p90 * mult),
+      };
+    }
+
+    return {
+      p10: 28000,
+      p50: 38000,
+      p90: 55000,
+      base_pct: 90,
+      bonus_pct: 10,
+      demand: "Moderate Candidate Availability",
+      yoy: "1–4%",
+      hiring_insight: "Moderate active applicant volume."
+    };
+  }, [activeRoleData, parsedLocation]);
 
   // Work style adjustment factor
   const styleMultiplier = parsedLocation.derivedStyle === 'remote' ? 1.0 : parsedLocation.derivedStyle === 'onsite' ? 0.97 : 1.0;

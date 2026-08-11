@@ -34,6 +34,7 @@ def generate_monthly_dataset():
             "regions": [
                 { "id": "london", "name": "London & Lloyd's Market", "multiplier": 1.0 },
                 { "id": "south_east", "name": "South East England", "multiplier": 0.88 },
+                { "id": "midlands", "name": "Midlands & Central UK (Birmingham/Nottingham/Northampton)", "multiplier": 0.82 },
                 { "id": "north_uk", "name": "North UK (Manchester/Leeds)", "multiplier": 0.80 },
                 { "id": "scotland", "name": "Scotland & Regional Hubs", "multiplier": 0.82 },
                 { "id": "offshore", "name": "US / Offshore & Remote", "multiplier": 1.25 }
