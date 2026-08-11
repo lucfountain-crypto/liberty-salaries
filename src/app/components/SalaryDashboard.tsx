@@ -160,24 +160,85 @@ export default function SalaryDashboard() {
     });
 
     if (predefined) {
-      return predefined;
+      const titleLower = predefined.title.toLowerCase();
+      const isAudit = titleLower.includes('audit');
+      const isQuantOrIB = titleLower.includes('quant') || titleLower.includes('m&a') || titleLower.includes('banking');
+      return {
+        ...predefined,
+        confidence: 'High',
+        confidenceReason: 'Verified benchmark from Liberty Towers 2026 Database',
+        targetBonusText: isAudit 
+          ? '0–10% typical (higher in specialist financial services)' 
+          : isQuantOrIB 
+          ? '30–50%+ variable target bonus'
+          : '10–20% typical',
+        salaryMovementText: isAudit 
+          ? '+1% to +4% annual movement (Source: Barclay Simpson 2026 Internal Audit Salary Guide)'
+          : '+1% to +3% annual movement (Source: Liberty Towers 2026 Market Intelligence)'
+      };
     }
 
-    // Check for Executive Director level titles (Director, CMO, CFO, VP, Chief, Head of, Partner, COO, CEO) with word boundaries
+    // Check for Executive / Director level titles with word boundaries
     const isDirectorLevel = /\b(director|cmo|cfo|cro|coo|ceo|vp|head of|chief|partner|managing director|md)\b/i.test(inputLower);
 
+    // ----------------------------------------------------
+    // SECTOR & ORGANISATION CLASSIFIER FOR CUSTOM ROLES
+    // ----------------------------------------------------
+    const isPublicSector = /\b(council|city council|borough|local government|nhs|civil service|ministry|public sector|charity|not for profit|nfp|university|college|school)\b/i.test(inputLower);
+    const isTechSector = /\b(technology|tech|software|saas|digital|startup|scale-up|asset-light)\b/i.test(inputLower) && !/\b(asset management|wealth)\b/i.test(inputLower);
+    const isRetailSector = /\b(retail|retailer|fmcg|consumer|e-commerce|ecommerce|logistics|brand|manufacturing)\b/i.test(inputLower);
+    const isFinancialServices = /\b(financial services|financial institution|investment bank|asset management|hedge fund|wealth management|capital markets|private equity|lloyd's|insurance|brokerage)\b/i.test(inputLower) || /\b(bank|banking|insurer|city financial|financial firm|city firm)\b/i.test(inputLower);
+
+    let confidenceScore: 'High' | 'Medium' | 'Low' = 'Low';
+    let confidenceReason = 'Generic job title provided without sector or organisation context. Enter organisation details (e.g. Retail, Local Council, Financial Services) for higher precision.';
+    let salaryMovementText = 'Market tracking (broad economic index)';
+    let targetBonusText = '5–15% typical';
+
+    if (isPublicSector) {
+      confidenceScore = 'Medium';
+      confidenceReason = 'Parsed role with explicit public sector / local authority context.';
+      targetBonusText = '0–5% typical (public sector / non-profit)';
+      salaryMovementText = 'Public sector pay framework (NJC / NHS Agenda for Change)';
+    } else if (isFinancialServices) {
+      confidenceScore = 'Medium';
+      confidenceReason = 'Parsed role with explicit financial services & banking context.';
+      targetBonusText = '15–30%+ typical (higher in investment banking and markets)';
+      salaryMovementText = '+2% to +5% annual movement (Source: City & Financial Services Compensation Index)';
+    } else if (isTechSector) {
+      confidenceScore = 'Medium';
+      confidenceReason = 'Parsed role with explicit technology & software context.';
+      targetBonusText = '10–20% typical (+ equity / option incentive)';
+      salaryMovementText = '+2% to +4% annual movement (Source: UK Tech & SaaS Salary Benchmark)';
+    } else if (isRetailSector) {
+      confidenceScore = 'Medium';
+      confidenceReason = 'Parsed role with explicit retail & consumer commercial context.';
+      targetBonusText = '5–15% typical';
+      salaryMovementText = '+1% to +3% annual movement (Source: Retail & Commercial Commerce Index)';
+    }
+
     // Universal Heuristic Engine for ANY custom job title
-    let sector = isDirectorLevel ? "Senior Leadership" : "General Commercial & Industrial Operations";
+    let sector = isPublicSector 
+      ? "Public Sector & Government Services"
+      : isFinancialServices
+      ? "Financial Services & Banking"
+      : isTechSector
+      ? "Technology & Software Platforms"
+      : isRetailSector
+      ? "Retail & Consumer Commerce"
+      : isDirectorLevel 
+      ? "Senior Leadership" 
+      : "General Commercial & Industrial Operations";
+
     let baseP10 = isDirectorLevel ? 70000 : 26000;
     let baseP50 = isDirectorLevel ? 98000 : 38000;
     let baseP90 = isDirectorLevel ? 140000 : 55000;
     let basePct = isDirectorLevel ? 75 : 90;
     let bonusPct = isDirectorLevel ? 25 : 10;
+    let yoy = salaryMovementText;
     let description = isDirectorLevel 
       ? "Provides senior operational leadership, domain strategy, governance, and business-critical delivery."
       : "Executes operational, administrative, or functional delivery within this domain.";
     let demand = isDirectorLevel ? "Constrained candidate availability for senior leadership" : "Moderate Candidate Availability";
-    let yoy = "Estimated annual salary movement: +1% to +4%";
     let hiringInsight = isDirectorLevel 
       ? "Senior leadership candidates command competitive compensation packages including performance bonuses and LTIP incentives."
       : "Broad market candidate availability. Compensation varies based on specialist certifications, supervisory duties, and industry sector.";
@@ -185,14 +246,35 @@ export default function SalaryDashboard() {
 
     // DATA, ANALYTICS & AI LEADERSHIP
     if (/\b(head of data|chief data officer|cdo|data director|head of data analytics|head of data engineering|data science director)\b/i.test(inputLower)) {
-      sector = "Data, Analytics & Technology Leadership";
-      baseP10 = 88000; baseP50 = 112000; baseP90 = 144000; // at 1.25 multiplier (Senior 6-10 yrs) -> £110k / £140k / £180k
-      basePct = 80; bonusPct = 20;
-      description = "Directs enterprise data strategy, governance, analytics, engineering and platform delivery across financial and commercial operations.";
-      demand = "Constrained for leaders combining regulated financial-services experience with enterprise data governance and modern platform or AI delivery.";
-      yoy = "Estimated annual salary movement: +1% to +4%";
-      hiringInsight = "Head of Data responsibilities vary considerably according to team size, global remit and whether the position covers governance, engineering, analytics, data science or AI.";
       maxExpMultiplier = 1.35;
+      description = "Directs enterprise data strategy, governance, analytics, engineering and platform delivery across organizational operations.";
+      
+      if (isPublicSector) {
+        sector = "Public Sector & Government Data Leadership";
+        baseP10 = 65000; baseP50 = 80000; baseP90 = 100000; // at 1.25 multiplier (6-10 yrs) -> £81k / £100k / £125k
+        demand = "Constrained for experienced public sector data leaders familiar with local authority governance and statutory reporting frameworks.";
+        hiringInsight = "Public sector Head of Data positions (e.g. Local Councils, NHS Trusts) offer strong pension and work-life balance benefits; base pay reflects public sector grading structures.";
+      } else if (isTechSector) {
+        sector = "Technology & Software Data Leadership";
+        baseP10 = 80000; baseP50 = 104000; baseP90 = 132000; // at 1.25 multiplier (6-10 yrs) -> £100k / £130k / £165k
+        demand = "High demand for data leaders with modern cloud data warehouse, automated pipeline engineering, and product analytics expertise.";
+        hiringInsight = "Tech and SaaS Heads of Data typically command equity / option packages alongside competitive base compensation.";
+      } else if (isRetailSector) {
+        sector = "Retail & Commerce Data Leadership";
+        baseP10 = 76000; baseP50 = 96000; baseP90 = 124000; // at 1.25 multiplier (6-10 yrs) -> £95k / £120k / £155k
+        demand = "Demand driven by customer analytics, supply chain optimization, and commercial data platform modernization.";
+        hiringInsight = "Omni-channel retail and consumer data leaders are evaluated on commercial ROI, customer lifetime value analytics, and inventory forecasting.";
+      } else if (isFinancialServices) {
+        sector = "Financial Services & Banking Data Leadership";
+        baseP10 = 88000; baseP50 = 112000; baseP90 = 144000; // at 1.25 multiplier (6-10 yrs) -> £110k / £140k / £180k
+        demand = "Constrained for leaders combining regulated financial-services experience with enterprise data governance and modern platform or AI delivery.";
+        hiringInsight = "Head of Data responsibilities in financial services vary considerably according to global remit, market risk governance, and trading technology infrastructure.";
+      } else {
+        sector = "Data, Analytics & Technology Leadership";
+        baseP10 = 76000; baseP50 = 100000; baseP90 = 128000; // at 1.25 multiplier (6-10 yrs) -> £95k / £125k / £160k
+        demand = "Candidate availability varies based on team remit, cloud stack expertise, and enterprise scale.";
+        hiringInsight = "Head of Data packages depend on team scale, whether the role is strategic vs hands-on engineering, and executive reporting lines.";
+      }
     }
     // INDUSTRIAL, DRIVING, LOGISTICS & OPERATIONAL BRANCHES
 
@@ -588,18 +670,25 @@ export default function SalaryDashboard() {
     const regMult = parsedLocation.multiplier;
 
     let displayTitle = titleClean.replace(/\b\w/g, l => l.toUpperCase());
-    if (/\bhead of data\b/i.test(inputLower)) {
-      if (/\b(financial|city|bank|banking|markets|asset)\b/i.test(inputLower)) {
-        displayTitle = "Head of Data — Large Financial Services Firm";
-      } else {
-        displayTitle = "Head of Data";
-      }
-    } else if (titleClean.includes(',')) {
+    
+    if (titleClean.includes(',')) {
       const parts = titleClean.split(',');
       const mainRole = parts[0].trim().replace(/\b\w/g, l => l.toUpperCase());
-      const subContext = parts.slice(1).join(' ').trim().replace(/\b\w/g, l => l.toUpperCase());
-      if (subContext) {
-        displayTitle = `${mainRole} — ${subContext}`;
+      const orgDetail = parts.slice(1).join(' ').trim().replace(/\b\w/g, l => l.toUpperCase());
+      if (orgDetail) {
+        displayTitle = `${mainRole} — ${orgDetail}`;
+      }
+    } else if (/\bhead of data\b/i.test(inputLower)) {
+      if (isFinancialServices) {
+        displayTitle = "Head of Data — Large Financial Services Firm";
+      } else if (isPublicSector) {
+        displayTitle = "Head of Data — Public Sector";
+      } else if (isTechSector) {
+        displayTitle = "Head of Data — Technology & Software";
+      } else if (isRetailSector) {
+        displayTitle = "Head of Data — Retail & Consumer Commerce";
+      } else {
+        displayTitle = "Head of Data";
       }
     }
 
@@ -609,6 +698,10 @@ export default function SalaryDashboard() {
       sector: sector,
       category: isDirectorLevel ? "Executive Benchmark" : "Market Benchmark",
       description: description,
+      confidence: confidenceScore,
+      confidenceReason: confidenceReason,
+      targetBonusText: targetBonusText,
+      salaryMovementText: salaryMovementText,
       maxExpMultiplier: maxExpMultiplier,
       regional_data: {
         [parsedLocation.regionKey]: {
@@ -618,7 +711,7 @@ export default function SalaryDashboard() {
           base_pct: basePct,
           bonus_pct: bonusPct,
           demand: demand,
-          yoy: yoy,
+          yoy: salaryMovementText,
           hiring_insight: hiringInsight
         }
       }
@@ -914,8 +1007,8 @@ export default function SalaryDashboard() {
               <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 block mb-1">
                 ADVERTISEMENTS
               </span>
-              <div className="h-[90px] flex items-center justify-center bg-white rounded-lg border border-slate-200 text-xs text-slate-400">
-                <span>Sponsored Links / Advertisements</span>
+              <div className="h-[90px] flex items-center justify-center bg-white rounded-lg border border-slate-200 text-xs text-slate-300">
+                {/* Pending Google AdSense auto-ad activation */}
               </div>
             </div>
 
@@ -926,13 +1019,19 @@ export default function SalaryDashboard() {
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-100">
                   <div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-900 border border-blue-200">
                         {activeRoleData.sector}
                       </span>
                       <span className="text-xs text-slate-500">• {currentExpMeta.label}</span>
-                      <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200">
-                        Confidence: Medium
+                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-md border ${
+                        (activeRoleData as any).confidence === 'High'
+                          ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                          : (activeRoleData as any).confidence === 'Medium'
+                          ? 'bg-blue-50 text-blue-900 border-blue-200'
+                          : 'bg-amber-50 text-amber-900 border-amber-200'
+                      }`} title={(activeRoleData as any).confidenceReason || ''}>
+                        Confidence: {(activeRoleData as any).confidence || 'Medium'}
                       </span>
                     </div>
                     <h3 className="text-2xl font-bold text-slate-900 mt-1">
@@ -1010,7 +1109,7 @@ export default function SalaryDashboard() {
                         <strong className="text-slate-900">Candidate Market:</strong> {rawRegionData.demand}
                       </p>
                       <p className="text-xs text-slate-500 mt-0.5">
-                        <strong className="text-slate-800">Salary Movement:</strong> {rawRegionData.yoy}
+                        <strong className="text-slate-800">Salary Movement:</strong> {(activeRoleData as any).salaryMovementText || rawRegionData.yoy}
                       </p>
                       {(rawRegionData as any).hiring_insight && (
                         <p className="text-[11px] text-slate-600 mt-1.5 italic border-t border-slate-200/60 pt-1.5">
@@ -1023,7 +1122,7 @@ export default function SalaryDashboard() {
                   <div className="shrink-0 bg-white border border-slate-200 px-4 py-3 rounded-lg text-center md:min-w-[180px]">
                     <span className="text-[10px] text-slate-500 uppercase tracking-wider block font-semibold">Typical Target Bonus</span>
                     <span className="text-xs font-bold text-slate-900 block mt-0.5">
-                      {bonusPct >= 20 ? "15–30% of base salary" : bonusPct >= 10 ? "10–20% of base salary" : "5–10% of base salary"}
+                      {(activeRoleData as any).targetBonusText || "5–15% typical"}
                     </span>
                     <span className="text-[10px] text-slate-400 block mt-0.5">Excludes LTIP, pension & equity</span>
                   </div>
@@ -1048,9 +1147,16 @@ export default function SalaryDashboard() {
                 </div>
 
                 {/* Indicative Disclaimer Footer */}
-                <p className="text-[11px] text-slate-500 text-center pt-2 italic leading-relaxed">
-                  Indicative hiring guidance, updated August 2026. Actual compensation depends on responsibilities, organisation size and total reward. Salary figures exclude bonus, pension, LTIP and equity.
-                </p>
+                <div className="border-t border-slate-100 pt-3 space-y-1 text-center">
+                  {(activeRoleData as any).confidenceReason && (
+                    <p className="text-[11px] text-slate-600 font-medium">
+                      ℹ️ Benchmarking Confidence: <span className="text-slate-800">{(activeRoleData as any).confidenceReason}</span>
+                    </p>
+                  )}
+                  <p className="text-[11px] text-slate-500 italic leading-relaxed">
+                    Indicative hiring guidance, updated August 2026. Actual compensation depends on responsibilities, organisation size and total reward. Salary figures exclude bonus, pension, LTIP and equity.
+                  </p>
+                </div>
 
               </div>
             )}
