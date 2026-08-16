@@ -875,9 +875,9 @@ export default function SalaryDashboard() {
               href="https://www.libertytowers.co.uk/labour-talent-index/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-slate-700 hover:text-blue-900 bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-2 rounded-lg transition flex items-center space-x-1.5 font-medium"
+              className="text-xs text-slate-700 hover:text-blue-900 bg-slate-100 hover:bg-slate-200 border border-orange-500 hover:border-orange-600 px-3 py-2 rounded-lg transition flex items-center space-x-1.5 font-medium shadow-xs"
             >
-              <TrendingUp className="w-3.5 h-3.5 text-blue-800" />
+              <TrendingUp className="w-3.5 h-3.5 text-orange-600" />
               <span>LT Index <span className="hidden sm:inline">(Market Sentiment)</span></span>
             </a>
             <button
