@@ -194,28 +194,28 @@ export default function SalaryDashboard() {
     const isRetailSector = /\b(retail|retailer|fmcg|consumer|e-commerce|ecommerce|logistics|brand|manufacturing)\b/i.test(inputLower);
     const isFinancialServices = /\b(financial services|financial institution|investment bank|asset management|hedge fund|wealth management|capital markets|private equity|lloyd's|insurance|brokerage)\b/i.test(inputLower) || /\b(bank|banking|insurer|city financial|financial firm|city firm)\b/i.test(inputLower);
 
-    let confidenceScore: 'High' | 'Medium' | 'Low' = 'Low';
+    let confidenceScore: 'High' | 'Moderate' = 'Moderate';
     let confidenceReason = 'Generic job title provided without sector or organisation context. Enter organisation details (e.g. Retail, Local Council, Financial Services) for higher precision.';
     let salaryMovementText = 'Market tracking (broad economic index)';
     let targetBonusText = '5–15% typical';
 
     if (isPublicSector) {
-      confidenceScore = 'Medium';
+      confidenceScore = 'Moderate';
       confidenceReason = 'Parsed role with explicit public sector / local authority context.';
       targetBonusText = '0–5% typical (public sector / non-profit)';
       salaryMovementText = 'Public sector pay framework (NJC / NHS Agenda for Change)';
     } else if (isFinancialServices) {
-      confidenceScore = 'Medium';
+      confidenceScore = 'Moderate';
       confidenceReason = 'Parsed role with explicit financial services & banking context.';
       targetBonusText = '15–30%+ typical (higher in investment banking and markets)';
       salaryMovementText = '+2% to +5% annual movement (Source: City & Financial Services Compensation Index)';
     } else if (isTechSector) {
-      confidenceScore = 'Medium';
+      confidenceScore = 'Moderate';
       confidenceReason = 'Parsed role with explicit technology & software context.';
       targetBonusText = '10–20% typical (+ equity / option incentive)';
       salaryMovementText = '+2% to +4% annual movement (Source: UK Tech & SaaS Salary Benchmark)';
     } else if (isRetailSector) {
-      confidenceScore = 'Medium';
+      confidenceScore = 'Moderate';
       confidenceReason = 'Parsed role with explicit retail & consumer commercial context.';
       targetBonusText = '5–15% typical';
       salaryMovementText = '+1% to +3% annual movement (Source: Retail & Commercial Commerce Index)';
@@ -1126,11 +1126,9 @@ export default function SalaryDashboard() {
                       <span className={`text-xs font-semibold px-2 py-0.5 rounded-md border ${
                         (activeRoleData as any).confidence === 'High'
                           ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                          : (activeRoleData as any).confidence === 'Medium'
-                          ? 'bg-blue-50 text-blue-900 border-blue-200'
-                          : 'bg-amber-50 text-amber-900 border-amber-200'
+                          : 'bg-blue-50 text-blue-900 border-blue-200'
                       }`} title={(activeRoleData as any).confidenceReason || ''}>
-                        Confidence: {(activeRoleData as any).confidence || 'Medium'}
+                        Confidence: {(activeRoleData as any).confidence || 'Moderate'}
                       </span>
                     </div>
                     <h3 className="text-2xl font-bold text-slate-900 mt-1">
