@@ -327,6 +327,72 @@ const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
       '6-10': { p10: 210000, p50: 330000, p90: 480000, desc: 'Quantitative Portfolio Manager / Strategy Lead' },
       '10+': { p10: 340000, p50: 550000, p90: 950000, desc: 'Partner / Head of Systematic Trading' }
     }
+  },
+  'media-journalist': {
+    basePct: 95,
+    bonusPct: 5,
+    demand: 'High Competition; Constrained for Specialist Financial, Tech & Investigative Beats',
+    movement: '+2% to +5% annual growth with London weighting adjustments',
+    certifications: ['NCTJ Diploma in Journalism', 'Media Law (NCTJ/BCTJ)', 'Data Journalism & Analytics'],
+    overview: 'Journalists and Digital News Reporters investigate, verify, write, and produce breaking news, in-depth features, and multimedia analysis across national broadsheets, digital publishers, wire agencies (Reuters, Bloomberg), and broadcast networks (BBC, Sky).',
+    responsibilities: [
+      'Originating, researching, and breaking exclusive news stories across print, digital, and broadcast channels.',
+      'Cultivating and protecting confidential industry and regulatory source networks.',
+      'Conducting interviews, fact-checking assertions, and navigating UK media law and defamation standards.',
+      'Producing data-driven visualizations, multimedia packages, newsletters, and podcast briefings.',
+      'Collaborating with sub-editors, digital strategists, and desk editors to optimize audience engagement.'
+    ],
+    marketContext: 'While early-career and general lifestyle journalism sees high applicant volumes, experienced domain correspondents covering City finance, macroeconomic policy, technology, and investigative data command substantial salary premiums across London newsrooms.',
+    tiers: {
+      '1-3': { p10: 24000, p50: 30000, p90: 36000, desc: 'Junior / Trainee Reporter (Regional newsroom / local reporting / digital writer)' },
+      '3-6': { p10: 34000, p50: 44000, p90: 58000, desc: 'Staff Journalist / Desk Reporter (National publication / broadcast producer)' },
+      '6-10': { p10: 48000, p50: 65000, p90: 85000, desc: 'Senior Specialist Correspondent / News Editor (City, politics, investigative lead)' },
+      '10+': { p10: 75000, p50: 105000, p90: 145000, desc: 'Editor-in-Chief / Head of News / Executive Managing Editor' }
+    }
+  },
+  'property-estate-agent': {
+    basePct: 65,
+    bonusPct: 35,
+    demand: 'High Demand for Proven Billing Negotiators & Branch Valuers',
+    movement: '+3% to +6% annual base movement plus high commission velocity',
+    certifications: ['NAEA Propertymark (Sales)', 'ARLA Propertymark (Lettings)', 'RICS Associate', 'Full UK Driving Licence'],
+    overview: 'Estate Agents and Property Valuers oversee residential and commercial property transactions, market valuations, vendor representations, buyer negotiations, and deal progression to exchange and completion.',
+    responsibilities: [
+      'Conducting comprehensive market appraisals, property valuations, and vendor pitching.',
+      'Negotiating purchase and lettings offers between buyers, landlords, and applicants to maximize sale value.',
+      'Managing sales progression workflows with conveyancers, mortgage brokers, and surveyors.',
+      'Sourcing new instructions through proactive market canvassing and local network development.',
+      'Ensuring strict compliance with anti-money laundering (AML) and Consumer Protection regulations.'
+    ],
+    marketContext: 'Estate agency is a heavily performance-incentivised sector where basic salaries (£25k–£45k) are coupled with 25%–40%+ variable commission splits. Prime Central London (PCL) desks command major transaction fee upside on multi-million pound listings.',
+    tiers: {
+      '1-3': { p10: 22000, p50: 28000, p90: 38000, desc: 'Trainee / Junior Negotiator (Basic pay; OTE £32k–£48k)' },
+      '3-6': { p10: 30000, p50: 42000, p90: 62000, desc: 'Sales & Lettings Negotiator / Senior Negotiator (Basic pay; OTE £55k–£85k)' },
+      '6-10': { p10: 42000, p50: 58000, p90: 88000, desc: 'Senior Valuer / Assistant Branch Manager (Basic pay; OTE £75k–£115k)' },
+      '10+': { p10: 60000, p50: 90000, p90: 145000, desc: 'Branch Director / Prime Central London Partner (Basic pay; OTE £120k–£220k+)' }
+    }
+  },
+  'medical-paediatrician-doctor': {
+    basePct: 95,
+    bonusPct: 5,
+    demand: 'Acute Scarcity (GMC Specialist Register & NHS Consultant Shortages)',
+    movement: '+3% to +6% annual growth (NHS Pay Review Body Framework)',
+    certifications: ['GMC Full Registration with Licence to Practise', 'GMC Specialist Register (Paediatrics)', 'MRCPCH / FRCPCH', 'APLS (Advanced Paediatric Life Support)'],
+    overview: 'Paediatricians are medical doctors specializing in the diagnosis, medical management, and holistic treatment of infants, children, and young people across NHS acute hospital trusts, neonatal intensive care units (NICU), and specialist outpatient clinics.',
+    responsibilities: [
+      'Diagnosing and treating complex paediatric acute illnesses, developmental disorders, and chronic conditions.',
+      'Leading emergency resuscitation, neonatal intensive care, and paediatric inpatient ward rounds.',
+      'Collaborating within multidisciplinary clinical teams, safeguarding leads, and allied health professionals.',
+      'Directing clinical governance, junior doctor training rotations, and NHS quality improvement initiatives.',
+      'Conducting specialist outpatient clinics and liaising with tertiary specialist centres.'
+    ],
+    marketContext: 'UK paediatric medical compensation is governed by national NHS Medical & Dental Pay circulars. Remuneration is augmented by 20–30% through on-call rota banding, Extra Programmed Activities (EPAs), Clinical Impact Awards, and private clinic sessions, alongside the NHS Defined Benefit Pension (~20.6% employer contribution).',
+    tiers: {
+      '1-3': { p10: 45000, p50: 54000, p90: 68000, desc: 'Specialty Trainee ST1–ST3 (Resident Doctor basic; gross £55k–£68k with on-call)' },
+      '3-6': { p10: 58000, p50: 72000, p90: 88000, desc: 'Specialty Registrar ST4–ST8 (MRCPCH qualified; gross £72k–£95k with rota banding)' },
+      '6-10': { p10: 99500, p50: 114000, p90: 130000, desc: 'Newly Appointed NHS Consultant Paediatrician (Thresholds 1–4 + EPAs / On-call)' },
+      '10+': { p10: 120000, p50: 148000, p90: 185000, desc: 'Senior Consultant / Clinical Director / Private Clinic Practice (Thresholds 5–8+ & NCIAs)' }
+    }
   }
 };
 

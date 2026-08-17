@@ -29,6 +29,9 @@ def generate_monthly_dataset():
                 "Investment Banking & Capital Markets",
                 "Tech & Software Engineering",
                 "Legal, Risk & Compliance",
+                "Media, Journalism & Publishing",
+                "Property & Real Estate Services",
+                "Healthcare & Clinical Medicine",
                 "Graduates & Operations"
             ],
             "regions": [
@@ -70,6 +73,21 @@ def generate_monthly_dataset():
                 "macro_trend": "FCA regulatory mandates and Consumer Duty phase 2 driving sustained demand for senior compliance leads.",
                 "scarcity_index": "Medium-High",
                 "hot_roles": ["Head of Regulatory Compliance", "Senior Risk Manager (Market/Credit)", "Corporate Commercial Legal Counsel"]
+            },
+            "Media, Journalism & Publishing": {
+                "macro_trend": "Specialist beats across financial markets, technology policy, and data journalism commanding premiums as digital monetization models evolve.",
+                "scarcity_index": "High Scarcity for Specialist Correspondents; High Volume for General News",
+                "hot_roles": ["Journalist & Digital Reporter", "City & Financial Correspondent", "News Editor", "Head of Digital Content"]
+            },
+            "Property & Real Estate Services": {
+                "macro_trend": "Prime Central London and regional high-growth hubs driving strong commission upside for high-billing sales and lettings negotiators.",
+                "scarcity_index": "High for Proven Top Billers",
+                "hot_roles": ["Estate Agent & Property Valuer", "Senior Lettings Negotiator", "Branch Director", "Prime Residential Associate"]
+            },
+            "Healthcare & Clinical Medicine": {
+                "macro_trend": "Severe specialist consultant and registrar shortages across NHS acute trusts and private pediatric clinics sustaining high demand.",
+                "scarcity_index": "Critical Scarcity (Specialist GMC Registered Doctors)",
+                "hot_roles": ["Paediatrician (Consultant Doctor)", "Specialty Registrar in Paediatrics", "Clinical Lead Paediatrician", "Consultant Neonatologist"]
             },
             "Graduates & Operations": {
                 "macro_trend": f"Graduate scheme starting bases in London averaging £45k-£55k in competitive financial firms for {current_month_year}.",
@@ -310,6 +328,63 @@ def generate_monthly_dataset():
                 "key_insights": [
                     "Top-tier STEM graduates (Oxbridge, Imperial, Warwick) receiving competitive sign-on bonuses.",
                     "Python proficiency and contest math background highly valued."
+                ]
+            },
+            {
+                "id": "media-journalist",
+                "title": "Journalist & Digital Reporter",
+                "sector": "Media, Journalism & Publishing",
+                "category": "Editorial & Publishing",
+                "description": "Researches, investigates, writes, and produces breaking news, feature reporting, and multimedia analysis across digital, broadcast, and print platforms.",
+                "regional_data": {
+                    "london": { "p10": 34000, "p50": 44000, "p90": 62000, "base_pct": 95, "bonus_pct": 5, "demand": "High Competition; Constrained for Specialist Beats (Finance/Tech/Data)", "yoy": "2–4%" },
+                    "south_east": { "p10": 29920, "p50": 38720, "p90": 54560, "base_pct": 95, "bonus_pct": 5, "demand": "Moderate", "yoy": "2–4%" },
+                    "midlands": { "p10": 27880, "p50": 36080, "p90": 50840, "base_pct": 95, "bonus_pct": 5, "demand": "Moderate", "yoy": "2–4%" },
+                    "north_uk": { "p10": 27200, "p50": 35200, "p90": 49600, "base_pct": 96, "bonus_pct": 4, "demand": "Moderate", "yoy": "2–4%" },
+                    "scotland": { "p10": 27880, "p50": 36080, "p90": 50840, "base_pct": 95, "bonus_pct": 5, "demand": "Moderate", "yoy": "2–4%" },
+                    "offshore": { "p10": 42500, "p50": 55000, "p90": 77500, "base_pct": 92, "bonus_pct": 8, "demand": "High", "yoy": "2–4%" }
+                },
+                "key_insights": [
+                    "London national broadsheets, major broadcasters (BBC, Sky, Reuters), and City publications pay £4,000–£6,000 London weighting over regional newsrooms.",
+                    "Specialist domain reporters covering City financial markets, technology policy, or data investigations command £15,000–£30,000 salary premiums."
+                ]
+            },
+            {
+                "id": "property-estate-agent",
+                "title": "Estate Agent & Property Valuer",
+                "sector": "Property & Real Estate Services",
+                "category": "Residential & Commercial Property",
+                "description": "Manages residential property sales, lettings negotiations, market valuations, vendor onboarding, and property conveyance progression.",
+                "regional_data": {
+                    "london": { "p10": 30000, "p50": 42000, "p90": 68000, "base_pct": 65, "bonus_pct": 35, "demand": "High Demand for Proven Billing Negotiators", "yoy": "3–6%" },
+                    "south_east": { "p10": 26400, "p50": 36960, "p90": 59840, "base_pct": 68, "bonus_pct": 32, "demand": "High", "yoy": "3–6%" },
+                    "midlands": { "p10": 24600, "p50": 34440, "p90": 55760, "base_pct": 70, "bonus_pct": 30, "demand": "Medium", "yoy": "3–6%" },
+                    "north_uk": { "p10": 24000, "p50": 33600, "p90": 54400, "base_pct": 70, "bonus_pct": 30, "demand": "Medium", "yoy": "3–6%" },
+                    "scotland": { "p10": 24600, "p50": 34440, "p90": 55760, "base_pct": 70, "bonus_pct": 30, "demand": "Medium", "yoy": "3–6%" },
+                    "offshore": { "p10": 37500, "p50": 52500, "p90": 85000, "base_pct": 60, "bonus_pct": 40, "demand": "High", "yoy": "3–6%" }
+                },
+                "key_insights": [
+                    "Estate agency compensation is heavily commission-geared: basic salaries (£25,000–£45,000) are combined with 25–40%+ variable OTE performance commissions.",
+                    "Prime Central London (PCL - Mayfair, Chelsea, Kensington) brokers and branch directors achieve £120,000–£220,000+ total earnings on high-value transaction fee splits."
+                ]
+            },
+            {
+                "id": "medical-paediatrician-doctor",
+                "title": "Paediatrician (Consultant Doctor)",
+                "sector": "Healthcare & Clinical Medicine",
+                "category": "Medical & Specialist Practice",
+                "description": "Diagnoses, manages, and treats complex medical conditions, acute paediatric emergencies, and child healthcare in NHS Trusts and private clinics.",
+                "regional_data": {
+                    "london": { "p10": 99500, "p50": 122000, "p90": 165000, "base_pct": 95, "bonus_pct": 5, "demand": "Acute Scarcity (GMC Specialist Register)", "yoy": "3–6% (NHS Pay Review Body)" },
+                    "south_east": { "p10": 87560, "p50": 107360, "p90": 145200, "base_pct": 95, "bonus_pct": 5, "demand": "High", "yoy": "3–6%" },
+                    "midlands": { "p10": 81590, "p50": 100040, "p90": 135300, "base_pct": 95, "bonus_pct": 5, "demand": "High", "yoy": "3–6%" },
+                    "north_uk": { "p10": 79600, "p50": 97600, "p90": 132000, "base_pct": 95, "bonus_pct": 5, "demand": "High", "yoy": "3–6%" },
+                    "scotland": { "p10": 81590, "p50": 100040, "p90": 135300, "base_pct": 95, "bonus_pct": 5, "demand": "High", "yoy": "3–6%" },
+                    "offshore": { "p10": 124375, "p50": 152500, "p90": 206250, "base_pct": 90, "bonus_pct": 10, "demand": "Critical Scarcity", "yoy": "3–6%" }
+                },
+                "key_insights": [
+                    "Governed by the national NHS Consultant contract (£99,532–£150,569+), with on-call rota banding, EPAs, and Clinical Impact Awards increasing gross NHS remuneration.",
+                    "Private practice sessions and Harley Street consulting provide established paediatric consultants with £30,000–£75,000+ supplemental income alongside the NHS defined-benefit pension scheme (~20.6% employer contribution)."
                 ]
             }
         ]

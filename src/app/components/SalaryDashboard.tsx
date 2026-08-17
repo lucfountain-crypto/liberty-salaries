@@ -371,9 +371,8 @@ export default function SalaryDashboard() {
       hiringInsight = "High demand for qualified healthcare workers across NHS and private care providers.";
       maxExpMultiplier = 1.30;
     }
-
     // 1. Audit, Governance & Risk - Distinct sub-role definitions
-    if (/\b(part qualified|pq auditor|pq audit)\b/i.test(inputLower)) {
+    else if (/\b(part qualified|pq auditor|pq audit)\b/i.test(inputLower)) {
       sector = "Audit & Public Practice";
       baseP10 = 42500; baseP50 = 52500; baseP90 = 60000; // at 1-3 yrs (0.80 mult) -> £34,000 / £42,000 / £48,000
       basePct = 95; bonusPct = 5;
@@ -636,6 +635,69 @@ export default function SalaryDashboard() {
         demand = "High Scarcity (Specialty Lines Underwriters & Qualified FIAs)";
         yoy = "5–8%";
         hiringInsight = "Lloyd's specialty underwriters (Cyber, Marine, Energy) and qualified FIAs average £110k–£155k base in London.";
+      }
+    }
+    // 12. Journalism, Media, Editorial & News Publishing
+    else if (/\b(journalist|journalism|reporter|sub-editor|subeditor|news editor|broadcast journalist|columnist|correspondent|copywriter|editorial|photojournalist|foreign correspondent|staff writer)\b/i.test(inputLower)) {
+      sector = "Media, Journalism & Digital Publishing";
+      if (isDirectorLevel || /\b(editor-in-chief|managing editor|head of news|editorial director)\b/i.test(inputLower)) {
+        baseP10 = 75000; baseP50 = 105000; baseP90 = 150000;
+        basePct = 92; bonusPct = 8;
+        description = "Directs editorial strategy, newsroom operations, investigative features, cross-platform publishing, and media compliance.";
+        demand = "High Scarcity (Senior Newsroom & Editorial Leaders)";
+        yoy = "2–4%";
+        hiringInsight = "Editors-in-Chief and Heads of News command senior compensation across national broadsheets, major broadcasters (BBC, Sky), and high-traffic digital publications.";
+        maxExpMultiplier = 1.45;
+      } else {
+        baseP10 = 34000; baseP50 = 46000; baseP90 = 72000;
+        basePct = 95; bonusPct = 5;
+        description = "Investigates, researches, writes, and produces breaking news, features, and multimedia analysis across digital, broadcast, and print channels.";
+        demand = "High Competition; Constrained for Specialist Financial, Tech & Investigative Beats";
+        yoy = "2–4%";
+        hiringInsight = "London national titles and broadcasters pay £4k–£6k London weighting over regional newsrooms. Specialist domain reporters (finance/City, policy, tech, investigative data) command significant premiums over general news desks.";
+        maxExpMultiplier = 1.40;
+      }
+    }
+    // 13. Property, Real Estate & Estate Agency
+    else if (/\b(estate agent|lettings negotiator|sales negotiator|property negotiator|valuer|property valuer|branch manager property|residential sales|real estate agent|property manager|commercial agent|land agent|real estate negotiator)\b/i.test(inputLower)) {
+      sector = "Property & Real Estate Services";
+      if (isDirectorLevel || /\b(branch director|area director|head of sales|head of lettings|partner)\b/i.test(inputLower)) {
+        baseP10 = 60000; baseP50 = 90000; baseP90 = 145000;
+        basePct = 60; bonusPct = 40;
+        description = "Leads branch sales and lettings operations, high-value prime property negotiations, vendor relationships, and estate agency territory growth.";
+        demand = "High Scarcity (Prime Market & High-Billing Branch Directors)";
+        yoy = "3–6%";
+        hiringInsight = "Branch Directors and Prime Central London (PCL) partners command substantial profit share and instruction commissions, with total on-target earnings (OTE) reaching £120k–£220k+.";
+        maxExpMultiplier = 1.50;
+      } else {
+        baseP10 = 30000; baseP50 = 42000; baseP90 = 65000;
+        basePct = 65; bonusPct = 35;
+        description = "Manages residential property sales, lettings negotiations, market valuations, vendor onboarding, and property conveyance progression.";
+        demand = "High Demand for Proven Billing Negotiators";
+        yoy = "3–6%";
+        hiringInsight = "Estate agency compensation is heavily performance-weighted: basic salaries (£25k–£45k) are supplemented by 25–40%+ variable sales/lettings commissions. Prime London (PCL) desks command major transaction fee upside.";
+        maxExpMultiplier = 1.45;
+      }
+    }
+    // 14. Medical Practitioners, Doctors, Paediatricians & Clinical Specialists
+    else if (/\b(paediatri\w*|pediatri\w*|doctor|physician|consultant doctor|medical doctor|registrar doctor|clinical lead|general practitioner|gp|surgeon|specialty doctor|consultant paediatrician|consultant pediatrician|anaesthetist|psychiatrist|radiologist)\b/i.test(inputLower)) {
+      sector = "Healthcare & Clinical Medicine";
+      if (isDirectorLevel || /\b(consultant|clinical director|medical director|head of paediatrics|lead consultant)\b/i.test(inputLower) || /\b(paediatri\w*|pediatri\w*)\b/i.test(inputLower)) {
+        baseP10 = 99500; baseP50 = 122000; baseP90 = 165000;
+        basePct = 95; bonusPct = 5;
+        description = "Delivers expert medical care, specialist paediatric diagnosis, clinical leadership, inpatient ward management, and patient care governance within NHS Trusts and private medical facilities.";
+        demand = "Acute Scarcity (NHS Consultant & Specialist Registrars)";
+        yoy = "3–6% (NHS Pay Review Body Framework)";
+        hiringInsight = "Governed by national NHS Consultant & Specialist Doctor pay scales (basic £99.5k–£150.5k+). Remuneration is augmented by 20–30% through on-call rota banding, Extra Programmed Activities (EPAs), Clinical Impact Awards, and private practice/Harley Street sessions. NHS Defined Benefit Pension Scheme (~20.6% employer contribution) adds significant total reward value.";
+        maxExpMultiplier = 1.35;
+      } else {
+        baseP10 = 55000; baseP50 = 74000; baseP90 = 98000;
+        basePct = 95; bonusPct = 5;
+        description = "Provides clinical care, patient diagnosis, acute medical intervention, and inpatient management under NHS medical specialty training programmes.";
+        demand = "High Scarcity (Specialty Trainees & Resident Doctors)";
+        yoy = "3–6%";
+        hiringInsight = "Specialty Registrars (ST3–ST8) and resident doctors receive basic salaries of £50k–£74k, augmented by 20–35% in unsocial hours / out-of-hours rota supplements, giving average gross NHS earnings of £70k–£95k+.";
+        maxExpMultiplier = 1.30;
       }
     }
 
