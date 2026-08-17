@@ -16,10 +16,14 @@ import {
   Users
 } from 'lucide-react';
 
+interface TierCompensation {
+  p10: number;
+  p50: number;
+  p90: number;
+  desc: string;
+}
+
 interface RoleBenchmarkMeta {
-  baseP10: number;
-  baseP50: number;
-  baseP90: number;
   basePct: number;
   bonusPct: number;
   demand: string;
@@ -28,18 +32,21 @@ interface RoleBenchmarkMeta {
   overview: string;
   responsibilities: string[];
   marketContext: string;
+  tiers: {
+    '1-3': TierCompensation;
+    '3-6': TierCompensation;
+    '6-10': TierCompensation;
+    '10+': TierCompensation;
+  };
 }
 
-// Role-specific rich compensation intelligence dictionary
+// 2026 Recalibrated City of London & UK Executive Search Compensation Benchmarks
 const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
   'audit-part-qualified': {
-    baseP10: 30000,
-    baseP50: 36000,
-    baseP90: 42000,
     basePct: 95,
     bonusPct: 5,
     demand: 'High (Continuous Trainee & Associate Recruitment)',
-    movement: '+4% to +7% annual movement upon passing professional exam stages',
+    movement: '+5% to +8% annual base increase on passing ACA/ACCA stages',
     certifications: ['ACA (ICAEW) in progress', 'ACCA in progress', 'Strong University Degree'],
     overview: 'Part-Qualified Auditors operate within public practice (Big Four, Top 10, mid-tier accountancy firms) or corporate internal audit teams. They perform substantive testing, transaction sampling, statutory balance sheet reconciliations, and internal control reviews while actively progressing their professional ACA or ACCA qualification.',
     responsibilities: [
@@ -49,17 +56,20 @@ const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
       'Liaising directly with client finance managers and operational department leads.',
       'Supporting Senior Auditors and Managers in preparing audit committee review packs.'
     ],
-    marketContext: 'London and regional practice firms compete intensely for high-performing trainees who have passed early professional exams. First-time pass rates and clean academic records command premium trainee salaries and full exam support packages.'
+    marketContext: 'London and regional practice firms compete intensely for high-performing trainees who have passed early professional exams. First-time pass rates and clean academic records command premium trainee salaries and full exam support packages.',
+    tiers: {
+      '1-3': { p10: 34000, p50: 42000, p90: 48000, desc: 'Early ACA/ACCA stage trainee; transaction testing' },
+      '3-6': { p10: 52000, p50: 62000, p90: 72000, desc: 'Finalist / Newly Qualified; audit engagement lead' },
+      '6-10': { p10: 70000, p50: 85000, p90: 100000, desc: 'Assistant Manager / Audit Supervisor' },
+      '10+': { p10: 90000, p50: 110000, p90: 135000, desc: 'Senior Practice Manager / Department Head' }
+    }
   },
   'audit-internal': {
-    baseP10: 50000,
-    baseP50: 66000,
-    baseP90: 80000,
-    basePct: 92,
-    bonusPct: 8,
-    demand: 'Moderate to High; constrained for SOX & regulated sector specialists',
-    movement: '+3% to +5% annual base movement across FTSE 250 & financial services',
-    certifications: ['ACA', 'ACCA', 'CIA (Certified Internal Auditor)', 'CISA (IT Audit)'],
+    basePct: 88,
+    bonusPct: 12,
+    demand: 'High (Regulated Banking, Insurance & FTSE 100 Scarcity)',
+    movement: '+4% to +7% annual base movement across financial services & commerce',
+    certifications: ['ACA / ACCA Qualified', 'CIA (Certified Internal Auditor)', 'CISA (IT Audit)'],
     overview: 'Internal Auditors evaluate the adequacy and effectiveness of an organization\'s risk management, internal controls, and corporate governance systems. Operating independently of line management, they provide objective assurance to executive management and the Board\'s Audit Committee.',
     responsibilities: [
       'Planning and conducting end-to-end operational, financial, and compliance audit reviews.',
@@ -68,16 +78,19 @@ const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
       'Drafting clear, actionable internal audit reports for presentation to executive leadership.',
       'Tracking management remediation commitments and performing post-audit validation.'
     ],
-    marketContext: 'Demand remains robust in regulated financial services (banking, insurance, asset management) and corporate enterprises undergoing digital transformation or ERP implementations.'
+    marketContext: 'Demand remains robust in regulated financial services (banking, insurance, asset management) and corporate enterprises undergoing digital transformation or ERP implementations.',
+    tiers: {
+      '1-3': { p10: 45000, p50: 55000, p90: 65000, desc: 'Junior Internal Auditor; walkthroughs and control testing' },
+      '3-6': { p10: 68000, p50: 82000, p90: 95000, desc: 'Senior Internal Auditor (ACA/CIA 1-3y PQE); end-to-end audit reviews' },
+      '6-10': { p10: 92000, p50: 110000, p90: 130000, desc: 'Internal Audit Manager / Principal Auditor' },
+      '10+': { p10: 125000, p50: 155000, p90: 195000, desc: 'Head of Internal Audit (HIA) / Chief Audit Executive' }
+    }
   },
   'audit-external': {
-    baseP10: 50000,
-    baseP50: 72500,
-    baseP90: 93750,
     basePct: 88,
     bonusPct: 12,
-    demand: 'High across London & Top 10 Practice Groups',
-    movement: '+4% to +8% annual base increase for post-qualified seniors and assistant managers',
+    demand: 'Acute Talent Shortage (Post-Qualified ACAs in London)',
+    movement: '+5% to +9% annual base increase for senior associates & managers',
     certifications: ['ACA (ICAEW Qualified)', 'ACCA Qualified', 'ICAS'],
     overview: 'External Auditors deliver independent statutory financial statement audits, regulatory assurance, and technical accounting assessments for public and private corporate clients across the Big Four and mid-tier accountancy firms.',
     responsibilities: [
@@ -87,16 +100,19 @@ const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
       'Directing and mentoring junior trainee auditors and reviewing engagement files.',
       'Serving as the primary on-site technical contact for client financial controllers and CFOs.'
     ],
-    marketContext: 'Post-qualified ACAs (1–3 years PQE) represent one of the most liquid talent pools in the UK market, with significant competition between public practice retention and corporate in-house moves.'
+    marketContext: 'Post-qualified ACAs (1–3 years PQE) represent one of the most liquid talent pools in the UK market, with significant competition between public practice retention and corporate in-house moves.',
+    tiers: {
+      '1-3': { p10: 38000, p50: 48000, p90: 56000, desc: 'Audit Associate / Trainee ACA' },
+      '3-6': { p10: 62000, p50: 76000, p90: 90000, desc: 'Newly Qualified Senior Associate / Assistant Manager (Big 4 / Top 10)' },
+      '6-10': { p10: 85000, p50: 108000, p90: 130000, desc: 'Audit Manager / Senior Manager' },
+      '10+': { p10: 135000, p50: 180000, p90: 260000, desc: 'Audit Director / Responsible Individual (RI) Partner Track' }
+    }
   },
   'audit-it': {
-    baseP10: 55000,
-    baseP50: 75000,
-    baseP90: 95000,
-    basePct: 90,
-    bonusPct: 10,
-    demand: 'High Scarcity (Cloud, Cyber & Automated Control Assurance)',
-    movement: '+5% to +8% annual movement driven by cybersecurity governance mandates',
+    basePct: 85,
+    bonusPct: 15,
+    demand: 'Extreme Scarcity (DORA, Cloud & Cyber Governance Mandates)',
+    movement: '+6% to +10% annual movement driven by cybersecurity regulations',
     certifications: ['CISA (Certified Information Systems Auditor)', 'CRISC', 'CISSP', 'AWS/Azure Security'],
     overview: 'IT Auditors provide specialized assurance over IT general controls (ITGC), application controls, cloud security architecture, data governance frameworks, and operational resilience across modern digital infrastructure.',
     responsibilities: [
@@ -106,16 +122,19 @@ const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
       'Reviewing cloud infrastructure compliance across AWS, Microsoft Azure, and GCP deployments.',
       'Aligning audit scopes with regulatory mandates including DORA, FCA Operational Resilience, and ISO 27001.'
     ],
-    marketContext: 'The intersection of automated controls, cyber assurance, and stringent regulatory oversight (DORA and FCA frameworks) makes certified IT Auditors among the most highly sought-after governance professionals.'
+    marketContext: 'The intersection of automated controls, cyber assurance, and stringent regulatory oversight (DORA and FCA frameworks) makes certified IT Auditors among the most highly sought-after governance professionals.',
+    tiers: {
+      '1-3': { p10: 50000, p50: 62000, p90: 74000, desc: 'Associate IT Auditor; ITGC testing and SOX reviews' },
+      '3-6': { p10: 75000, p50: 92000, p90: 110000, desc: 'Senior IT / Cyber Auditor (CISA); cloud & ERP application audits' },
+      '6-10': { p10: 100000, p50: 125000, p90: 150000, desc: 'IT Audit Manager / Technology Governance Lead' },
+      '10+': { p10: 145000, p50: 180000, p90: 230000, desc: 'Head of Technology Audit / CISO Assurance Director' }
+    }
   },
   'audit-manager': {
-    baseP10: 69000,
-    baseP50: 80250,
-    baseP90: 105000,
-    basePct: 85,
-    bonusPct: 15,
-    demand: 'High (Leadership & Audit Committee Interface)',
-    movement: '+4% to +6% annual base growth with performance bonus eligibility',
+    basePct: 82,
+    bonusPct: 18,
+    demand: 'High (Audit Committee Interface & Strategic Leadership)',
+    movement: '+5% to +8% annual base growth with executive bonus packages',
     certifications: ['ACA / ACCA Fellow', 'CIA', 'Extensive Stakeholder Leadership'],
     overview: 'Audit Managers lead audit engagement portfolios or corporate internal audit divisions, setting audit plans, overseeing senior auditors, and presenting critical governance evaluations directly to Executive Committees and Boards of Directors.',
     responsibilities: [
@@ -125,16 +144,19 @@ const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
       'Managing senior stakeholder relationships across C-suite executives and business division leaders.',
       'Driving continuous improvement in audit methodology, data analytics, and continuous auditing tools.'
     ],
-    marketContext: 'Experienced managers capable of translating technical accounting and risk findings into strategic commercial insights for C-level leadership command top-tier compensation packages.'
+    marketContext: 'Experienced managers capable of translating technical accounting and risk findings into strategic commercial insights for C-level leadership command top-tier compensation packages.',
+    tiers: {
+      '1-3': { p10: 78000, p50: 90000, p90: 105000, desc: 'New Audit Manager (1st-2nd Year in Grade)' },
+      '3-6': { p10: 92000, p50: 112000, p90: 132000, desc: 'Senior Audit Manager; multi-business unit portfolio' },
+      '6-10': { p10: 120000, p50: 145000, p90: 180000, desc: 'Group Audit Lead / Deputy Head of Audit' },
+      '10+': { p10: 160000, p50: 210000, p90: 285000, desc: 'Chief Audit Executive / Partner / Executive Director' }
+    }
   },
   'ins-underwriter-sr': {
-    baseP10: 70000,
-    baseP50: 95000,
-    baseP90: 135000,
-    basePct: 80,
-    bonusPct: 20,
-    demand: 'High for Specialty Lines, Cyber & Marine/Energy',
-    movement: '+4% to +7% base pay growth plus substantial annual performance bonuses',
+    basePct: 75,
+    bonusPct: 25,
+    demand: 'High Scarcity (Lloyd\'s Specialty Lines, Cyber, Marine & Energy)',
+    movement: '+5% to +8% base growth plus substantial annual performance bonuses',
     certifications: ['ACII (Chartered Insurance Institute)', 'Degree in Finance/Economics'],
     overview: 'Specialty Underwriters evaluate, price, and accept complex commercial risks in the Lloyd\'s of London and company insurance markets, building profitable portfolios and cultivating key broker syndicate relationships.',
     responsibilities: [
@@ -144,16 +166,19 @@ const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
       'Monitoring portfolio loss ratios, aggregate exposure accumulations, and treaty performance.',
       'Ensuring strict adherence to underwriting authority limits and PRA/Lloyd\'s regulatory standards.'
     ],
-    marketContext: 'Specialty classes such as Cyber, Renewable Energy, and Political Risk command premium compensation due to specialized risk modeling requirements and Lloyd\'s syndicate competition.'
+    marketContext: 'Specialty classes such as Cyber, Renewable Energy, and Political Risk command premium compensation due to specialized risk modeling requirements and Lloyd\'s syndicate competition.',
+    tiers: {
+      '1-3': { p10: 48000, p50: 62000, p90: 76000, desc: 'Assistant Underwriter / Box Trainee at Lloyd\'s' },
+      '3-6': { p10: 85000, p50: 115000, p90: 150000, desc: 'Class Underwriter / Specialty Lines Underwriter' },
+      '6-10': { p10: 130000, p50: 170000, p90: 220000, desc: 'Senior Underwriter / Syndicate Portfolio Lead' },
+      '10+': { p10: 195000, p50: 270000, p90: 390000, desc: 'Active Underwriter / Chief Underwriting Officer (CUO)' }
+    }
   },
   'ins-actuary-lead': {
-    baseP10: 80000,
-    baseP50: 115000,
-    baseP90: 165000,
-    basePct: 80,
-    bonusPct: 20,
-    demand: 'Acute Scarcity (Solvency II, IFRS 17 & Cat Modeling Specialists)',
-    movement: '+5% to +9% annual base growth with significant performance bonus pools',
+    basePct: 75,
+    bonusPct: 25,
+    demand: 'Acute Scarcity (FIA Reserving, Pricing & Solvency II Leads)',
+    movement: '+6% to +10% annual base growth with significant performance bonus pools',
     certifications: ['FIA (Fellow of the Institute and Faculty of Actuaries)', 'MSc Mathematics/Statistics'],
     overview: 'Risk Modeling & Pricing Actuaries develop sophisticated stochastic risk frameworks, catastrophe models, and capital adequacy reserves for general insurers, life companies, and Lloyd\'s managing agencies.',
     responsibilities: [
@@ -163,17 +188,20 @@ const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
       'Presenting capital adequacy and underwriting risk insights to Chief Risk Officers and Actuarial Function Holders.',
       'Advising executive leadership on reinsurance treaty optimization and capital allocation strategies.'
     ],
-    marketContext: 'Qualified FIAs with strong Python/data science capabilities remain among the highest-paid technical specialists in London financial services.'
+    marketContext: 'Qualified FIAs with strong Python/data science capabilities remain among the highest-paid technical specialists in London financial services.',
+    tiers: {
+      '1-3': { p10: 52000, p50: 68000, p90: 82000, desc: 'Actuarial Analyst (Core exam progress in CT/CS)' },
+      '3-6': { p10: 90000, p50: 120000, p90: 150000, desc: 'Newly Qualified FIA / Senior Pricing Actuary' },
+      '6-10': { p10: 130000, p50: 170000, p90: 215000, desc: 'Lead Reserving Actuary / Capital Modeling Manager' },
+      '10+': { p10: 190000, p50: 260000, p90: 360000, desc: 'Chief Actuary / Actuarial Function Holder / CRO' }
+    }
   },
   'quant-researcher-sr': {
-    baseP10: 120000,
-    baseP50: 220000,
-    baseP90: 350000,
     basePct: 50,
     bonusPct: 50,
-    demand: 'Extreme Scarcity (Top-Tier Systematic Trading & Prop Shops)',
-    movement: '+8% to +15% base growth with uncapped PnL-linked bonus structures',
-    certifications: ['PhD / MSc in Mathematics, Physics, Machine Learning or CS', 'Deep Python / C++ / PyTorch'],
+    demand: 'Extreme Scarcity (Top Prop Trading Desks & Buy-Side Hedge Funds)',
+    movement: '+8% to +18% base growth with uncapped PnL-linked bonus structures',
+    certifications: ['PhD / MSc in Mathematics, Theoretical Physics, CS or ML', 'Deep Python / C++ / PyTorch'],
     overview: 'Quantitative Researchers design and backtest mathematical alpha models, statistical arbitrage strategies, and systematic execution algorithms for quantitative hedge funds and proprietary trading firms.',
     responsibilities: [
       'Conducting rigorous quantitative research on large-scale tick-level and alternative datasets.',
@@ -182,17 +210,20 @@ const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
       'Collaborating with C++ execution engineers to deploy strategies into production trading systems.',
       'Managing risk parameters, factor exposures, and portfolio capacity across market regimes.'
     ],
-    marketContext: 'Buy-side quantitative research offers the highest total compensation in financial markets. Base salaries often exceed £200k with performance bonuses frequently doubling or tripling base pay based on strategy Sharpe ratio.'
+    marketContext: 'Buy-side quantitative research offers the highest total compensation in financial markets. Base salaries often exceed £200k with performance bonuses frequently doubling or tripling base pay based on strategy Sharpe ratio.',
+    tiers: {
+      '1-3': { p10: 120000, p50: 165000, p90: 225000, desc: 'Junior Quant Researcher (PhD entry; +50-100% bonus)' },
+      '3-6': { p10: 175000, p50: 260000, p90: 360000, desc: 'Quant Researcher (Proven alpha track record; +100-200% bonus)' },
+      '6-10': { p10: 260000, p50: 400000, p90: 580000, desc: 'Senior Lead Quant / Sub-Portfolio Manager (+PnL share)' },
+      '10+': { p10: 360000, p50: 650000, p90: 1200000, desc: 'Head of Quant Research / Managing Director / Fund Partner' }
+    }
   },
   'quant-dev-cpp': {
-    baseP10: 90000,
-    baseP50: 180000,
-    baseP90: 280000,
     basePct: 60,
     bonusPct: 40,
     demand: 'Extreme Scarcity (Sub-Microsecond Low Latency Architecture)',
-    movement: '+7% to +12% annual compensation growth across top market-makers',
-    certifications: ['BSc/MSc Computer Science', 'Expert Modern C++ (C++20/23)', 'Linux Kernel / FPGA'],
+    movement: '+8% to +14% annual compensation growth across top market-makers',
+    certifications: ['BSc/MSc Computer Science', 'Expert Modern C++ (C++20/23)', 'Linux Kernel Bypass / FPGA'],
     overview: 'HFT C++ Core Developers build sub-microsecond algorithmic execution gateways, high-throughput market data parsers, and custom low-latency networking stacks for ultra-fast trading desks.',
     responsibilities: [
       'Engineering deterministic, lock-free, zero-allocation C++ trading systems and execution gateways.',
@@ -201,16 +232,19 @@ const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
       'Implementing automated automated risk checks and circuit breakers at sub-microsecond latencies.',
       'Partnering closely with quantitative researchers to productionize mathematical trading models.'
     ],
-    marketContext: 'London prop trading firms and hedge funds (e.g. Citadel, Jane Street, Optiver, XTX) benchmark C++ developers against top US tech and quantitative finance baselines.'
+    marketContext: 'London prop trading firms and hedge funds (e.g. Citadel, Jane Street, Optiver, XTX) benchmark C++ developers against top US tech and quantitative finance baselines.',
+    tiers: {
+      '1-3': { p10: 100000, p50: 145000, p90: 190000, desc: 'Junior Low-Latency Engineer (High-throughput systems)' },
+      '3-6': { p10: 160000, p50: 230000, p90: 310000, desc: 'Core HFT C++ Developer (Exchange gateways & order books)' },
+      '6-10': { p10: 230000, p50: 340000, p90: 460000, desc: 'Principal Systems Architect / Low-Latency Lead' },
+      '10+': { p10: 320000, p50: 480000, p90: 680000, desc: 'Head of Core Engineering / CTO Prop Trading' }
+    }
   },
   'ib-vp-ma': {
-    baseP10: 135000,
-    baseP50: 175000,
-    baseP90: 220000,
-    basePct: 60,
-    bonusPct: 40,
-    demand: 'High for Proven Sector Coverage & Deal Execution Leads',
-    movement: '+5% to +10% base increases with substantial year-end deal bonus allocations',
+    basePct: 55,
+    bonusPct: 45,
+    demand: 'High (Deal Execution Leads & M&A Sector Coverage)',
+    movement: '+6% to +10% base increases with substantial closed-deal bonus allocations',
     certifications: ['ACA', 'CFA Charterholder', 'Top-Tier MBA / Finance Degree'],
     overview: 'M&A Vice Presidents lead the day-to-day execution of buy-side and sell-side corporate finance transactions, directing financial modeling, managing deal teams, and interfacing directly with corporate boards and private equity clients.',
     responsibilities: [
@@ -220,15 +254,18 @@ const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
       'Managing transaction workflows across legal counsel, tax advisors, accounting firms, and target executives.',
       'Mentoring and developing cohorts of investment banking analysts and associates.'
     ],
-    marketContext: 'City of London corporate finance compensation combines strong base salaries with significant variable bonuses linked to closed deal volume and firm performance.'
+    marketContext: 'City of London corporate finance compensation combines strong base salaries with significant variable bonuses linked to closed deal volume and firm performance.',
+    tiers: {
+      '1-3': { p10: 80000, p50: 120000, p90: 155000, desc: 'Investment Banking Analyst / Associate (+30-50% bonus)' },
+      '3-6': { p10: 145000, p50: 190000, p90: 245000, desc: 'M&A Vice President (VP 1-3; +60-100% deal bonus)' },
+      '6-10': { p10: 200000, p50: 265000, p90: 340000, desc: 'Director / Executive Director (+80-140% bonus)' },
+      '10+': { p10: 290000, p50: 420000, p90: 650000, desc: 'Managing Director / Sector Head (+100-200%+ bonus pool)' }
+    }
   },
   'tech-ai-principal': {
-    baseP10: 95000,
-    baseP50: 140000,
-    baseP90: 195000,
     basePct: 75,
     bonusPct: 25,
-    demand: 'Extreme Scarcity (Enterprise AI & GPU Infrastructure Architects)',
+    demand: 'Extreme Scarcity (Enterprise LLMs, High-Throughput Inference & GPU Clusters)',
     movement: '+10% to +18% annual compensation growth including equity grants',
     certifications: ['MSc/PhD in AI/CS', 'Deep PyTorch, vLLM, TensorRT-LLM, CUDA', 'Kubernetes / Cloud ML'],
     overview: 'Principal AI Systems Engineers design and scale enterprise LLM infrastructure, retrieval-augmented generation (RAG) architectures, model fine-tuning pipelines, and high-throughput GPU inference clusters.',
@@ -239,16 +276,19 @@ const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
       'Overseeing data curation, embedding pipelines, fine-tuning workflows, and model evaluation benchmarks.',
       'Establishing AI safety, evaluation guardrails, and compliance governance across enterprise workloads.'
     ],
-    marketContext: 'Generative AI deployment is the single fastest-growing technical discipline in the UK, with venture-backed tech and tier-1 financial institutions competing aggressively for experienced systems architects.'
+    marketContext: 'Generative AI deployment is the single fastest-growing technical discipline in the UK, with venture-backed tech and tier-1 financial institutions competing aggressively for experienced systems architects.',
+    tiers: {
+      '1-3': { p10: 80000, p50: 105000, p90: 135000, desc: 'AI / Machine Learning Engineer' },
+      '3-6': { p10: 125000, p50: 165000, p90: 210000, desc: 'Senior AI Systems Engineer (Production LLMs & inference)' },
+      '6-10': { p10: 170000, p50: 225000, p90: 290000, desc: 'Principal AI Systems Engineer / Infrastructure Architect' },
+      '10+': { p10: 230000, p50: 320000, p90: 440000, desc: 'VP of AI Engineering / Chief AI Architect' }
+    }
   },
   'legal-compliance-head': {
-    baseP10: 90000,
-    baseP50: 135000,
-    baseP90: 195000,
-    basePct: 85,
-    bonusPct: 15,
-    demand: 'High across Regulated Financial Institutions & FinTech',
-    movement: '+4% to +7% base pay growth with executive bonus packages',
+    basePct: 80,
+    bonusPct: 20,
+    demand: 'High (FCA / PRA Regulated Governance & Financial Crime Leads)',
+    movement: '+5% to +8% base pay growth with executive bonus packages',
     certifications: ['Qualified Solicitor / Barrister', 'ICA Diploma in Governance, Risk & Compliance'],
     overview: 'Heads of Regulatory Compliance lead corporate compliance programs, regulatory relationships (FCA, PRA, Bank of England), anti-money laundering (AML) controls, and ethical conduct frameworks across financial institutions.',
     responsibilities: [
@@ -258,16 +298,19 @@ const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
       'Advising executive boards and senior management on new regulatory developments and strategic impacts.',
       'Overseeing compliance monitoring, risk assessments, policy approvals, and staff training.'
     ],
-    marketContext: 'Increasing regulatory complexity across the UK and European financial markets maintains strong executive demand for seasoned compliance heads with direct regulatory engagement track records.'
+    marketContext: 'Increasing regulatory complexity across the UK and European financial markets maintains strong executive demand for seasoned compliance heads with direct regulatory engagement track records.',
+    tiers: {
+      '1-3': { p10: 55000, p50: 72000, p90: 88000, desc: 'Compliance Officer / Regulatory Analyst' },
+      '3-6': { p10: 90000, p50: 122000, p90: 155000, desc: 'Senior Compliance Manager / Deputy MLRO' },
+      '6-10': { p10: 140000, p50: 185000, p90: 235000, desc: 'Head of Compliance / Designated SMF16' },
+      '10+': { p10: 200000, p50: 280000, p90: 375000, desc: 'Chief Compliance Officer (CCO) / Group Legal & Compliance Director' }
+    }
   },
   'grad-quant-analyst': {
-    baseP10: 55000,
-    baseP50: 75000,
-    baseP90: 105000,
-    basePct: 75,
-    bonusPct: 25,
-    demand: 'High Competition (Top 1% STEM Graduate Scheme Cohorts)',
-    movement: '+8% to +15% rapid progression across early career trading rotations',
+    basePct: 70,
+    bonusPct: 30,
+    demand: 'Extreme Competition (Top 1% STEM Graduate Scheme Cohorts in London)',
+    movement: '+10% to +18% rapid annual progression across early trading desk rotations',
     certifications: ['1st Class / 2:1 Honours in Mathematics, Physics, Computing or Engineering'],
     overview: 'Graduate Quantitative Analysts enter quantitative hedge funds, prop trading firms, and investment banks to assist in mathematical research, algorithmic backtesting, data engineering, and automated trade execution.',
     responsibilities: [
@@ -277,7 +320,13 @@ const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
       'Automating daily trading reports, PnL attribution, and factor risk decomposition.',
       'Participating in structured firm-wide quantitative trading and market microstructure training programs.'
     ],
-    marketContext: 'Elite graduate schemes in London quantitative finance and market making offer starting packages significantly higher than broader corporate graduate schemes.'
+    marketContext: 'Elite graduate schemes in London quantitative finance and market making offer starting packages significantly higher than broader corporate graduate schemes.',
+    tiers: {
+      '1-3': { p10: 80000, p50: 115000, p90: 155000, desc: '1st–3rd Year STEM Graduate Scheme (Base + £25k–£60k sign-on/bonus)' },
+      '3-6': { p10: 135000, p50: 190000, p90: 255000, desc: 'Desk Quant / Junior Systematic Trader' },
+      '6-10': { p10: 210000, p50: 330000, p90: 480000, desc: 'Quantitative Portfolio Manager / Strategy Lead' },
+      '10+': { p10: 340000, p50: 550000, p90: 950000, desc: 'Partner / Head of Systematic Trading' }
+    }
   }
 };
 
@@ -307,13 +356,10 @@ export default async function RoleSalaryGuidePage({ params }: { params: Promise<
   }
 
   const details = ROLE_DETAILS[slug] || {
-    baseP10: 45000,
-    baseP50: 65000,
-    baseP90: 90000,
-    basePct: 90,
-    bonusPct: 10,
+    basePct: 85,
+    bonusPct: 15,
     demand: 'Steady UK Market Demand',
-    movement: '+3% to +5% annual growth',
+    movement: '+4% to +6% annual growth',
     certifications: ['Relevant Degree', 'Professional Accreditation'],
     overview: role.description,
     responsibilities: [
@@ -321,18 +367,26 @@ export default async function RoleSalaryGuidePage({ params }: { params: Promise<
       'Ensuring compliance with UK industry and statutory frameworks.',
       'Collaborating across executive and operational teams.'
     ],
-    marketContext: 'Compensation is calibrated against active market placements and UK economic indicators.'
+    marketContext: 'Compensation is calibrated against active market placements and UK economic indicators.',
+    tiers: {
+      '1-3': { p10: 45000, p50: 60000, p90: 75000, desc: 'Junior / Associate' },
+      '3-6': { p10: 70000, p50: 90000, p90: 115000, desc: 'Mid-Level Specialist' },
+      '6-10': { p10: 100000, p50: 130000, p90: 165000, desc: 'Senior / Lead' },
+      '10+': { p10: 140000, p50: 180000, p90: 240000, desc: 'Director / Senior Head' }
+    }
   };
 
-  // Experience level table data
-  const expTiers = [
-    { label: '1–3 Years (Junior / Associate)', mult: 0.80, desc: 'Developing foundational expertise; execution focus' },
-    { label: '3–6 Years (Mid-Level Specialist)', mult: 1.00, desc: 'Autonomous delivery; solid domain ownership' },
-    { label: '6–10 Years (Senior / Lead)', mult: 1.25, desc: 'Technical mastery, team mentoring, complex project lead' },
-    { label: '10+ Years (Director / Senior Head)', mult: 1.50, desc: 'Strategic governance, executive stakeholder management' }
-  ];
+  const expTierKeys = ['1-3', '3-6', '6-10', '10+'] as const;
+  const expTierLabels = {
+    '1-3': '1–3 Years (Junior / Associate)',
+    '3-6': '3–6 Years (Mid-Level Specialist)',
+    '6-10': '6–10 Years (Senior / Lead)',
+    '10+': '10+ Years (Highly Experienced / Director)'
+  };
 
-  // Regional comparisons (at 3-6 yrs mid-tier)
+  const midTier = details.tiers['3-6'];
+
+  // Regional comparisons (based on mid-level 3-6 yrs 50th percentile)
   const regions = [
     { name: 'London & City Hubs (Square Mile, Mayfair)', mult: 1.00 },
     { name: 'UK National Remote', mult: 0.92 },
@@ -375,7 +429,7 @@ export default async function RoleSalaryGuidePage({ params }: { params: Promise<
             </span>
             <span className="text-xs font-semibold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full flex items-center gap-1">
               <TrendingUp className="w-3.5 h-3.5" />
-              Verified 2026 Data
+              Verified 2026 City & London Market
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-3">
@@ -386,24 +440,24 @@ export default async function RoleSalaryGuidePage({ params }: { params: Promise<
           </p>
         </div>
 
-        {/* Quick Numbers Banner */}
+        {/* Quick Numbers Banner (Mid-Level 3-6y) */}
         <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
           <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">
-            Baseline London Compensation (Mid-Level 3–6 Years)
+            Baseline London Compensation (Mid-Level Specialist: 3–6 Years)
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="p-5 bg-slate-50 border border-slate-200 rounded-xl">
               <span className="text-xs font-bold uppercase text-slate-500 block">10th Percentile (Min)</span>
               <span className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1 block">
-                {formatCurrency(details.baseP10)}
+                {formatCurrency(midTier.p10)}
               </span>
-              <span className="text-xs text-slate-500 mt-1 block">Entry / Developing</span>
+              <span className="text-xs text-slate-500 mt-1 block">Developing / Standard Base</span>
             </div>
 
             <div className="p-5 bg-blue-50/60 border-2 border-blue-800 rounded-xl shadow-xs">
               <span className="text-xs font-bold uppercase text-blue-900 block">50th Percentile (Median)</span>
               <span className="text-2xl sm:text-3xl font-extrabold text-blue-950 mt-1 block">
-                {formatCurrency(details.baseP50)}
+                {formatCurrency(midTier.p50)}
               </span>
               <span className="text-xs font-semibold text-blue-800 mt-1 block">Market Standard Benchmark</span>
             </div>
@@ -411,9 +465,9 @@ export default async function RoleSalaryGuidePage({ params }: { params: Promise<
             <div className="p-5 bg-slate-50 border border-slate-200 rounded-xl">
               <span className="text-xs font-bold uppercase text-slate-500 block">90th Percentile (Peak)</span>
               <span className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1 block">
-                {formatCurrency(details.baseP90)}
+                {formatCurrency(midTier.p90)}
               </span>
-              <span className="text-xs text-slate-500 mt-1 block">Top Performer / Tier-1 Firm</span>
+              <span className="text-xs text-slate-500 mt-1 block">Top Decile / Tier-1 Firm</span>
             </div>
           </div>
 
@@ -494,7 +548,7 @@ export default async function RoleSalaryGuidePage({ params }: { params: Promise<
             Compensation by Experience Tier (London Base)
           </h2>
           <p className="text-xs text-slate-500">
-            Based on London market baselines. Excludes annual performance bonuses, pensions, and equity awards.
+            Calibrated for London & City financial hubs. Excludes annual performance bonuses, pensions, and equity awards.
           </p>
 
           <div className="overflow-x-auto pt-2">
@@ -502,22 +556,25 @@ export default async function RoleSalaryGuidePage({ params }: { params: Promise<
               <thead className="bg-slate-100 text-slate-900 font-bold uppercase tracking-wider text-xs">
                 <tr>
                   <th className="p-3.5">Experience Tier</th>
-                  <th className="p-3.5">10th % (Entry)</th>
+                  <th className="p-3.5">10th % (Min)</th>
                   <th className="p-3.5 bg-blue-100/60 text-blue-950">50th % (Median)</th>
                   <th className="p-3.5">90th % (Peak)</th>
-                  <th className="p-3.5">Typical Scope</th>
+                  <th className="p-3.5">Typical Scope & Remit</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
-                {expTiers.map((tier) => (
-                  <tr key={tier.label} className="hover:bg-slate-50 transition">
-                    <td className="p-3.5 font-bold text-slate-900">{tier.label}</td>
-                    <td className="p-3.5 text-slate-600">{formatCurrency(details.baseP10 * tier.mult)}</td>
-                    <td className="p-3.5 font-bold text-blue-900 bg-blue-50/30">{formatCurrency(details.baseP50 * tier.mult)}</td>
-                    <td className="p-3.5 text-slate-600">{formatCurrency(details.baseP90 * tier.mult)}</td>
-                    <td className="p-3.5 text-xs text-slate-500">{tier.desc}</td>
-                  </tr>
-                ))}
+                {expTierKeys.map((tierKey) => {
+                  const t = details.tiers[tierKey];
+                  return (
+                    <tr key={tierKey} className="hover:bg-slate-50 transition">
+                      <td className="p-3.5 font-bold text-slate-900">{expTierLabels[tierKey]}</td>
+                      <td className="p-3.5 text-slate-600">{formatCurrency(t.p10)}</td>
+                      <td className="p-3.5 font-bold text-blue-900 bg-blue-50/30">{formatCurrency(t.p50)}</td>
+                      <td className="p-3.5 text-slate-600">{formatCurrency(t.p90)}</td>
+                      <td className="p-3.5 text-xs text-slate-500">{t.desc}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -537,7 +594,7 @@ export default async function RoleSalaryGuidePage({ params }: { params: Promise<
             {regions.map((reg) => (
               <div key={reg.name} className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
                 <span className="text-xs font-bold text-slate-500 block truncate" title={reg.name}>{reg.name}</span>
-                <span className="text-lg font-bold text-slate-900 block">{formatCurrency(details.baseP50 * reg.mult)}</span>
+                <span className="text-lg font-bold text-slate-900 block">{formatCurrency(midTier.p50 * reg.mult)}</span>
                 <span className="text-xs text-blue-800 font-medium block">Index: {reg.mult.toFixed(2)}x London</span>
               </div>
             ))}

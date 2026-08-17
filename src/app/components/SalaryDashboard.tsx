@@ -375,48 +375,48 @@ export default function SalaryDashboard() {
     // 1. Audit, Governance & Risk - Distinct sub-role definitions
     if (/\b(part qualified|pq auditor|pq audit)\b/i.test(inputLower)) {
       sector = "Audit & Public Practice";
-      baseP10 = 37500; baseP50 = 45000; baseP90 = 52500; // at 1-3 yrs (0.80 mult) -> £30,000 / £36,000 / £42,000
+      baseP10 = 42500; baseP50 = 52500; baseP90 = 60000; // at 1-3 yrs (0.80 mult) -> £34,000 / £42,000 / £48,000
       basePct = 95; bonusPct = 5;
       description = "Delivers audit testing, control evaluations, and statutory reporting support while progressing ACA/ACCA professional qualification.";
-      demand = "High Demand for Qualified ACA/ACCA Trainees";
-      yoy = "1–4%";
-      hiringInsight = "London part-qualified external audit ranges approximately £30,000–£42,000 depending on exam passes (ACA/ACCA) and firm size (Big Four / Top 10 vs mid-tier).";
-    }
+      demand = "High (Continuous Trainee & Associate Recruitment)";
+      yoy = "5–8%";
+      hiringInsight = "London part-qualified external audit ranges £34,000–£48,000 depending on exam passes (ACA/ACCA) and firm tier.";
+    } 
     else if (/\b(external audit|external auditor|statutory audit|public practice audit)\b/i.test(inputLower)) {
       sector = "Audit & Public Practice";
-      baseP10 = 50000; baseP50 = 66000; baseP90 = 80000;
-      basePct = 92; bonusPct = 8;
+      baseP10 = 62000; baseP50 = 76000; baseP90 = 90000;
+      basePct = 88; bonusPct = 12;
       description = "Delivers statutory financial statement audits, internal control assessments, and regulatory assurance for public practice clients across Big Four, Top 10, and mid-tier firms.";
-      demand = "High Scarcity (ACA / ACCA Qualified)";
-      yoy = "1–4%";
-      hiringInsight = "London part-qualified external audit ranges approximately £30,000–£42,000; newly qualified ACA/ACCA external audit averages £51,000–£56,000.";
+      demand = "Acute Scarcity (ACA / ACCA Qualified in London)";
+      yoy = "5–9%";
+      hiringInsight = "London newly qualified ACA/ACCA external audit averages £62,000–£76,000 in Big 4 and Top 10 firms.";
     }
     else if (/\b(it audit|it auditor|cyber audit|technology audit|systems audit)\b/i.test(inputLower)) {
       sector = "Audit, Governance & Risk";
-      baseP10 = 50000; baseP50 = 72500; baseP90 = 93750;
-      basePct = 88; bonusPct = 12;
+      baseP10 = 75000; baseP50 = 92000; baseP90 = 110000;
+      basePct = 85; bonusPct = 15;
       description = "Audits technology infrastructure, cyber security governance, cloud controls, and automated application systems.";
-      demand = "Constrained for IT & Cyber Specialists";
-      yoy = "1–4%";
-      hiringInsight = "Specialist skills in IT audit, cyber security, cloud controls, and model risk remain difficult to recruit.";
+      demand = "Extreme Scarcity (DORA, Cloud & Cyber Governance)";
+      yoy = "6–10%";
+      hiringInsight = "CISA-qualified IT auditors in London command £75k–£110k+ across regulated financial services.";
     }
     else if (/\b(audit manager|head of audit|audit director|avp audit)\b/i.test(inputLower)) {
       sector = "Audit, Governance & Risk";
-      baseP10 = 69000; baseP50 = 80250; baseP90 = 105000;
-      basePct = 85; bonusPct = 15;
+      baseP10 = 92000; baseP50 = 112000; baseP90 = 132000;
+      basePct = 82; bonusPct = 18;
       description = "Leads internal or external audit teams, manages risk reporting, and presents governance recommendations to executive audit committees.";
-      demand = "High Scarcity (Experienced Managers)";
-      yoy = "1–4%";
-      hiringInsight = "Audit Manager ranges span £69k–£80k in commerce up to £105k in specialist financial services, with 15–20% variable bonus typical at manager level.";
+      demand = "High Scarcity (Audit Committee & Leadership)";
+      yoy = "5–8%";
+      hiringInsight = "Audit Manager ranges span £92k–£112k in commerce up to £132k+ in specialist financial services with 15–25% bonus.";
     }
     else if (/\b(internal audit|internal auditor|audit|auditor)\b/i.test(inputLower)) {
       sector = "Audit, Governance & Risk";
-      baseP10 = 43750; baseP50 = 62500; baseP90 = 81250; // Map at 1-3 yrs (0.80 mult) -> £35,000 / £50,000 / £65,000
-      basePct = 90; bonusPct = 10;
+      baseP10 = 68000; baseP50 = 82000; baseP90 = 95000;
+      basePct = 88; bonusPct = 12;
       description = "Reviews internal controls, risk-management processes, financial governance and regulatory compliance. Identifies control weaknesses and recommends practical improvements.";
-      demand = "Moderate overall; constrained for specialists";
-      yoy = "1–4%";
-      hiringInsight = "Candidate availability is moderate overall, although newly qualified auditors and candidates with financial-services, IT audit, cyber, model-risk or regulatory experience remain harder to secure. Typical bonuses range from 0–10%, with higher variable compensation possible in specialist financial-services positions.";
+      demand = "High (Regulated Banking, Insurance & FTSE 100)";
+      yoy = "4–7%";
+      hiringInsight = "Internal Auditors (ACA/CIA 1–3 yrs PQE) range £68k–£95k base in London financial institutions.";
     }
     // 2. Legal & Professional Services (Separating City/US Premium vs Standard / Regional Practice)
     else if (/\b(legal|solicitor|lawyer|counsel|partner|attorney|barrister|conveyancer)\b/i.test(inputLower)) {
@@ -602,40 +602,40 @@ export default function SalaryDashboard() {
     else if (/\b(quant|hft|prop trading|alpha researcher)\b/i.test(inputLower)) {
       sector = "Quant & Quantitative Finance";
       if (isDirectorLevel) {
-        baseP10 = 120000; baseP50 = 220000; baseP90 = 350000;
+        baseP10 = 260000; baseP50 = 400000; baseP90 = 580000;
         basePct = 50; bonusPct = 50;
         description = "Directs quantitative strategy research, high-frequency execution architecture, alpha generation, and portfolio risk management.";
-        demand = "Critical Scarcity (Quant Directors & Heads of Research)";
-        yoy = "1–4%";
-        hiringInsight = "Quant Directors and Heads of Research receive top-tier buy-side compensation with 50%+ bonus pools.";
+        demand = "Critical Scarcity (Quant Directors, PMs & Partners)";
+        yoy = "8–18%";
+        hiringInsight = "Quant Directors and Heads of Research receive top-tier buy-side compensation (£400k–£1m+ total comp with 50%+ bonus pools).";
         maxExpMultiplier = 1.50;
       } else {
-        baseP10 = 90000; baseP50 = 180000; baseP90 = 280000;
-        basePct = 60; bonusPct = 40;
+        baseP10 = 160000; baseP50 = 250000; baseP90 = 360000;
+        basePct = 50; bonusPct = 50;
         description = "Engineers algorithmic trading models, high-frequency execution infrastructure, and strategy research.";
-        demand = "High Scarcity";
-        yoy = "1–4%";
-        hiringInsight = "Fierce bidding war across buy-side funds. Candidates hold multiple competing offers.";
+        demand = "Extreme Scarcity (Alpha Generation & High Sharpe Models)";
+        yoy = "8–15%";
+        hiringInsight = "Top prop shops (Citadel, Jane Street, Millennium, XTX) offer £250k+ base with 100–200% PnL bonus pools.";
       }
     } 
-    // 11. Insurance Underwriting
-    else if (/\b(underwriter|insurance|broker|claims)\b/i.test(inputLower)) {
-      sector = "Insurance & Specialty Reinsurance";
+    // 11. Insurance Underwriting & Actuarial
+    else if (/\b(underwriter|actuary|actuarial|insurance|broker|claims)\b/i.test(inputLower)) {
+      sector = "Insurance, Actuarial & Specialty Reinsurance";
       if (isDirectorLevel) {
-        baseP10 = 90000; baseP50 = 135000; baseP90 = 195000;
+        baseP10 = 135000; baseP50 = 185000; baseP90 = 260000;
         basePct = 70; bonusPct = 30;
         description = "Directs underwriting portfolio strategy, Lloyd's syndicate exposure, risk appetite, pricing, and broker market relationships.";
-        demand = "High Scarcity (Underwriting Directors & Active Underwriters)";
-        yoy = "1–4%";
-        hiringInsight = "Lloyd's and company market Underwriting Directors command executive packages with significant performance bonuses.";
+        demand = "High Scarcity (Chief Actuaries & Active Underwriters)";
+        yoy = "5–9%";
+        hiringInsight = "Lloyd's and company market Underwriting Directors & Chief Actuaries command £185k–£260k+ base with significant performance bonuses.";
         maxExpMultiplier = 1.50;
       } else {
-        baseP10 = 55000; baseP50 = 95000; baseP90 = 160000;
+        baseP10 = 85000; baseP50 = 118000; baseP90 = 155000;
         basePct = 75; bonusPct = 25;
         description = "Evaluates portfolio risk, Lloyd's syndicate exposure, pricing strategy, and broker client relationships.";
-        demand = "High Scarcity";
-        yoy = "1–4%";
-        hiringInsight = "Lloyd's and company markets face tight supply of profitable book leads. Direct headhunting recommended.";
+        demand = "High Scarcity (Specialty Lines Underwriters & Qualified FIAs)";
+        yoy = "5–8%";
+        hiringInsight = "Lloyd's specialty underwriters (Cyber, Marine, Energy) and qualified FIAs average £110k–£155k base in London.";
       }
     }
 
