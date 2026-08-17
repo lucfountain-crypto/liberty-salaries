@@ -1318,10 +1318,18 @@ export default function SalaryDashboard() {
             </div>
             <span>Recruitment without borders. Talent without compromise.</span>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-4 text-slate-600">
-            <a href="https://www.libertytowers.co.uk/labour-talent-index/" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-blue-900 transition font-medium">LT Index (Market Sentiment)</a>
+          <div className="flex flex-wrap items-center justify-center gap-3 text-slate-600">
+            <a href="/salaries" className="hover:underline hover:text-blue-900 transition font-medium">Salary Guides</a>
             <span>•</span>
-            <a href="/privacy" className="hover:underline hover:text-blue-900 transition font-medium">Privacy Policy</a>
+            <a href="/about" className="hover:underline hover:text-blue-900 transition font-medium">About</a>
+            <span>•</span>
+            <a href="/methodology" className="hover:underline hover:text-blue-900 transition font-medium">Methodology</a>
+            <span>•</span>
+            <a href="/contact" className="hover:underline hover:text-blue-900 transition font-medium">Contact</a>
+            <span>•</span>
+            <a href="/privacy-policy" className="hover:underline hover:text-blue-900 transition font-medium">Privacy Policy</a>
+            <span>•</span>
+            <a href="/terms" className="hover:underline hover:text-blue-900 transition font-medium">Terms</a>
             <span>•</span>
             <a href="/ads.txt" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-blue-900 transition font-medium">ads.txt</a>
             <span>•</span>
