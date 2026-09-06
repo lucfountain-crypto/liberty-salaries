@@ -168,10 +168,10 @@ const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
     ],
     marketContext: 'Specialty classes such as Cyber, Renewable Energy, and Political Risk command premium compensation due to specialized risk modeling requirements and Lloyd\'s syndicate competition.',
     tiers: {
-      '1-3': { p10: 48000, p50: 62000, p90: 76000, desc: 'Assistant Underwriter / Box Trainee at Lloyd\'s' },
-      '3-6': { p10: 85000, p50: 115000, p90: 150000, desc: 'Class Underwriter / Specialty Lines Underwriter' },
-      '6-10': { p10: 130000, p50: 170000, p90: 220000, desc: 'Senior Underwriter / Syndicate Portfolio Lead' },
-      '10+': { p10: 195000, p50: 270000, p90: 390000, desc: 'Active Underwriter / Chief Underwriting Officer (CUO)' }
+      '1-3': { p10: 38000, p50: 48000, p90: 60000, desc: 'Assistant Underwriter / Box Trainee at Lloyd\'s' },
+      '3-6': { p10: 60000, p50: 82000, p90: 105000, desc: 'Class Underwriter / Specialty Lines Underwriter' },
+      '6-10': { p10: 92000, p50: 125000, p90: 160000, desc: 'Senior Underwriter / Syndicate Portfolio Lead' },
+      '10+': { p10: 140000, p50: 185000, p90: 240000, desc: 'Active Underwriter / Chief Underwriting Officer (CUO)' }
     }
   },
   'ins-actuary-lead': {
@@ -392,6 +392,50 @@ const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
       '3-6': { p10: 58000, p50: 72000, p90: 88000, desc: 'Specialty Registrar ST4–ST8 (MRCPCH qualified; gross £72k–£95k with rota banding)' },
       '6-10': { p10: 99500, p50: 114000, p90: 130000, desc: 'Newly Appointed NHS Consultant Paediatrician (Thresholds 1–4 + EPAs / On-call)' },
       '10+': { p10: 120000, p50: 148000, p90: 185000, desc: 'Senior Consultant / Clinical Director / Private Clinic Practice (Thresholds 5–8+ & NCIAs)' }
+    }
+  },
+  'legal-commercial-solicitor': {
+    basePct: 88,
+    bonusPct: 12,
+    demand: 'High Demand (3–5y PQE Practitioners)',
+    movement: '+3% to +6% annual associate scale movement; lateral hiring attracts retention premiums',
+    certifications: ['Qualified Solicitor (SRA / Law Society of England & Wales)', 'LLB / LPC / SQE'],
+    overview: 'Commercial Solicitors advise on corporate transactions, commercial contracting, SaaS agreements, intellectual property licensing, regulatory compliance, and dispute resolution across private practice and corporate legal departments.',
+    responsibilities: [
+      'Drafting, negotiating, and executing high-value commercial agreements and vendor contracts.',
+      'Advising executive leadership on risk mitigation, data protection (UK GDPR), and regulatory compliance.',
+      'Managing corporate restructuring, mergers & acquisitions due diligence, and disclosure documentation.',
+      'Resolving contentious contractual disputes, settlement agreements, and IP infringements.',
+      'Coordinating external counsel and managing legal panel relationships.'
+    ],
+    marketContext: 'UK legal compensation is benchmarked strictly by Post-Qualification Experience (PQE). Substantial divergence exists between regional/in-house teams (£55k–£95k) and City/US elite firms (£110k–£180k+ base).',
+    tiers: {
+      '1-3': { p10: 52000, p50: 66000, p90: 85000, desc: 'Junior Solicitor (1–2y PQE); commercial drafting & disclosure' },
+      '3-6': { p10: 58000, p50: 75000, p90: 95000, desc: 'Commercial Solicitor (3–5y PQE); corporate contracts & advisory' },
+      '6-10': { p10: 85000, p50: 115000, p90: 145000, desc: 'Senior Associate / Managing Counsel; high-value deals' },
+      '10+': { p10: 120000, p50: 175000, p90: 260000, desc: 'Partner / General Counsel / Legal Director' }
+    }
+  },
+  'tech-software-engineer': {
+    basePct: 88,
+    bonusPct: 12,
+    demand: 'Strong UK Demand (Autonomous Mid-Level Engineers)',
+    movement: '+2% to +5% annual base growth across UK regional and London engineering teams',
+    certifications: ['BSc/MSc Computer Science or equivalent', 'AWS / Azure / GCP Cloud Certifications'],
+    overview: 'Software Engineers architect, build, and maintain production backend services, microservices APIs, distributed systems, and web platforms utilizing modern cloud-native architectures.',
+    responsibilities: [
+      'Designing and developing scalable backend APIs and microservices in TypeScript, Python, Go, or Java.',
+      'Deploying containerized services via Docker and Kubernetes with automated CI/CD pipelines.',
+      'Optimizing database queries, caching layers (Redis), and event streaming architectures (Kafka).',
+      'Implementing automated testing, observability metrics, and production monitoring.',
+      'Collaborating with product managers and engineering leads on sprint planning and system architecture.'
+    ],
+    marketContext: 'Regional engineering hubs like Birmingham and Manchester provide exceptional talent value at 15–20% lower cost baselines than London. FinTech and distributed systems command premium rates.',
+    tiers: {
+      '1-3': { p10: 38000, p50: 48000, p90: 62000, desc: 'Junior Software Engineer; feature delivery and code maintenance' },
+      '3-6': { p10: 55000, p50: 68000, p90: 85000, desc: 'Mid-Level Software Engineer; service design and API architecture' },
+      '6-10': { p10: 78000, p50: 98000, p90: 125000, desc: 'Senior / Lead Software Engineer; distributed systems and tech leadership' },
+      '10+': { p10: 105000, p50: 135000, p90: 175000, desc: 'Principal Engineer / Staff Architect / Engineering Manager' }
     }
   }
 };

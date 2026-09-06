@@ -73,39 +73,39 @@ export default function MethodologyPage() {
           <div className="space-y-4">
             <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
               <BarChart3 className="w-6 h-6 text-blue-900" />
-              2. Understanding Compensation Percentiles
+              2. Understanding Indicative Compensation Ranges
             </h2>
             <p className="text-sm text-slate-600 leading-relaxed">
-              Rather than presenting a single misleading &quot;average&quot; salary, our model maps roles across three distinct statistical percentiles:
+              Rather than presenting a single misleading &quot;average&quot; salary, our model maps roles across three clearly defined indicative benchmarks:
             </p>
             <div className="space-y-3">
               <div className="p-4 bg-slate-50 border-l-4 border-slate-400 rounded-r-xl">
                 <div className="flex items-center justify-between">
-                  <strong className="text-sm font-bold text-slate-900">10th Percentile (Entry / Developing Level)</strong>
+                  <strong className="text-sm font-bold text-slate-900">Indicative Lower Range (10th Percentile Reference)</strong>
                   <span className="text-xs font-semibold px-2 py-0.5 bg-slate-200 text-slate-700 rounded">Starting Range</span>
                 </div>
                 <p className="text-xs text-slate-600 mt-1">
-                  Represents candidates entering the role bracket, those with foundational domain experience, or smaller organizations with tighter compensation budgets.
+                  Represents candidates entering the role grade, developing practitioners, or smaller commercial businesses with tighter compensation budgets.
                 </p>
               </div>
 
               <div className="p-4 bg-blue-50/50 border-l-4 border-blue-800 rounded-r-xl">
                 <div className="flex items-center justify-between">
-                  <strong className="text-sm font-bold text-blue-950">50th Percentile (Market Median / Standard Specialist)</strong>
+                  <strong className="text-sm font-bold text-blue-950">Indicative Midpoint (Modelled Median Reference)</strong>
                   <span className="text-xs font-semibold px-2 py-0.5 bg-blue-100 text-blue-800 rounded">Core Benchmark</span>
                 </div>
                 <p className="text-xs text-slate-600 mt-1">
-                  The median compensation for fully autonomous, proven professionals meeting all standard job specifications with proven track records.
+                  The modelled market reference point for fully autonomous, proven professionals meeting all standard job specifications with track records of independent delivery.
                 </p>
               </div>
 
               <div className="p-4 bg-emerald-50/50 border-l-4 border-emerald-600 rounded-r-xl">
                 <div className="flex items-center justify-between">
-                  <strong className="text-sm font-bold text-slate-900">90th Percentile (Top-Decile / High Performer)</strong>
-                  <span className="text-xs font-semibold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded">Premium Tier</span>
+                  <strong className="text-sm font-bold text-slate-900">Specialist Upper Range (90th Percentile / Premium Tier)</strong>
+                  <span className="text-xs font-semibold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded">Specialist Tier</span>
                 </div>
                 <p className="text-xs text-slate-600 mt-1">
-                  Upper-tier compensation commanded by top performers, individuals with scarce niche qualifications, or premier tier-1 global institutions (e.g. US law firms, tier-1 prop trading shops).
+                  Upper-tier compensation commanded by top performers, individuals with scarce niche certifications (e.g. CISA, FIA, specialist PQE), team leadership remits, or premier tier-1 institutions (City/US elite law firms, bulge bracket banking, Lloyd&apos;s lead syndicates).
                 </p>
               </div>
             </div>
@@ -117,10 +117,10 @@ export default function MethodologyPage() {
           <div className="space-y-4">
             <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
               <MapPin className="w-6 h-6 text-blue-900" />
-              3. Geographic & Regional Multipliers
+              3. Geographic, Regional & Working Setup Index
             </h2>
             <p className="text-sm text-slate-600 leading-relaxed">
-              Compensation benchmarks are baseline-calibrated against <strong>London & the City of London (1.00x)</strong>. Regional locations and remote work structures are adjusted using our verified 2026 regional index:
+              Compensation benchmarks are baseline-calibrated against <strong>London & the City of London (1.00x)</strong>. Office-based and hybrid arrangements share equal base salary parity in modern UK practice. Regional locations and remote work structures are adjusted using our verified 2026 regional index:
             </p>
 
             <div className="overflow-x-auto">

@@ -12,6 +12,7 @@ import {
   Zap,
   Users,
   ChevronRight,
+  ChevronDown,
   Info,
   Clock,
   Briefcase,
@@ -28,11 +29,17 @@ export default function SalaryDashboard() {
   const [expYears, setExpYears] = useState<string>('1-3'); // '1-3', '3-6', '6-10', '10+'
   const [locationNatural, setLocationNatural] = useState<string>('');
   
-  // App view modes
+  // Optional Refinement State
+  const [showRefinements, setShowRefinements] = useState<boolean>(false);
+  const [employerType, setEmployerType] = useState<'standard' | 'specialist' | 'city_elite' | 'public'>('standard');
+  const [roleSpecialism, setRoleSpecialism] = useState<string>('default');
+
+  // App view modes & drawers
   const [viewMode, setViewMode] = useState<'guided' | 'full'>('guided');
   const [hasGenerated, setHasGenerated] = useState<boolean>(true);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showMethodologyDrawer, setShowMethodologyDrawer] = useState<boolean>(false);
 
   // Lead Form State
   const [leadName, setLeadName] = useState<string>('');
@@ -59,12 +66,29 @@ export default function SalaryDashboard() {
   const predefinedRoles = salaryData.roles;
 
   // Real-world Regional, UK Remote & Overseas Location Parser
+  // Guardrail: NO silent fallback to London for unrecognised UK locations
   const parsedLocation = useMemo(() => {
-    const locLower = (locationNatural || 'London, hybrid').toLowerCase();
-    let regionKey = 'london';
-    let regionName = "London & City Hubs";
-    let multiplier = 1.0;
-    let isOverseasEU = false;
+    const locLower = (locationNatural || '').trim().toLowerCase();
+    
+    // Work style extraction
+    let derivedStyle = 'hybrid';
+    if (/\b(remote|wfh|home|telecommute|distributed)\b/.test(locLower)) {
+      derivedStyle = 'remote';
+    } else if (/\b(office|onsite|in-office|site-based|desk)\b/.test(locLower)) {
+      derivedStyle = 'office';
+    }
+
+    if (!locLower) {
+      return {
+        regionKey: 'london',
+        regionName: 'London & City Hubs',
+        multiplier: 1.0,
+        derivedStyle: 'hybrid',
+        isOverseasEU: false,
+        isUnrecognised: false,
+        warning: null as string | null
+      };
+    }
 
     // Word boundary checks for UK vs EU vs US
     const isUS = /\b(us|usa|united states|new york|wall street|silicon valley)\b/.test(locLower);
@@ -72,67 +96,213 @@ export default function SalaryDashboard() {
     const isUKExplicit = /\b(uk|united kingdom|britain|british|england|london|manchester|leeds|birmingham|northampton|nottingham|leicester|scotland)\b/.test(locLower);
 
     if (isExplicitEU && !isUS && !isUKExplicit) {
-      regionKey = 'eu_remote';
-      regionName = 'European & Overseas Remote';
-      multiplier = 0.72; // European Remote Pay (~0.72x London)
-      isOverseasEU = true;
-    } else if (isUS) {
-      regionKey = 'us_remote';
-      regionName = 'US & Wall Street Remote';
-      multiplier = 1.30;
-    } else if (
-      /\b(birmingham|nottingham|leicester|northampton|northamptonshire|coventry|derby|stoke|wolverhampton|solihull|midlands|east midlands|west midlands|milton keynes|peterborough|kettering|corby|wellingborough)\b/.test(locLower)
-    ) {
-      regionKey = 'midlands';
-      regionName = 'Midlands & Central UK (Birmingham/Nottingham/Northampton)';
-      multiplier = 0.82;
-    } else if (
-      /\b(manchester|leeds|liverpool|sheffield|newcastle|sunderland|teesside|cumbria|carlisle|preston|lancaster|blackpool|bolton|warrington|hull|york|yorkshire|merseyside|lancashire|tyneside)\b/.test(locLower) ||
-      /\b(north|north west|north east|north uk|northern)\b/.test(locLower)
-    ) {
-      regionKey = 'north_uk';
-      regionName = 'North UK (Manchester/Leeds)';
-      multiplier = 0.80;
-    } else if (
-      /\b(scotland|edinburgh|glasgow|aberdeen|dundee|inverness|scottish)\b/.test(locLower)
-    ) {
-      regionKey = 'scotland';
-      regionName = 'Scotland & Regional';
-      multiplier = 0.82;
-    } else if (
-      /\b(surrey|kent|essex|reading|berkshire|oxford|oxfordshire|cambridge|cambridgeshire|brighton|southampton|portsmouth|guildford|st albans|hertfordshire|herts|sussex|hampshire|bristol|south west)\b/.test(locLower) ||
-      /\b(south|south east|southeast)\b/.test(locLower)
-    ) {
-      regionKey = 'south_east';
-      regionName = 'South East England';
-      multiplier = 0.88;
-    } else if (locLower.includes('remote') && !isExplicitEU) {
-      // UK National Remote
-      regionKey = 'uk_remote';
-      regionName = 'UK National Remote';
-      multiplier = 0.92;
-    } else if (
+      return {
+        regionKey: 'eu_remote',
+        regionName: 'European & Overseas Remote',
+        multiplier: 0.72,
+        derivedStyle: 'remote',
+        isOverseasEU: true,
+        isUnrecognised: false,
+        warning: null
+      };
+    }
+    
+    if (isUS) {
+      return {
+        regionKey: 'us_remote',
+        regionName: 'US & Wall Street Remote',
+        multiplier: 1.30,
+        derivedStyle: 'remote',
+        isOverseasEU: false,
+        isUnrecognised: false,
+        warning: null
+      };
+    }
+
+    // Midlands (Birmingham, Nottingham, Leicester, Northampton, etc.)
+    if (/\b(birmingham|nottingham|leicester|northampton|northamptonshire|coventry|derby|stoke|wolverhampton|solihull|midlands|east midlands|west midlands|milton keynes|peterborough|kettering|corby|wellingborough)\b/.test(locLower)) {
+      return {
+        regionKey: 'midlands',
+        regionName: 'Midlands (Birmingham, Nottingham, Leicester)',
+        multiplier: 0.82,
+        derivedStyle,
+        isOverseasEU: false,
+        isUnrecognised: false,
+        warning: null
+      };
+    }
+
+    // North UK (Manchester, Leeds, Liverpool, Sheffield, Newcastle, etc.)
+    if (/\b(manchester|leeds|liverpool|sheffield|newcastle|sunderland|teesside|cumbria|carlisle|preston|lancaster|blackpool|bolton|warrington|hull|york|yorkshire|merseyside|lancashire|tyneside|north|north west|north east|north uk|northern)\b/.test(locLower)) {
+      return {
+        regionKey: 'north_uk',
+        regionName: 'North UK (Manchester, Leeds, Liverpool)',
+        multiplier: 0.82,
+        derivedStyle,
+        isOverseasEU: false,
+        isUnrecognised: false,
+        warning: null
+      };
+    }
+
+    // Scotland
+    if (/\b(scotland|edinburgh|glasgow|aberdeen|dundee|inverness|scottish)\b/.test(locLower)) {
+      return {
+        regionKey: 'scotland',
+        regionName: 'Scotland (Edinburgh, Glasgow, Regional)',
+        multiplier: 0.82,
+        derivedStyle,
+        isOverseasEU: false,
+        isUnrecognised: false,
+        warning: null
+      };
+    }
+
+    // South West & Wales
+    if (/\b(bristol|bath|cardiff|swansea|newport|exeter|plymouth|cornwall|devon|swindon|wiltshire|somerset|dorset|gloucester|cheltenham|wales|south west)\b/.test(locLower)) {
+      return {
+        regionKey: 'south_west',
+        regionName: 'South West England & Wales',
+        multiplier: 0.82,
+        derivedStyle,
+        isOverseasEU: false,
+        isUnrecognised: false,
+        warning: null
+      };
+    }
+
+    // South East England
+    if (/\b(surrey|kent|essex|reading|berkshire|oxford|oxfordshire|cambridge|cambridgeshire|brighton|southampton|portsmouth|guildford|st albans|hertfordshire|herts|sussex|hampshire|south|south east|southeast)\b/.test(locLower)) {
+      return {
+        regionKey: 'south_east',
+        regionName: 'South East England & Home Counties',
+        multiplier: 0.88,
+        derivedStyle,
+        isOverseasEU: false,
+        isUnrecognised: false,
+        warning: null
+      };
+    }
+
+    // East of England
+    if (/\b(norfolk|norwich|suffolk|ipswich|colchester|chelmsford|east anglia|east of england)\b/.test(locLower)) {
+      return {
+        regionKey: 'east_england',
+        regionName: 'East of England',
+        multiplier: 0.85,
+        derivedStyle,
+        isOverseasEU: false,
+        isUnrecognised: false,
+        warning: null
+      };
+    }
+
+    // Northern Ireland
+    if (/\b(belfast|derry|northern ireland|antrim)\b/.test(locLower)) {
+      return {
+        regionKey: 'northern_ireland',
+        regionName: 'Northern Ireland (Belfast)',
+        multiplier: 0.80,
+        derivedStyle,
+        isOverseasEU: false,
+        isUnrecognised: false,
+        warning: null
+      };
+    }
+
+    // UK National Remote
+    if (locLower.includes('remote') && !isExplicitEU) {
+      return {
+        regionKey: 'uk_remote',
+        regionName: 'UK National Remote',
+        multiplier: 0.95,
+        derivedStyle: 'remote',
+        isOverseasEU: false,
+        isUnrecognised: false,
+        warning: null
+      };
+    }
+
+    // London & Central City Hubs
+    if (
       locLower.includes('london') || locLower.includes('mayfair') || locLower.includes('canary wharf') || 
       locLower.includes("lloyd's") || locLower.includes('city') || locLower.includes('square mile') || 
       locLower.includes('west end') || locLower.includes('soho') || locLower.includes('ec1') || 
       locLower.includes('ec2') || locLower.includes('ec3') || locLower.includes('ec4') || 
       locLower.includes('wc1') || locLower.includes('wc2') || locLower.includes('w1') || locLower.includes('sw1')
     ) {
-      regionKey = 'london';
-      regionName = 'London';
-      multiplier = 1.0;
+      return {
+        regionKey: 'london',
+        regionName: "London & Lloyd's Market",
+        multiplier: 1.0,
+        derivedStyle,
+        isOverseasEU: false,
+        isUnrecognised: false,
+        warning: null
+      };
     }
 
-    // Work style extraction from text
-    let derivedStyle = 'hybrid';
-    if (locLower.includes('remote') || locLower.includes('home')) {
-      derivedStyle = 'remote';
-    } else if (locLower.includes('office') || locLower.includes('onsite') || locLower.includes('in-office')) {
-      derivedStyle = 'onsite';
-    }
-
-    return { regionKey, regionName, multiplier, derivedStyle, isOverseasEU };
+    // Graceful Unrecognised Location Fallback (NO silent London default!)
+    return {
+      regionKey: 'uk_national',
+      regionName: 'UK National Average (Unspecified Region)',
+      multiplier: 0.82,
+      derivedStyle,
+      isOverseasEU: false,
+      isUnrecognised: true,
+      warning: 'Location not explicitly recognized — calibrated against UK National Average (0.82x London baseline). Enter a specific UK city (e.g. London, Manchester, Birmingham) for local precision.'
+    };
   }, [locationNatural]);
+
+  // Optional Refinement Multipliers
+  const refinementMultiplier = useMemo(() => {
+    let mult = 1.0;
+    
+    // Employer type adjustments
+    if (employerType === 'specialist') mult *= 1.10; // Boutique / specialist firm premium
+    else if (employerType === 'city_elite') mult *= 1.45; // City / US Elite
+    else if (employerType === 'public') mult *= 0.88; // Public sector / NJC / NHS
+
+    // Role-specific focus adjustments
+    if (roleSpecialism === 'cisa') mult *= 1.15;
+    else if (roleSpecialism === 'fintech') mult *= 1.20;
+    else if (roleSpecialism === 'lloyds') mult *= 1.20;
+    else if (roleSpecialism === 'banking_fs') mult *= 1.20;
+    else if (roleSpecialism === 'city_law') mult *= 1.45;
+
+    return mult;
+  }, [employerType, roleSpecialism]);
+
+  // Dynamic Seniority Market Commentary (strictly matched to selected seniority)
+  const seniorityCommentary = useMemo(() => {
+    switch (expYears) {
+      case '1-3':
+        return {
+          demand: 'Active demand for developing professionals and trainees; focus on exam support, professional accreditation, and retention.',
+          recruiterNote: 'Developing professionals (1–3 years) require structured mentorship and qualification support. Study leave and post-qualification retention packages are primary differentiators.'
+        };
+      case '3-6':
+        return {
+          demand: 'Liquid market with strong demand for fully autonomous specialists and qualified practitioners.',
+          recruiterNote: 'Autonomous specialists (3–6 years) represent the most actively contested talent tier. Speed of hiring process and clear advancement pathways are decisive.'
+        };
+      case '6-10':
+        return {
+          demand: 'Constrained candidate availability for experienced team leads, technical specialists, and portfolio managers.',
+          recruiterNote: 'Senior specialists and managers (6–10 years) command premiums for domain depth and cross-functional leadership; retention packages and deferred bonuses are prevalent.'
+        };
+      case '10+':
+        return {
+          demand: 'Acute scarcity for executive leaders, partners, and strategic governance directors.',
+          recruiterNote: 'Executive and director appointments (10+ years) typically involve bespoke remuneration including long-term incentive plans (LTIP), equity, or profit sharing.'
+        };
+      default:
+        return {
+          demand: 'Moderate candidate availability across UK commercial sectors.',
+          recruiterNote: 'Compensation reflects autonomous delivery against standard UK occupational specifications.'
+        };
+    }
+  }, [expYears]);
 
   // Role Knowledge Base / Heuristic AI Parser for ANY job title
   const activeRoleData = useMemo(() => {
@@ -168,18 +338,34 @@ export default function SalaryDashboard() {
       const titleLower = predefined.title.toLowerCase();
       const isAudit = titleLower.includes('audit');
       const isQuantOrIB = titleLower.includes('quant') || titleLower.includes('m&a') || titleLower.includes('banking');
+      const isLegal = titleLower.includes('solicitor') || titleLower.includes('law') || titleLower.includes('compliance');
+      const isInsurance = titleLower.includes('underwriter') || titleLower.includes('actuary');
+
+      let movementText = '+2% to +4% broad UK professional services annual salary movement.';
+      if (isAudit) {
+        movementText = '+1% to +4% planned internal pay reviews for retained employees (Source: Barclay Simpson 2026 Internal Audit Salary Guide); external career moves between employers typically achieve 8% to 15% salary progression.';
+      } else if (isQuantOrIB) {
+        movementText = '+6% to +12% annual compensation movement across front-office trading, quant research, and M&A mandates.';
+      } else if (isLegal) {
+        movementText = '+3% to +6% annual associate scale movement; lateral hiring at 3–5y PQE attracts significant retention premiums.';
+      } else if (isInsurance) {
+        movementText = '+3% to +6% annual movement; specialty and Lloyd\'s syndicate lines command premium underwriting authority allocations.';
+      }
+
       return {
         ...predefined,
         confidence: 'High',
-        confidenceReason: 'Verified benchmark from Liberty Towers 2026 Database',
+        confidenceLabel: 'High Confidence (Specialist Benchmark)',
+        confidenceReason: 'Verified benchmark from Liberty Towers executive search mandates and published UK professional salary guides.',
         targetBonusText: isAudit 
           ? '0–10% typical (higher in specialist financial services)' 
           : isQuantOrIB 
           ? '30–50%+ variable target bonus'
+          : isInsurance
+          ? '15–30% typical (syndicate performance bonuses)'
           : '10–20% typical',
-        salaryMovementText: isAudit 
-          ? '+1% to +4% annual movement (Source: Barclay Simpson 2026 Internal Audit Salary Guide)'
-          : '+1% to +3% annual movement (Source: Liberty Towers 2026 Market Intelligence)'
+        salaryMovementText: movementText,
+        tiers: (predefined as any).tiers
       };
     }
 
@@ -195,8 +381,9 @@ export default function SalaryDashboard() {
     const isFinancialServices = /\b(financial services|financial institution|investment bank|asset management|hedge fund|wealth management|capital markets|private equity|lloyd's|insurance|brokerage)\b/i.test(inputLower) || /\b(bank|banking|insurer|city financial|financial firm|city firm)\b/i.test(inputLower);
 
     let confidenceScore: 'High' | 'Moderate' = 'Moderate';
-    let confidenceReason = 'Generic job title provided without sector or organisation context. Enter organisation details (e.g. Retail, Local Council, Financial Services) for higher precision.';
-    let salaryMovementText = 'Market tracking (broad economic index)';
+    let confidenceLabel = 'Indicative Model (Broad UK Market)';
+    let confidenceReason = 'Modelled from broader UK occupational datasets and ONS labour market benchmarks.';
+    let salaryMovementText = '+2% to +4% annual UK commercial salary movement';
     let targetBonusText = '5–15% typical';
 
     if (isPublicSector) {
@@ -766,10 +953,19 @@ export default function SalaryDashboard() {
       category: isDirectorLevel ? "Executive Benchmark" : "Market Benchmark",
       description: description,
       confidence: confidenceScore,
+      confidenceLabel: confidenceLabel,
       confidenceReason: confidenceReason,
       targetBonusText: targetBonusText,
       salaryMovementText: salaryMovementText,
+      baseP10: baseP10,
+      baseP50: baseP50,
+      baseP90: baseP90,
       maxExpMultiplier: maxExpMultiplier,
+      basePct: basePct,
+      bonusPct: bonusPct,
+      demand: demand,
+      hiringInsight: hiringInsight,
+      tiers: null,
       regional_data: {
         [parsedLocation.regionKey]: {
           p10: Math.round(baseP10 * regMult),
@@ -785,78 +981,62 @@ export default function SalaryDashboard() {
     };
   }, [roleInput, parsedLocation, predefinedRoles]);
 
-  // Experience level multipliers
-  const expMultipliers: Record<string, { label: string; multiplier: number }> = {
-    '1-3': { label: '1–3 Years (Junior / Associate)', multiplier: 0.80 },
-    '3-6': { label: '3–6 Years (Mid-Level Specialist)', multiplier: 1.00 },
-    '6-10': { label: '6–10 Years (Senior Lead)', multiplier: 1.25 },
-    '10+': { label: '10+ Years (Highly Experienced / Senior Lead)', multiplier: 1.50 }
+  // Experience level metadata
+  const expMetadata: Record<string, { label: string; defaultMultiplier: number }> = {
+    '1-3': { label: '1–3 Years (Junior / Associate / 1–2y PQE)', defaultMultiplier: 0.75 },
+    '3-6': { label: '3–6 Years (Mid-Level Specialist / 3–5y PQE)', defaultMultiplier: 1.00 },
+    '6-10': { label: '6–10 Years (Senior Specialist / Lead)', defaultMultiplier: 1.25 },
+    '10+': { label: '10+ Years (Leadership / Partner / Director)', defaultMultiplier: 1.50 }
   };
 
   const currentExpMeta = useMemo(() => {
-    const raw = expMultipliers[expYears] || expMultipliers['1-3'];
-    if (expYears === '10+') {
-      const titleLower = roleInput.toLowerCase();
-      const isExec = /\b(director|cmo|cfo|cro|vp|head of|chief|partner|managing director|md)\b/i.test(titleLower);
-      return {
-        ...raw,
-        label: isExec ? '10+ Years (Highly Experienced / Executive Director)' : '10+ Years (Highly Experienced / Senior Lead)'
-      };
-    }
-    return raw;
-  }, [expYears, roleInput]);
+    return expMetadata[expYears] || expMetadata['1-3'];
+  }, [expYears]);
 
-  const rawMultiplier = currentExpMeta.multiplier;
-  const maxCap = (activeRoleData as any).maxExpMultiplier || 1.50;
-  const multiplier = Math.min(rawMultiplier, maxCap);
+  // Dynamic salary calculation
+  const regMult = parsedLocation.multiplier;
+  const refMult = refinementMultiplier;
 
-  // Active region data with fallback scaling for predefined dataset
-  const rawRegionData = useMemo(() => {
-    const key = parsedLocation.regionKey;
-    const regData = (activeRoleData.regional_data || {}) as Record<string, any>;
+  let baseP10Val = 30000;
+  let baseP50Val = 40000;
+  let baseP90Val = 55000;
 
-    if (regData[key]) {
-      return regData[key];
-    }
+  if (activeRoleData.tiers && (activeRoleData.tiers as any)[expYears]) {
+    const tier = (activeRoleData.tiers as any)[expYears];
+    baseP10Val = tier.p10;
+    baseP50Val = tier.p50;
+    baseP90Val = tier.p90;
+  } else {
+    // Custom role: baseP10/50/90 scaled by calibrated expFactor
+    const expFactor = expMetadata[expYears]?.defaultMultiplier || 1.0;
+    baseP10Val = ((activeRoleData as any).baseP10 || 35000) * expFactor;
+    baseP50Val = ((activeRoleData as any).baseP50 || 48000) * expFactor;
+    baseP90Val = ((activeRoleData as any).baseP90 || 68000) * expFactor;
+  }
 
-    if (key === 'north' && regData['north_uk']) return regData['north_uk'];
-    if (key === 'southeast' && regData['south_east']) return regData['south_east'];
+  // Work style multiplier: Exact parity between office and hybrid
+  const styleMultiplier = parsedLocation.derivedStyle === 'remote' 
+    ? (parsedLocation.regionKey === 'london' ? 0.95 : 1.0) 
+    : 1.0;
 
-    const londonData = regData['london'];
-    if (londonData) {
-      const mult = parsedLocation.multiplier;
-      return {
-        ...londonData,
-        p10: Math.round(londonData.p10 * mult),
-        p50: Math.round(londonData.p50 * mult),
-        p90: Math.round(londonData.p90 * mult),
-      };
-    }
+  const rawP10 = baseP10Val * regMult * styleMultiplier * refMult;
+  const rawP50 = baseP50Val * regMult * styleMultiplier * refMult;
+  const rawP90 = baseP90Val * regMult * styleMultiplier * refMult;
 
-    return {
-      p10: 28000,
-      p50: 38000,
-      p90: 55000,
-      base_pct: 90,
-      bonus_pct: 10,
-      demand: "Moderate Candidate Availability",
-      yoy: "1–4%",
-      hiring_insight: "Moderate active applicant volume."
-    };
-  }, [activeRoleData, parsedLocation]);
-
-  // Work style adjustment factor
-  const styleMultiplier = parsedLocation.derivedStyle === 'remote' ? 1.0 : parsedLocation.derivedStyle === 'onsite' ? 0.97 : 1.0;
-
-  // Calculated final benchmarks
   const nmwFloor = parsedLocation.isOverseasEU ? 18000 : (parsedLocation.regionKey === 'london' ? 28000 : 25000);
   
-  const p10 = Math.max(nmwFloor, Math.round((rawRegionData.p10 * multiplier * styleMultiplier) / 500) * 500);
-  const p50 = Math.max(p10 + 2000, Math.round((rawRegionData.p50 * multiplier * styleMultiplier) / 500) * 500);
-  const p90 = Math.max(p50 + 4000, Math.round((rawRegionData.p90 * multiplier * styleMultiplier) / 500) * 500);
+  const p10 = Math.max(nmwFloor, Math.round(rawP10 / 500) * 500);
+  const p50 = Math.max(p10 + 2000, Math.round(rawP50 / 500) * 500);
+  const p90 = Math.max(p50 + 4000, Math.round(rawP90 / 500) * 500);
 
-  const basePct = rawRegionData.base_pct || 90;
-  const bonusPct = rawRegionData.bonus_pct || 10;
+  const basePct = (activeRoleData as any).basePct || 90;
+  const bonusPct = (activeRoleData as any).bonusPct || 10;
+
+  const inputTitleLower = (roleInput || activeRoleData.title).toLowerCase();
+  const isLegalRole = inputTitleLower.includes('solicitor') || inputTitleLower.includes('legal') || inputTitleLower.includes('counsel') || inputTitleLower.includes('lawyer');
+  const isTechRole = inputTitleLower.includes('developer') || inputTitleLower.includes('software') || inputTitleLower.includes('engineer') || inputTitleLower.includes('tech');
+  const isAuditRole = inputTitleLower.includes('audit');
+  const isInsuranceRole = inputTitleLower.includes('underwriter') || inputTitleLower.includes('actuary') || inputTitleLower.includes('insurance');
 
   const formatCurrency = (val: number) => {
     return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(val);
@@ -966,8 +1146,8 @@ export default function SalaryDashboard() {
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
             LT Salary Benchmarks 2026
           </h1>
-          <p className="mt-2 text-sm text-slate-600">
-            Current UK salary benchmarks, market demand, and compensation insights.
+          <p className="mt-2 text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto leading-relaxed">
+            Explore indicative UK base salary ranges. Pay varies by sector, employer, qualifications and the responsibilities of the role.
           </p>
         </div>
       </section>
@@ -997,7 +1177,7 @@ export default function SalaryDashboard() {
                         setRoleInput(e.target.value);
                         setHasGenerated(true);
                       }}
-                      placeholder="Example: Internal Auditor, External Auditor, IT Auditor..."
+                      placeholder="Example: Internal Auditor, Commercial Solicitor, Software Engineer..."
                       className="w-full bg-slate-50 border border-slate-300 focus:border-blue-800 text-slate-900 pl-12 pr-4 py-3.5 rounded-xl text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-800/10 transition"
                     />
                   </div>
@@ -1006,14 +1186,16 @@ export default function SalaryDashboard() {
                   <div className="mt-3 flex flex-wrap gap-2">
                     {[
                       'Internal Auditor',
-                      'External Auditor',
                       'IT Auditor',
-                      'Audit Manager',
                       'Commercial Solicitor',
-                      'Specialty Underwriter'
+                      'Specialty Underwriter',
+                      'Software Engineer',
+                      'Audit Manager',
+                      'External Auditor'
                     ].map((role) => (
                       <button
                         key={role}
+                        type="button"
                         onClick={() => handleQuickSelect(role)}
                         className={`text-xs px-3 py-1.5 rounded-lg border transition ${
                           roleInput.toLowerCase() === role.toLowerCase()
@@ -1030,11 +1212,11 @@ export default function SalaryDashboard() {
                 {/* Grid for Steps 2 & 3 - Perfectly Aligned Inputs */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-100">
                   
-                  {/* Input 2: Years Experience */}
+                  {/* Input 2: Years Experience / PQE */}
                   <div className="flex flex-col">
                     <div className="min-h-[44px] flex items-end pb-2">
                       <label className="text-sm font-bold text-slate-900 leading-tight">
-                        How many years’ experience are required?
+                        Experience / PQE Level
                       </label>
                     </div>
                     <select
@@ -1045,10 +1227,10 @@ export default function SalaryDashboard() {
                       }}
                       className="w-full bg-slate-50 border border-slate-300 focus:border-blue-800 text-slate-900 px-4 py-3.5 rounded-xl text-sm focus:outline-none transition h-[48px]"
                     >
-                      <option value="1-3">1–3 Years (Junior / Associate)</option>
-                      <option value="3-6">3–6 Years (Mid-Level)</option>
-                      <option value="6-10">6–10 Years (Senior)</option>
-                      <option value="10+">10+ Years (Highly Experienced)</option>
+                      <option value="1-3">1–3 Years (Junior / Associate / 1–2y PQE)</option>
+                      <option value="3-6">3–6 Years (Mid-Level Specialist / 3–5y PQE)</option>
+                      <option value="6-10">6–10 Years (Senior Lead / Manager)</option>
+                      <option value="10+">10+ Years (Executive / Partner / Director)</option>
                     </select>
                   </div>
 
@@ -1056,7 +1238,7 @@ export default function SalaryDashboard() {
                   <div className="flex flex-col">
                     <div className="min-h-[44px] flex items-end pb-2">
                       <label className="text-sm font-bold text-slate-900 leading-tight">
-                        Enter the location and select whether the role is office-based, hybrid or remote.
+                        Location & Working Setup
                       </label>
                     </div>
                     <div>
@@ -1069,16 +1251,176 @@ export default function SalaryDashboard() {
                             setLocationNatural(e.target.value);
                             setHasGenerated(true);
                           }}
-                          placeholder="Example: London, hybrid"
+                          placeholder="Example: London, hybrid / Manchester / Birmingham"
                           className="w-full bg-slate-50 border border-slate-300 focus:border-blue-800 text-slate-900 pl-10 pr-4 py-3.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-800/10 transition h-[48px]"
                         />
                       </div>
-                      <span className="text-[11px] text-slate-500 mt-1 block">
-                        Parsed: <strong className="text-slate-800">{parsedLocation.regionName}</strong> ({parsedLocation.derivedStyle})
-                      </span>
+                      <div className="mt-1.5">
+                        <span className="text-[11px] text-slate-500 block">
+                          Parsed: <strong className="text-slate-800">{parsedLocation.regionName}</strong> ({parsedLocation.derivedStyle})
+                        </span>
+                        {parsedLocation.warning && (
+                          <span className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 px-2 py-1 rounded-md mt-1 block">
+                            ℹ️ {parsedLocation.warning}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
 
+                </div>
+
+                {/* Optional Refinements Accordion */}
+                <div className="pt-2 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => setShowRefinements(!showRefinements)}
+                    className="text-xs font-semibold text-blue-900 hover:text-blue-800 flex items-center space-x-1.5 transition"
+                  >
+                    <SlidersHorizontal className="w-3.5 h-3.5" />
+                    <span>{showRefinements ? 'Hide Optional Refinements' : '+ Refine Estimate (Sector, Employer Type, Specialist Remit)'}</span>
+                  </button>
+
+                  {showRefinements && (
+                    <div className="mt-4 p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-4">
+                      <div>
+                        <label className="text-xs font-bold text-slate-800 block mb-1.5">
+                          Employer / Organisation Type
+                        </label>
+                        <div className="flex flex-wrap gap-2">
+                          {[
+                            { id: 'standard', label: 'Established Corporate / Mid-Market (Standard)' },
+                            { id: 'specialist', label: 'Specialist Boutique / High-Growth (+10%)' },
+                            { id: 'city_elite', label: 'City / US Elite / Bulge Bracket (+45%)' },
+                            { id: 'public', label: 'Public Sector / NHS / Local Authority' }
+                          ].map(opt => (
+                            <button
+                              key={opt.id}
+                              type="button"
+                              onClick={() => setEmployerType(opt.id as any)}
+                              className={`text-xs px-3 py-1.5 rounded-lg border transition ${
+                                employerType === opt.id
+                                  ? 'bg-blue-900 text-white border-blue-900 font-semibold shadow-xs'
+                                  : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                              }`}
+                            >
+                              {opt.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {isLegalRole && (
+                        <div className="pt-2 border-t border-slate-200/60">
+                          <label className="text-xs font-bold text-slate-800 block mb-1">
+                            Legal Practice Setting (Experience evaluated as PQE)
+                          </label>
+                          <div className="flex flex-wrap gap-2">
+                            {[
+                              { id: 'default', label: 'Commercial In-House / Regional Practice' },
+                              { id: 'city_law', label: 'City & US Elite Law Firm Practice' }
+                            ].map(opt => (
+                              <button
+                                key={opt.id}
+                                type="button"
+                                onClick={() => setRoleSpecialism(opt.id)}
+                                className={`text-xs px-3 py-1.5 rounded-lg border transition ${
+                                  roleSpecialism === opt.id
+                                    ? 'bg-blue-900 text-white border-blue-900 font-semibold shadow-xs'
+                                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                                }`}
+                              >
+                                {opt.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {isTechRole && (
+                        <div className="pt-2 border-t border-slate-200/60">
+                          <label className="text-xs font-bold text-slate-800 block mb-1">
+                            Technical Domain Specialism
+                          </label>
+                          <div className="flex flex-wrap gap-2">
+                            {[
+                              { id: 'default', label: 'General Commercial Web & Applications' },
+                              { id: 'fintech', label: 'FinTech / High-Throughput Cloud & AI (+20%)' }
+                            ].map(opt => (
+                              <button
+                                key={opt.id}
+                                type="button"
+                                onClick={() => setRoleSpecialism(opt.id)}
+                                className={`text-xs px-3 py-1.5 rounded-lg border transition ${
+                                  roleSpecialism === opt.id
+                                    ? 'bg-blue-900 text-white border-blue-900 font-semibold shadow-xs'
+                                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                                }`}
+                              >
+                                {opt.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {isAuditRole && (
+                        <div className="pt-2 border-t border-slate-200/60">
+                          <label className="text-xs font-bold text-slate-800 block mb-1">
+                            Audit Specialism & Industry Focus
+                          </label>
+                          <div className="flex flex-wrap gap-2">
+                            {[
+                              { id: 'default', label: 'Commercial Internal / External Audit' },
+                              { id: 'cisa', label: 'IT & Cyber Security Audit (CISA) (+15%)' },
+                              { id: 'banking_fs', label: 'Investment Banking & Capital Markets (+20%)' }
+                            ].map(opt => (
+                              <button
+                                key={opt.id}
+                                type="button"
+                                onClick={() => setRoleSpecialism(opt.id)}
+                                className={`text-xs px-3 py-1.5 rounded-lg border transition ${
+                                  roleSpecialism === opt.id
+                                    ? 'bg-blue-900 text-white border-blue-900 font-semibold shadow-xs'
+                                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                                }`}
+                              >
+                                {opt.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {isInsuranceRole && (
+                        <div className="pt-2 border-t border-slate-200/60">
+                          <label className="text-xs font-bold text-slate-800 block mb-1">
+                            Underwriting Market & Class
+                          </label>
+                          <div className="flex flex-wrap gap-2">
+                            {[
+                              { id: 'default', label: 'Commercial Company Market Lines' },
+                              { id: 'lloyds', label: 'Lloyd\'s Syndicate Specialty Lines (+20%)' }
+                            ].map(opt => (
+                              <button
+                                key={opt.id}
+                                type="button"
+                                onClick={() => setRoleSpecialism(opt.id)}
+                                className={`text-xs px-3 py-1.5 rounded-lg border transition ${
+                                  roleSpecialism === opt.id
+                                    ? 'bg-blue-900 text-white border-blue-900 font-semibold shadow-xs'
+                                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                                }`}
+                              >
+                                {opt.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                    </div>
+                  )}
                 </div>
 
               </div>
@@ -1128,13 +1470,13 @@ export default function SalaryDashboard() {
                           ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                           : 'bg-blue-50 text-blue-900 border-blue-200'
                       }`} title={(activeRoleData as any).confidenceReason || ''}>
-                        Confidence: {(activeRoleData as any).confidence || 'Moderate'}
+                        {(activeRoleData as any).confidenceLabel || ((activeRoleData as any).confidence === 'High' ? 'High Confidence (Specialist Benchmark)' : 'Indicative Model (Broad UK Market)')}
                       </span>
                     </div>
                     <h3 className="text-2xl font-bold text-slate-900 mt-1">
                       {activeRoleData.title}
                     </h3>
-                    <p className="text-xs sm:text-sm text-slate-600 mt-1">
+                    <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
                       {activeRoleData.description}
                     </p>
                   </div>
@@ -1152,46 +1494,84 @@ export default function SalaryDashboard() {
 
                 {/* Indicative Base Salary Cards */}
                 <div>
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Indicative Base Salary</h4>
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">Indicative UK Base Salary</h4>
+                    <span className="text-[11px] text-slate-400">Excludes annual bonus, pension & equity</span>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     
-                    {/* Lower Hiring Point */}
+                    {/* Indicative Lower Range */}
                     <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 text-center">
                       <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">
-                        Lower Hiring Point
+                        Indicative Lower Range
                       </span>
                       <span className="text-2xl font-bold text-slate-800">
                         {formatCurrency(p10)}
                       </span>
-                      <span className="text-[11px] text-slate-500 block mt-1">Lower market hiring benchmark</span>
+                      <span className="text-[11px] text-slate-500 block mt-1">Typical entry into grade or smaller firm</span>
                     </div>
 
-                    {/* Typical Market Salary */}
+                    {/* Indicative Midpoint */}
                     <div className="bg-blue-50/60 border-2 border-blue-800/40 rounded-xl p-5 text-center relative shadow-sm">
                       <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-900 text-white font-bold text-[10px] uppercase tracking-widest px-3 py-0.5 rounded-full shadow-sm">
-                        Typical Market
+                        Modelled Midpoint
                       </div>
                       <span className="text-xs font-bold text-blue-900 uppercase tracking-wider block mb-1">
-                        Typical Market Salary
+                        Indicative Midpoint
                       </span>
                       <span className="text-3xl font-extrabold text-blue-950">
                         {formatCurrency(p50)}
                       </span>
-                      <span className="text-[11px] text-blue-900/80 block mt-1">Mid-market hiring benchmark</span>
+                      <span className="text-[11px] text-blue-900/80 block mt-1">Modelled market reference point for autonomous delivery</span>
                     </div>
 
-                    {/* Upper / Specialist Market */}
+                    {/* Specialist Upper Range */}
                     <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 text-center">
                       <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">
-                        Upper / Specialist Market
+                        Specialist Upper Range
                       </span>
                       <span className="text-2xl font-bold text-slate-800">
                         {formatCurrency(p90)}
                       </span>
-                      <span className="text-[11px] text-slate-500 block mt-1">Upper & specialist market benchmark</span>
+                      <span className="text-[11px] text-slate-500 block mt-1">Upper decile, scarce certifications, or premium-paying firms</span>
                     </div>
 
                   </div>
+                </div>
+
+                {/* Expandable Transparency Drawer */}
+                <div className="border border-slate-200 rounded-xl bg-slate-50/70 overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setShowMethodologyDrawer(!showMethodologyDrawer)}
+                    className="w-full px-5 py-3.5 flex items-center justify-between text-left text-xs sm:text-sm font-bold text-slate-900 hover:bg-slate-100/80 transition"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <Info className="w-4 h-4 text-blue-900" />
+                      <span>How this estimate was produced</span>
+                    </div>
+                    <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${showMethodologyDrawer ? 'rotate-180' : ''}`} />
+                  </button>
+                  {showMethodologyDrawer && (
+                    <div className="px-5 pb-5 pt-2 border-t border-slate-200/60 text-xs text-slate-600 space-y-3 leading-relaxed">
+                      <div>
+                        <strong className="text-slate-800 block mb-0.5">1. Evidence & Data Sources</strong>
+                        <span>Calibrated against executed search mandates from Liberty Towers, verified UK professional salary guides ({activeRoleData.title.toLowerCase().includes('audit') ? 'Barclay Simpson 2026 Internal Audit Salary Guide, ICAEW' : activeRoleData.title.toLowerCase().includes('underwriter') ? 'Lloyd\'s of London Market Intelligence, Actuarial Post' : activeRoleData.title.toLowerCase().includes('solicitor') ? 'Law Society of England & Wales, The Lawyer Remuneration Survey' : 'Liberty Towers Market Intelligence, ONS ASHE Occupational Data'}), and signed client offer letters.</span>
+                      </div>
+                      <div>
+                        <strong className="text-slate-800 block mb-0.5">2. Geographic & Working Setup Calibration</strong>
+                        <span>Location parsed as <strong className="text-slate-900">{parsedLocation.regionName}</strong> (applied regional factor: <strong>{parsedLocation.multiplier}x</strong> London benchmark). Office-based and hybrid arrangements share equal base salary parity in modern UK professional practice.</span>
+                      </div>
+                      <div>
+                        <strong className="text-slate-800 block mb-0.5">3. Seniority & Responsibility Level</strong>
+                        <span>Assumes autonomous execution at the <strong className="text-slate-900">{currentExpMeta.label}</strong> tier. Midpoint represents fully autonomous delivery for standard specifications; upper range reflects scarce technical certifications, team leadership, or top-decile paying firms.</span>
+                      </div>
+                      <div>
+                        <strong className="text-slate-800 block mb-0.5">4. Total Reward Separation</strong>
+                        <span>Figures represent gross basic annual salary in GBP (£). Annual performance bonuses, pensions (employer contributions), private medical, car allowances, LTIP, and equity/options are excluded from base numbers and evaluated separately.</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Candidate Market & Target Bonus Banner */}
@@ -1203,16 +1583,14 @@ export default function SalaryDashboard() {
                     <div>
                       <h4 className="text-sm font-bold text-slate-900">Candidate Market & Movement</h4>
                       <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
-                        <strong className="text-slate-900">Candidate Market:</strong> {rawRegionData.demand}
+                        <strong className="text-slate-900">Candidate Market:</strong> {seniorityCommentary.demand}
                       </p>
                       <p className="text-xs text-slate-500 mt-0.5">
-                        <strong className="text-slate-800">Salary Movement:</strong> {(activeRoleData as any).salaryMovementText || rawRegionData.yoy}
+                        <strong className="text-slate-800">Salary Movement:</strong> {(activeRoleData as any).salaryMovementText}
                       </p>
-                      {(rawRegionData as any).hiring_insight && (
-                        <p className="text-[11px] text-slate-600 mt-1.5 italic border-t border-slate-200/60 pt-1.5">
-                          💡 Recruiter Note: {(rawRegionData as any).hiring_insight}
-                        </p>
-                      )}
+                      <p className="text-[11px] text-slate-600 mt-1.5 italic border-t border-slate-200/60 pt-1.5">
+                        💡 Recruiter Note: {seniorityCommentary.recruiterNote}
+                      </p>
                     </div>
                   </div>
 
