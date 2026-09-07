@@ -20,7 +20,8 @@ import {
   Send,
   SlidersHorizontal,
   ArrowRight,
-  RefreshCw
+  RefreshCw,
+  FileText
 } from 'lucide-react';
 
 export default function SalaryDashboard() {
@@ -1113,14 +1114,28 @@ export default function SalaryDashboard() {
 
           {/* Contact / Switch Action */}
           <div className="flex items-center space-x-2 sm:space-x-3">
-            <a
-              href="https://www.libertytowers.co.uk/labour-talent-index/"
-              target="_blank"
+            <a 
+              href="https://www.libertytowers.co.uk/labour-talent-index/" 
+              target="_blank" 
               rel="noopener noreferrer"
               className="text-xs text-slate-700 hover:text-blue-900 bg-slate-100 hover:bg-slate-200 border border-orange-500 hover:border-orange-600 px-3 py-2 rounded-lg transition flex items-center space-x-1.5 font-medium shadow-xs"
             >
               <TrendingUp className="w-3.5 h-3.5 text-orange-600" />
               <span>LT Index <span className="hidden sm:inline">(Market Sentiment)</span></span>
+            </a>
+            <a
+              href="/profile-review"
+              className="text-xs text-blue-900 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-3 py-2 rounded-lg transition flex items-center space-x-1.5 font-semibold shadow-xs"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-blue-800" />
+              <span>LinkedIn Review</span>
+            </a>
+            <a
+              href="/cv-review"
+              className="text-xs text-emerald-900 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-2 rounded-lg transition flex items-center space-x-1.5 font-semibold shadow-xs"
+            >
+              <FileText className="w-3.5 h-3.5 text-emerald-700" />
+              <span>CV Review</span>
             </a>
             <button
               onClick={() => setViewMode(viewMode === 'guided' ? 'full' : 'guided')}
@@ -1757,6 +1772,10 @@ export default function SalaryDashboard() {
             <span>Recruitment without borders. Talent without compromise.</span>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3 text-slate-600">
+            <a href="/cv-review" className="hover:underline hover:text-blue-900 transition font-medium">CV Review</a>
+            <span>•</span>
+            <a href="/profile-review" className="hover:underline hover:text-blue-900 transition font-medium">LinkedIn Audit</a>
+            <span>•</span>
             <a href="/salaries" className="hover:underline hover:text-blue-900 transition font-medium">Salary Guides</a>
             <span>•</span>
             <a href="/about" className="hover:underline hover:text-blue-900 transition font-medium">About</a>
