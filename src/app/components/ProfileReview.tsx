@@ -422,6 +422,9 @@ export default function ProfileReviewComponent() {
             <a href="/salaries" className="text-slate-600 hover:text-blue-900 transition">
               Salary Guides
             </a>
+            <a href="/hiring-cost-calculator" className="text-slate-600 hover:text-blue-900 transition">
+              Hiring Calculator
+            </a>
             <a href="/cv-review" className="text-slate-600 hover:text-blue-900 transition font-semibold text-emerald-800">
               CV Review
             </a>
@@ -673,6 +676,7 @@ export default function ProfileReviewComponent() {
         </div>
         <div className="flex items-center gap-4">
           <a href="/salaries" className="hover:underline">Salary Benchmarks</a>
+          <a href="/hiring-cost-calculator" className="hover:underline">Hiring Calculator</a>
           <a href="/profile-review" className="hover:underline font-bold text-blue-950">LinkedIn Review</a>
           <a href="/cv-review" className="hover:underline">CV Review</a>
           <a href="/privacy" className="hover:underline">Privacy Policy</a>
