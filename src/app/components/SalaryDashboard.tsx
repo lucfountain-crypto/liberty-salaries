@@ -1150,7 +1150,7 @@ export default function SalaryDashboard() {
               className="text-xs text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-2 rounded-lg transition flex items-center space-x-1.5"
             >
               <SlidersHorizontal className="w-3.5 h-3.5 text-blue-800" />
-              <span className="hidden md:inline">{viewMode === 'guided' ? 'Full Directory' : 'Simple Assistant'}</span>
+              <span className="hidden md:inline">{viewMode === 'guided' ? 'Salary Directory' : 'Salary Benchmarks'}</span>
             </button>
             <button
               onClick={() => setShowModal(true)}
@@ -1661,7 +1661,7 @@ export default function SalaryDashboard() {
 
           </div>
         ) : (
-          /* Full Directory View */
+          /* Salary Directory View */
           <div className="bg-[#111827] text-white border border-slate-800 rounded-2xl p-6 space-y-4">
             <div className="flex items-center justify-between pb-4 border-b border-slate-800">
               <h2 className="text-lg font-bold">Pre-cached Industry Roles</h2>
@@ -1669,7 +1669,7 @@ export default function SalaryDashboard() {
                 onClick={() => setViewMode('guided')}
                 className="text-xs text-amber-400 font-semibold"
               >
-                ← Simple Assistant
+                ← Salary Benchmarks
               </button>
             </div>
 
