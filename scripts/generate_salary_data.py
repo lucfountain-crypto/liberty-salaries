@@ -386,9 +386,86 @@ def generate_monthly_dataset():
                     "Governed by the national NHS Consultant contract (£99,532–£150,569+), with on-call rota banding, EPAs, and Clinical Impact Awards increasing gross NHS remuneration.",
                     "Private practice sessions and Harley Street consulting provide established paediatric consultants with £30,000–£75,000+ supplemental income alongside the NHS defined-benefit pension scheme (~20.6% employer contribution)."
                 ]
+            },
+            {
+                "id": "legal-commercial-solicitor",
+                "title": "Commercial Solicitor",
+                "sector": "Legal, Risk & Compliance",
+                "category": "Commercial Legal",
+                "description": "Advises on corporate transactions, commercial contracts, IP licensing, and regulatory compliance across in-house and practice teams.",
+                "regional_data": {
+                    "london": { "p10": 58000, "p50": 75000, "p90": 95000, "base_pct": 88, "bonus_pct": 12, "demand": "High Demand for Experienced Counsel", "yoy": "+3% to +6%" },
+                    "south_east": { "p10": 51000, "p50": 66000, "p90": 83500, "base_pct": 90, "bonus_pct": 10, "demand": "High", "yoy": "+3% to +5%" },
+                    "midlands": { "p10": 47500, "p50": 61500, "p90": 78000, "base_pct": 90, "bonus_pct": 10, "demand": "Moderate-High", "yoy": "+3% to +5%" },
+                    "north_uk": { "p10": 46500, "p50": 60000, "p90": 76000, "base_pct": 90, "bonus_pct": 10, "demand": "Moderate-High", "yoy": "+3% to +5%" },
+                    "scotland": { "p10": 47500, "p50": 61500, "p90": 78000, "base_pct": 90, "bonus_pct": 10, "demand": "Moderate", "yoy": "+3% to +5%" },
+                    "offshore": { "p10": 72500, "p50": 93750, "p90": 118750, "base_pct": 85, "bonus_pct": 15, "demand": "High", "yoy": "+3% to +6%" }
+                },
+                "tiers": {
+                    "1-3": { "p10": 52000, "p50": 66000, "p90": 85000, "desc": "Junior Solicitor (1–2y PQE); commercial drafting & disclosure" },
+                    "3-6": { "p10": 58000, "p50": 75000, "p90": 95000, "desc": "Commercial Solicitor (3–5y PQE); corporate contracts & advisory" },
+                    "6-10": { "p10": 85000, "p50": 115000, "p90": 145000, "desc": "Senior Associate / Managing Counsel; high-value deals" },
+                    "10+": { "p10": 120000, "p50": 175000, "p90": 260000, "desc": "Partner / General Counsel / Legal Director" }
+                },
+                "key_insights": [
+                    "UK legal remuneration is benchmarked by Post-Qualification Experience (PQE).",
+                    "Remuneration varies significantly between regional/in-house practices (£55k–£95k) and City/US elite firms (£110k–£180k+ base)."
+                ]
+            },
+            {
+                "id": "tech-software-engineer",
+                "title": "Software Engineer",
+                "sector": "Tech & Software Engineering",
+                "category": "Software Engineering",
+                "description": "Designs, develops, and maintains scalable backend services, web applications, microservices APIs, and cloud infrastructure.",
+                "regional_data": {
+                    "london": { "p10": 55000, "p50": 68000, "p90": 85000, "base_pct": 88, "bonus_pct": 12, "demand": "Strong Demand (Autonomous Mid-Level)", "yoy": "+2% to +5%" },
+                    "south_east": { "p10": 48500, "p50": 60000, "p90": 75000, "base_pct": 90, "bonus_pct": 10, "demand": "High", "yoy": "+2% to +4%" },
+                    "midlands": { "p10": 45000, "p50": 56000, "p90": 70000, "base_pct": 90, "bonus_pct": 10, "demand": "Steady", "yoy": "+2% to +4%" },
+                    "north_uk": { "p10": 44000, "p50": 54500, "p90": 68000, "base_pct": 90, "bonus_pct": 10, "demand": "Steady", "yoy": "+2% to +4%" },
+                    "scotland": { "p10": 45000, "p50": 56000, "p90": 70000, "base_pct": 90, "bonus_pct": 10, "demand": "Steady", "yoy": "+2% to +4%" },
+                    "offshore": { "p10": 68750, "p50": 85000, "p90": 106250, "base_pct": 85, "bonus_pct": 15, "demand": "High", "yoy": "+3% to +6%" }
+                },
+                "tiers": {
+                    "1-3": { "p10": 38000, "p50": 48000, "p90": 62000, "desc": "Junior Software Engineer; feature delivery and code maintenance" },
+                    "3-6": { "p10": 55000, "p50": 68000, "p90": 85500, "desc": "Mid-Level Software Engineer; service design and API architecture" },
+                    "6-10": { "p10": 78000, "p50": 98000, "p90": 125000, "desc": "Senior / Lead Software Engineer; distributed systems and tech leadership" },
+                    "10+": { "p10": 105000, "p50": 135000, "p90": 175000, "desc": "Principal Engineer / Staff Architect / Engineering Manager" }
+                },
+                "key_insights": [
+                    "Regional tech hubs (Birmingham, Manchester) provide high-calibre engineering talent at 15–20% lower cost baselines than London.",
+                    "Specialist cloud, FinTech, and distributed systems experience command a 15–25% premium above general web platforms."
+                ]
+            },
+            {
+                "id": "tech-solutions-architect",
+                "title": "Solutions Architect",
+                "sector": "Tech & Software Engineering",
+                "category": "Cloud & Enterprise Architecture",
+                "description": "Designs, evaluates, and oversees enterprise IT systems, cloud platforms (AWS/Azure/GCP), microservices architectures, and technical integration roadmaps.",
+                "regional_data": {
+                    "london": { "p10": 82000, "p50": 110000, "p90": 155000, "base_pct": 85, "bonus_pct": 15, "demand": "High Demand (Senior Technical Architecture)", "yoy": "+4% to +7%" },
+                    "south_east": { "p10": 72000, "p50": 96800, "p90": 136400, "base_pct": 88, "bonus_pct": 12, "demand": "High", "yoy": "+3% to +6%" },
+                    "midlands": { "p10": 67200, "p50": 90200, "p90": 127100, "base_pct": 90, "bonus_pct": 10, "demand": "Steady", "yoy": "+3% to +5%" },
+                    "north_uk": { "p10": 65600, "p50": 88000, "p90": 124000, "base_pct": 90, "bonus_pct": 10, "demand": "Steady", "yoy": "+3% to +5%" },
+                    "scotland": { "p10": 67200, "p50": 90200, "p90": 127100, "base_pct": 90, "bonus_pct": 10, "demand": "Steady", "yoy": "+3% to +5%" },
+                    "offshore": { "p10": 102500, "p50": 137500, "p90": 193750, "base_pct": 80, "bonus_pct": 20, "demand": "Critical Scarcity", "yoy": "+5% to +8%" }
+                },
+                "tiers": {
+                    "1-3": { "p10": 55000, "p50": 68000, "p90": 82000, "desc": "Associate Solutions Architect; technical discovery, cloud design, and architectural documentation" },
+                    "3-6": { "p10": 75000, "p50": 92000, "p90": 118000, "desc": "Solutions Architect; cloud solution design, microservices, and system integrations" },
+                    "6-10": { "p10": 100000, "p50": 125000, "p90": 160000, "desc": "Senior Solutions Architect; multi-cloud architecture (AWS/Azure), enterprise platform design, and technical governance" },
+                    "10+": { "p10": 130000, "p50": 165000, "p90": 215000, "desc": "Principal / Enterprise Solutions Architect / Chief Architect; enterprise roadmap, board-level technical advisory" }
+                },
+                "key_insights": [
+                    "Solutions Architecture is a senior IT discipline bridging executive business strategy and hands-on engineering delivery.",
+                    "AWS Certified Solutions Architect (Professional) or Microsoft Azure Solutions Architect Expert credentials command a 10–20% market premium.",
+                    "Enterprise cloud migrations, FinTech scalability, and event-driven architectures sustain strong demand across London and regional UK tech hubs."
+                ]
             }
         ]
     }
+    data["meta"]["total_roles_benchmarked"] = len(data["roles"])
     
     os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
     with open(OUTPUT_PATH, "w", encoding="utf-8") as f:

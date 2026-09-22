@@ -437,6 +437,33 @@ const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
       '6-10': { p10: 78000, p50: 98000, p90: 125000, desc: 'Senior / Lead Software Engineer; distributed systems and tech leadership' },
       '10+': { p10: 105000, p50: 135000, p90: 175000, desc: 'Principal Engineer / Staff Architect / Engineering Manager' }
     }
+  },
+  'tech-solutions-architect': {
+    basePct: 85,
+    bonusPct: 15,
+    demand: 'High Demand (Senior Technical & Enterprise Architecture)',
+    movement: '+4% to +7% annual base movement across UK enterprise and cloud consultancy mandates',
+    certifications: [
+      'AWS Certified Solutions Architect (Professional)',
+      'Microsoft Certified: Azure Solutions Architect Expert',
+      'TOGAF 9 / 10 Enterprise Architecture',
+      'Google Cloud Professional Cloud Architect'
+    ],
+    overview: 'Solutions Architects bridge business strategy and technical execution, designing robust, secure, and scalable cloud and enterprise systems across modern IT infrastructure.',
+    responsibilities: [
+      'Designing end-to-end target state technical architectures for enterprise applications, SaaS platforms, and distributed systems.',
+      'Evaluating cloud services across AWS, Microsoft Azure, and GCP to balance performance, cost optimisation (FinOps), and high availability.',
+      'Leading architecture review boards (ARBs), defining technical standards, and enforcing Zero-Trust security and compliance frameworks.',
+      'Partnering with C-suite executives, product managers, and engineering teams to translate complex business requirements into technical blueprints.',
+      'Advising on system integration patterns, event-driven architectures (Kafka/EventBridge), microservices, and legacy modernization.'
+    ],
+    marketContext: 'Solutions Architecture sits squarely as a senior IT leadership role. UK organisations and consulting partners aggressively compete for seasoned architects who combine deep hands-on cloud system design with executive stakeholder communication.',
+    tiers: {
+      '1-3': { p10: 55000, p50: 68000, p90: 82000, desc: 'Associate Solutions Architect; technical discovery, cloud design, and architectural documentation' },
+      '3-6': { p10: 75000, p50: 92000, p90: 118000, desc: 'Solutions Architect; cloud solution design, microservices, and system integrations' },
+      '6-10': { p10: 100000, p50: 125000, p90: 160000, desc: 'Senior Solutions Architect; multi-cloud architecture (AWS/Azure), enterprise platform design, and technical governance' },
+      '10+': { p10: 130000, p50: 165000, p90: 215000, desc: 'Principal / Enterprise Solutions Architect / Chief Architect; enterprise roadmap, board-level technical advisory' }
+    }
   }
 };
 

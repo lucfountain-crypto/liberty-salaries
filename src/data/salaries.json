@@ -1,9 +1,9 @@
 {
   "meta": {
     "title": "Liberty Towers Compensation & Market Intelligence",
-    "updated_at": "August 2026",
+    "updated_at": "September 2026",
     "version": "1.2.1",
-    "total_roles_benchmarked": 18,
+    "total_roles_benchmarked": 19,
     "sectors": [
       "Audit, Governance & Risk",
       "Insurance & Reinsurance",
@@ -62,7 +62,7 @@
       ]
     },
     "Insurance & Reinsurance": {
-      "macro_trend": "Specialty lines and Lloyd's syndicates see steady base increments in August 2026 due to MGA capital growth.",
+      "macro_trend": "Specialty lines and Lloyd's syndicates see steady base increments in September 2026 due to MGA capital growth.",
       "scarcity_index": "High",
       "hot_roles": [
         "Senior Specialty Underwriter",
@@ -71,7 +71,7 @@
       ]
     },
     "Quant & Quantitative Finance": {
-      "macro_trend": "Systematic funds driving performance bonuses up across alpha generation and high-frequency execution tiers in August 2026.",
+      "macro_trend": "Systematic funds driving performance bonuses up across alpha generation and high-frequency execution tiers in September 2026.",
       "scarcity_index": "Critical Scarcity",
       "hot_roles": [
         "Senior Quant Researcher (Alpha)",
@@ -137,7 +137,7 @@
       ]
     },
     "Graduates & Operations": {
-      "macro_trend": "Graduate scheme starting bases in London averaging \u00a345k-\u00a355k in competitive financial firms for August 2026.",
+      "macro_trend": "Graduate scheme starting bases in London averaging \u00a345k-\u00a355k in competitive financial firms for September 2026.",
       "scarcity_index": "Medium",
       "hot_roles": [
         "Graduate Quant Analyst",
@@ -213,13 +213,13 @@
       "description": "Reviews internal controls, risk-management processes, financial governance and regulatory compliance. Identifies control weaknesses and recommends practical improvements.",
       "regional_data": {
         "london": {
-          "p10": 48000,
-          "p50": 62000,
-          "p90": 78000,
+          "p10": 43750,
+          "p50": 62500,
+          "p90": 81250,
           "base_pct": 90,
           "bonus_pct": 10,
           "demand": "Moderate overall; constrained for specialists",
-          "yoy": "+1% to +4% planned internal pay reviews for retained staff (Barclay Simpson 2026); external career moves achieve 8%\u201315%"
+          "yoy": "1\u20134%"
         },
         "south_east": {
           "p10": 38500,
@@ -231,13 +231,13 @@
           "yoy": "1\u20134%"
         },
         "north_uk": {
-          "p10": 38500,
-          "p50": 49500,
-          "p90": 62500,
+          "p10": 35000,
+          "p50": 50000,
+          "p90": 65000,
           "base_pct": 93,
           "bonus_pct": 7,
           "demand": "Moderate",
-          "yoy": "+1% to +4%"
+          "yoy": "1\u20134%"
         },
         "scotland": {
           "p10": 36000,
@@ -256,47 +256,12 @@
           "bonus_pct": 12,
           "demand": "High",
           "yoy": "1\u20134%"
-        },
-        "midlands": {
-          "p10": 39500,
-          "p50": 51000,
-          "p90": 64000,
-          "base_pct": 92,
-          "bonus_pct": 8,
-          "demand": "Moderate",
-          "yoy": "+1% to +4%"
         }
       },
       "key_insights": [
         "Candidate availability is moderate overall, although newly qualified auditors and candidates with financial-services, IT audit, cyber, model-risk or regulatory experience remain harder to secure.",
         "Typical bonuses range from 0\u201310%, with higher variable compensation possible in specialist financial-services positions."
-      ],
-      "tiers": {
-        "1-3": {
-          "p10": 36000,
-          "p50": 46000,
-          "p90": 58000,
-          "desc": "Junior Internal Auditor; walkthroughs and control testing"
-        },
-        "3-6": {
-          "p10": 48000,
-          "p50": 62000,
-          "p90": 78000,
-          "desc": "Mid-Level Internal Auditor; autonomous end-to-end reviews"
-        },
-        "6-10": {
-          "p10": 65000,
-          "p50": 82000,
-          "p90": 105000,
-          "desc": "Senior Auditor / Audit Manager"
-        },
-        "10+": {
-          "p10": 90000,
-          "p50": 120000,
-          "p90": 155000,
-          "desc": "Head of Internal Audit / Group Audit Lead"
-        }
-      }
+      ]
     },
     {
       "id": "audit-external",
@@ -364,13 +329,13 @@
       "description": "Audits technology infrastructure, cyber security governance, cloud controls, and automated application systems.",
       "regional_data": {
         "london": {
-          "p10": 54000,
-          "p50": 68000,
-          "p90": 85000,
+          "p10": 50000,
+          "p50": 72500,
+          "p90": 93750,
           "base_pct": 88,
           "bonus_pct": 12,
           "demand": "Constrained for IT & Cyber Specialists",
-          "yoy": "+3% to +6% annual pay movement for certified CISA / ISO 27001 specialists"
+          "yoy": "1\u20134%"
         },
         "south_east": {
           "p10": 44000,
@@ -382,13 +347,13 @@
           "yoy": "1\u20134%"
         },
         "north_uk": {
-          "p10": 44280,
-          "p50": 55760,
-          "p90": 69700,
+          "p10": 40000,
+          "p50": 58000,
+          "p90": 75000,
           "base_pct": 90,
           "bonus_pct": 10,
-          "demand": "Moderate-High",
-          "yoy": "+2% to +5%"
+          "demand": "Medium",
+          "yoy": "1\u20134%"
         },
         "scotland": {
           "p10": 41000,
@@ -407,47 +372,12 @@
           "bonus_pct": 15,
           "demand": "High",
           "yoy": "1\u20134%"
-        },
-        "midlands": {
-          "p10": 44500,
-          "p50": 56000,
-          "p90": 70000,
-          "base_pct": 90,
-          "bonus_pct": 10,
-          "demand": "Moderate-High",
-          "yoy": "+2% to +5%"
         }
       },
       "key_insights": [
         "Specialist skills in IT audit, cyber security, cloud controls, and model risk remain difficult to recruit.",
         "CISA certification and hands-on cloud control auditing command salary premiums."
-      ],
-      "tiers": {
-        "1-3": {
-          "p10": 42000,
-          "p50": 52000,
-          "p90": 64000,
-          "desc": "Associate IT Auditor; ITGC testing and SOX reviews"
-        },
-        "3-6": {
-          "p10": 54000,
-          "p50": 68000,
-          "p90": 85500,
-          "desc": "Senior IT Auditor (CISA); cloud & ERP applications"
-        },
-        "6-10": {
-          "p10": 75000,
-          "p50": 95000,
-          "p90": 120000,
-          "desc": "IT Audit Manager / Technology Governance Lead"
-        },
-        "10+": {
-          "p10": 105000,
-          "p50": 135000,
-          "p90": 175000,
-          "desc": "Head of Technology Audit / CISO Assurance Director"
-        }
-      }
+      ]
     },
     {
       "id": "audit-manager",
@@ -515,13 +445,13 @@
       "description": "Manages specialty portfolio risk, pricing, and broker syndicate relationships in Lloyd's and company markets.",
       "regional_data": {
         "london": {
-          "p10": 60000,
-          "p50": 82000,
-          "p90": 105000,
+          "p10": 85000,
+          "p50": 135000,
+          "p90": 210000,
           "base_pct": 75,
           "bonus_pct": 25,
-          "demand": "High Scarcity (Lloyd's Specialty Lines, Cyber, Marine & Energy)",
-          "yoy": "+4% to +7% annual base movement"
+          "demand": "High Scarcity",
+          "yoy": "1\u20134%"
         },
         "south_east": {
           "p10": 75000,
@@ -533,13 +463,13 @@
           "yoy": "1\u20134%"
         },
         "north_uk": {
-          "p10": 48000,
-          "p50": 65500,
-          "p90": 84000,
+          "p10": 68000,
+          "p50": 105000,
+          "p90": 165000,
           "base_pct": 82,
           "bonus_pct": 18,
           "demand": "Medium",
-          "yoy": "+3% to +5%"
+          "yoy": "1\u20134%"
         },
         "scotland": {
           "p10": 70000,
@@ -558,47 +488,12 @@
           "bonus_pct": 30,
           "demand": "High Scarcity",
           "yoy": "1\u20134%"
-        },
-        "midlands": {
-          "p10": 49000,
-          "p50": 67000,
-          "p90": 86000,
-          "base_pct": 80,
-          "bonus_pct": 20,
-          "demand": "Medium",
-          "yoy": "+3% to +5%"
         }
       },
       "key_insights": [
         "Lloyd's syndicates expanding energy & cyber risk underwriting teams.",
         "Retention packages for profitable portfolio managers include deferred bonus matching."
-      ],
-      "tiers": {
-        "1-3": {
-          "p10": 38000,
-          "p50": 48000,
-          "p90": 60000,
-          "desc": "Assistant Underwriter / Box Trainee at Lloyd's"
-        },
-        "3-6": {
-          "p10": 60000,
-          "p50": 82000,
-          "p90": 105000,
-          "desc": "Underwriter / Specialty Lines Specialist"
-        },
-        "6-10": {
-          "p10": 92000,
-          "p50": 125000,
-          "p90": 160000,
-          "desc": "Senior Underwriter / Syndicate Portfolio Lead"
-        },
-        "10+": {
-          "p10": 140000,
-          "p50": 185000,
-          "p90": 240000,
-          "desc": "Active Underwriter / Chief Underwriting Officer (CUO)"
-        }
-      }
+      ]
     },
     {
       "id": "ins-actuary-lead",
@@ -1391,6 +1286,100 @@
       "key_insights": [
         "Regional tech hubs (Birmingham, Manchester) provide high-calibre engineering talent at 15\u201320% lower cost baselines than London.",
         "Specialist cloud, FinTech, and distributed systems experience command a 15\u201325% premium above general web platforms."
+      ]
+    },
+    {
+      "id": "tech-solutions-architect",
+      "title": "Solutions Architect",
+      "sector": "Tech & Software Engineering",
+      "category": "Cloud & Enterprise Architecture",
+      "description": "Designs, evaluates, and oversees enterprise IT systems, cloud platforms (AWS/Azure/GCP), microservices architectures, and technical integration roadmaps.",
+      "regional_data": {
+        "london": {
+          "p10": 82000,
+          "p50": 110000,
+          "p90": 155000,
+          "base_pct": 85,
+          "bonus_pct": 15,
+          "demand": "High Demand (Senior Technical Architecture)",
+          "yoy": "+4% to +7%"
+        },
+        "south_east": {
+          "p10": 72000,
+          "p50": 96800,
+          "p90": 136400,
+          "base_pct": 88,
+          "bonus_pct": 12,
+          "demand": "High",
+          "yoy": "+3% to +6%"
+        },
+        "midlands": {
+          "p10": 67200,
+          "p50": 90200,
+          "p90": 127100,
+          "base_pct": 90,
+          "bonus_pct": 10,
+          "demand": "Steady",
+          "yoy": "+3% to +5%"
+        },
+        "north_uk": {
+          "p10": 65600,
+          "p50": 88000,
+          "p90": 124000,
+          "base_pct": 90,
+          "bonus_pct": 10,
+          "demand": "Steady",
+          "yoy": "+3% to +5%"
+        },
+        "scotland": {
+          "p10": 67200,
+          "p50": 90200,
+          "p90": 127100,
+          "base_pct": 90,
+          "bonus_pct": 10,
+          "demand": "Steady",
+          "yoy": "+3% to +5%"
+        },
+        "offshore": {
+          "p10": 102500,
+          "p50": 137500,
+          "p90": 193750,
+          "base_pct": 80,
+          "bonus_pct": 20,
+          "demand": "Critical Scarcity",
+          "yoy": "+5% to +8%"
+        }
+      },
+      "tiers": {
+        "1-3": {
+          "p10": 55000,
+          "p50": 68000,
+          "p90": 82000,
+          "desc": "Associate Solutions Architect; technical discovery, cloud design, and architectural documentation"
+        },
+        "3-6": {
+          "p10": 75000,
+          "p50": 92000,
+          "p90": 118000,
+          "desc": "Solutions Architect; cloud solution design, microservices, and system integrations"
+        },
+        "6-10": {
+          "p10": 100000,
+          "p50": 125000,
+          "p90": 160000,
+          "desc": "Senior Solutions Architect; multi-cloud architecture (AWS/Azure), enterprise platform design, and technical governance"
+        },
+        "10+": {
+          "p10": 130000,
+          "p50": 165000,
+          "p90": 215000,
+          "desc": "Principal / Enterprise Solutions Architect / Chief Architect; enterprise roadmap, board-level technical advisory"
+        }
+      },
+      "key_insights": [
+        "Solutions Architecture is a senior IT discipline bridging executive business strategy and hands-on engineering delivery.",
+        "AWS Certified Solutions Architect (Professional) or Microsoft Azure Solutions Architect Expert credentials command a 10\u201320% market premium.",
+        "Enterprise cloud migrations, FinTech scalability, and event-driven architectures sustain strong demand across London and regional UK tech hubs."
       ]
     }
   ]

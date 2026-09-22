@@ -326,7 +326,14 @@ export default function SalaryDashboard() {
     // Check if matches one of our pre-cached roles
     const predefined = predefinedRoles.find(r => {
       const titleLower = r.title.toLowerCase();
-      const match = titleLower === inputLower || titleLower.includes(inputLower) || inputLower.includes(titleLower);
+      const normInput = inputLower.replace(/\b(solutions)\b/g, 'solution');
+      const normTitle = titleLower.replace(/\b(solutions)\b/g, 'solution');
+      const match = titleLower === inputLower || 
+                    normTitle === normInput ||
+                    titleLower.includes(inputLower) || 
+                    inputLower.includes(titleLower) ||
+                    normTitle.includes(normInput) ||
+                    normInput.includes(normTitle);
       if (!match) return false;
       
       // If user specified graduate/trainee, don't match standard experienced predefined roles
@@ -342,6 +349,7 @@ export default function SalaryDashboard() {
       const isQuantOrIB = titleLower.includes('quant') || titleLower.includes('m&a') || titleLower.includes('banking');
       const isLegal = titleLower.includes('solicitor') || titleLower.includes('law') || titleLower.includes('compliance');
       const isInsurance = titleLower.includes('underwriter') || titleLower.includes('actuary');
+      const isTech = titleLower.includes('architect') || titleLower.includes('software') || titleLower.includes('engineer') || titleLower.includes('developer');
 
       let movementText = '+2% to +4% broad UK professional services annual salary movement.';
       if (isAudit) {
@@ -352,6 +360,8 @@ export default function SalaryDashboard() {
         movementText = '+3% to +6% annual associate scale movement; lateral hiring at 3–5y PQE attracts significant retention premiums.';
       } else if (isInsurance) {
         movementText = '+3% to +6% annual movement; specialty and Lloyd\'s syndicate lines command premium underwriting authority allocations.';
+      } else if (isTech) {
+        movementText = '+4% to +8% annual movement across UK enterprise technology, cloud architecture, and modern engineering platforms.';
       }
 
       return {
@@ -365,6 +375,8 @@ export default function SalaryDashboard() {
           ? '30–50%+ variable target bonus'
           : isInsurance
           ? '15–30% typical (syndicate performance bonuses)'
+          : isTech
+          ? '15–25% typical (+ equity / performance bonus)'
           : '10–20% typical',
         salaryMovementText: movementText,
         tiers: (predefined as any).tiers
@@ -746,6 +758,29 @@ export default function SalaryDashboard() {
         hiringInsight = "Cyber and Cloud Architects face intense buy-side competition. Candidates expect remote/hybrid flexibility and certification bonuses.";
       }
     } 
+    // 7b. Tech & Enterprise Architecture (Solutions Architect, Enterprise Architect, Cloud Architect, Systems Architect)
+    else if (/\b(architect|architecture)\b/i.test(inputLower) && !/\b(landscape|interior|building|civil|naval|garden)\b/i.test(inputLower)) {
+      sector = "Tech & Software Engineering";
+      const isPrincipalOrEnterprise = isDirectorLevel || /\b(enterprise|principal|lead|chief|head of|partner)\b/i.test(inputLower);
+
+      if (isPrincipalOrEnterprise) {
+        baseP10 = 105000; baseP50 = 145000; baseP90 = 195000;
+        basePct = 80; bonusPct = 20;
+        description = "Directs enterprise technology strategy, multi-cloud target architectures, legacy modernization, and architecture governance across business units.";
+        demand = "Critical Scarcity (Principal & Enterprise Architects)";
+        yoy = "+4% to +8%";
+        hiringInsight = "Enterprise and Principal Solutions Architects command executive packages (£140k–£200k+). TOGAF, AWS/Azure Solution Architect Professional certs, and board stakeholder skills are highly valued.";
+        maxExpMultiplier = 1.45;
+      } else {
+        baseP10 = 80000; baseP50 = 112000; baseP90 = 155000;
+        basePct = 85; bonusPct = 15;
+        description = "Designs, evaluates, and oversees enterprise IT systems, cloud platforms (AWS/Azure/GCP), microservices architectures, and technical integration roadmaps.";
+        demand = "High Scarcity (Senior Solutions & Cloud Architects)";
+        yoy = "+4% to +7%";
+        hiringInsight = "Solutions Architecture is a senior IT discipline bridging engineering delivery and commercial strategy. Candidates command strong base salaries, remote flexibility, and 15–20% bonus incentives.";
+        maxExpMultiplier = 1.35;
+      }
+    } 
     // 8. Finance, Controller, Tax & Treasury
     else if (/\b(finance|accountant|accounting|controller|tax|treasury|cfo)\b/i.test(inputLower)) {
       sector = "Finance & Corporate Accounting";
@@ -1036,7 +1071,7 @@ export default function SalaryDashboard() {
 
   const inputTitleLower = (roleInput || activeRoleData.title).toLowerCase();
   const isLegalRole = inputTitleLower.includes('solicitor') || inputTitleLower.includes('legal') || inputTitleLower.includes('counsel') || inputTitleLower.includes('lawyer');
-  const isTechRole = inputTitleLower.includes('developer') || inputTitleLower.includes('software') || inputTitleLower.includes('engineer') || inputTitleLower.includes('tech');
+  const isTechRole = inputTitleLower.includes('developer') || inputTitleLower.includes('software') || inputTitleLower.includes('engineer') || inputTitleLower.includes('tech') || inputTitleLower.includes('architect');
   const isAuditRole = inputTitleLower.includes('audit');
   const isInsuranceRole = inputTitleLower.includes('underwriter') || inputTitleLower.includes('actuary') || inputTitleLower.includes('insurance');
 
