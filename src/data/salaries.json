@@ -201,6 +201,32 @@
           "yoy": "1\u20134%"
         }
       },
+      "tiers": {
+        "1-3": {
+          "p10": 34000,
+          "p50": 42000,
+          "p90": 48000,
+          "desc": "Early ACA/ACCA stage trainee; transaction testing"
+        },
+        "3-6": {
+          "p10": 52000,
+          "p50": 62000,
+          "p90": 72000,
+          "desc": "Finalist / Newly Qualified; audit engagement lead"
+        },
+        "6-10": {
+          "p10": 70000,
+          "p50": 85000,
+          "p90": 100000,
+          "desc": "Assistant Manager / Audit Supervisor"
+        },
+        "10+": {
+          "p10": 90000,
+          "p50": 110000,
+          "p90": 135000,
+          "desc": "Senior Practice Manager / Department Head"
+        }
+      },
       "key_insights": [
         "London part-qualified external audit ranges approximately \u00a330,000\u2013\u00a342,000 depending on exam passes (ACA/ACCA) and firm size (Big Four / Top 10 vs mid-tier).",
         "Study support, exam leave packages, and first-time pass bonuses are standard features of competitive offers."
@@ -257,6 +283,32 @@
           "bonus_pct": 12,
           "demand": "High",
           "yoy": "1\u20134%"
+        }
+      },
+      "tiers": {
+        "1-3": {
+          "p10": 45000,
+          "p50": 55000,
+          "p90": 65000,
+          "desc": "Junior Internal Auditor; walkthroughs and control testing"
+        },
+        "3-6": {
+          "p10": 68000,
+          "p50": 82000,
+          "p90": 95000,
+          "desc": "Senior Internal Auditor (ACA/CIA 1-3y PQE); end-to-end audit reviews"
+        },
+        "6-10": {
+          "p10": 92000,
+          "p50": 110000,
+          "p90": 130000,
+          "desc": "Internal Audit Manager / Principal Auditor"
+        },
+        "10+": {
+          "p10": 125000,
+          "p50": 155000,
+          "p90": 195000,
+          "desc": "Head of Internal Audit (HIA) / Chief Audit Executive"
         }
       },
       "key_insights": [
@@ -317,6 +369,32 @@
           "yoy": "1\u20134%"
         }
       },
+      "tiers": {
+        "1-3": {
+          "p10": 38000,
+          "p50": 48000,
+          "p90": 56000,
+          "desc": "Audit Associate / Trainee ACA"
+        },
+        "3-6": {
+          "p10": 62000,
+          "p50": 76000,
+          "p90": 90000,
+          "desc": "Newly Qualified Senior Associate / Assistant Manager (Big 4 / Top 10)"
+        },
+        "6-10": {
+          "p10": 85000,
+          "p50": 108000,
+          "p90": 130000,
+          "desc": "Audit Manager / Senior Manager"
+        },
+        "10+": {
+          "p10": 135000,
+          "p50": 180000,
+          "p90": 260000,
+          "desc": "Audit Director / Responsible Individual (RI) Partner Track"
+        }
+      },
       "key_insights": [
         "London part-qualified external audit ranges approximately \u00a330,000\u2013\u00a342,000.",
         "London newly qualified ACA/ACCA external audit averages \u00a351,000\u2013\u00a356,000."
@@ -373,6 +451,32 @@
           "bonus_pct": 15,
           "demand": "High",
           "yoy": "1\u20134%"
+        }
+      },
+      "tiers": {
+        "1-3": {
+          "p10": 50000,
+          "p50": 62000,
+          "p90": 74000,
+          "desc": "Associate IT Auditor; ITGC testing and SOX reviews"
+        },
+        "3-6": {
+          "p10": 75000,
+          "p50": 92000,
+          "p90": 110000,
+          "desc": "Senior IT / Cyber Auditor (CISA); cloud & ERP application audits"
+        },
+        "6-10": {
+          "p10": 100000,
+          "p50": 125000,
+          "p90": 150000,
+          "desc": "IT Audit Manager / Technology Governance Lead"
+        },
+        "10+": {
+          "p10": 145000,
+          "p50": 180000,
+          "p90": 230000,
+          "desc": "Head of Technology Audit / CISO Assurance Director"
         }
       },
       "key_insights": [
@@ -433,6 +537,32 @@
           "yoy": "1\u20134%"
         }
       },
+      "tiers": {
+        "1-3": {
+          "p10": 78000,
+          "p50": 90000,
+          "p90": 105000,
+          "desc": "New Audit Manager (1st-2nd Year in Grade)"
+        },
+        "3-6": {
+          "p10": 92000,
+          "p50": 112000,
+          "p90": 132000,
+          "desc": "Senior Audit Manager; multi-business unit portfolio"
+        },
+        "6-10": {
+          "p10": 120000,
+          "p50": 145000,
+          "p90": 180000,
+          "desc": "Group Audit Lead / Deputy Head of Audit"
+        },
+        "10+": {
+          "p10": 160000,
+          "p50": 210000,
+          "p90": 285000,
+          "desc": "Chief Audit Executive / Partner / Executive Director"
+        }
+      },
       "key_insights": [
         "London Internal Audit Manager ranges span \u00a369,000\u2013\u00a380,250 in commercial industry.",
         "Specialist financial-services Audit Manager roles reach \u00a3105,000 base with 15\u201320% variable bonus."
@@ -491,6 +621,32 @@
           "yoy": "1\u20134%"
         }
       },
+      "tiers": {
+        "1-3": {
+          "p10": 38000,
+          "p50": 48000,
+          "p90": 60000,
+          "desc": "Assistant Underwriter / Box Trainee at Lloyd's"
+        },
+        "3-6": {
+          "p10": 60000,
+          "p50": 82000,
+          "p90": 105000,
+          "desc": "Class Underwriter / Specialty Lines Underwriter"
+        },
+        "6-10": {
+          "p10": 92000,
+          "p50": 125000,
+          "p90": 160000,
+          "desc": "Senior Underwriter / Syndicate Portfolio Lead"
+        },
+        "10+": {
+          "p10": 140000,
+          "p50": 185000,
+          "p90": 240000,
+          "desc": "Active Underwriter / Chief Underwriting Officer (CUO)"
+        }
+      },
       "key_insights": [
         "Lloyd's syndicates expanding energy & cyber risk underwriting teams.",
         "Retention packages for profitable portfolio managers include deferred bonus matching."
@@ -547,6 +703,32 @@
           "bonus_pct": 25,
           "demand": "High Scarcity",
           "yoy": "1\u20134%"
+        }
+      },
+      "tiers": {
+        "1-3": {
+          "p10": 52000,
+          "p50": 68000,
+          "p90": 82000,
+          "desc": "Actuarial Analyst (Core exam progress in CT/CS)"
+        },
+        "3-6": {
+          "p10": 90000,
+          "p50": 120000,
+          "p90": 150000,
+          "desc": "Newly Qualified FIA / Senior Pricing Actuary"
+        },
+        "6-10": {
+          "p10": 130000,
+          "p50": 170000,
+          "p90": 215000,
+          "desc": "Lead Reserving Actuary / Capital Modeling Manager"
+        },
+        "10+": {
+          "p10": 190000,
+          "p50": 260000,
+          "p90": 360000,
+          "desc": "Chief Actuary / Actuarial Function Holder / CRO"
         }
       },
       "key_insights": [
@@ -701,6 +883,32 @@
           "yoy": "5\u201310%"
         }
       },
+      "tiers": {
+        "1-3": {
+          "p10": 120000,
+          "p50": 165000,
+          "p90": 225000,
+          "desc": "Junior Quant Researcher (PhD entry; +50-100% bonus)"
+        },
+        "3-6": {
+          "p10": 175000,
+          "p50": 260000,
+          "p90": 360000,
+          "desc": "Quant Researcher (Proven alpha track record; +100-200% bonus)"
+        },
+        "6-10": {
+          "p10": 260000,
+          "p50": 400000,
+          "p90": 580000,
+          "desc": "Senior Lead Quant / Sub-Portfolio Manager (+PnL share)"
+        },
+        "10+": {
+          "p10": 360000,
+          "p50": 650000,
+          "p90": 1200000,
+          "desc": "Head of Quant Research / Managing Director / Fund Partner"
+        }
+      },
       "key_insights": [
         "Total compensation regularly doubles via performance bonus pools for top 10% performers.",
         "Proprietary strategy track records command sign-on buyouts and non-compete guarantees."
@@ -757,6 +965,32 @@
           "bonus_pct": 45,
           "demand": "Critical Scarcity",
           "yoy": "5\u201310%"
+        }
+      },
+      "tiers": {
+        "1-3": {
+          "p10": 100000,
+          "p50": 145000,
+          "p90": 190000,
+          "desc": "Junior Low-Latency Engineer (High-throughput systems)"
+        },
+        "3-6": {
+          "p10": 160000,
+          "p50": 230000,
+          "p90": 310000,
+          "desc": "Core HFT C++ Developer (Exchange gateways & order books)"
+        },
+        "6-10": {
+          "p10": 230000,
+          "p50": 340000,
+          "p90": 460000,
+          "desc": "Principal Systems Architect / Low-Latency Lead"
+        },
+        "10+": {
+          "p10": 320000,
+          "p50": 480000,
+          "p90": 680000,
+          "desc": "Head of Core Engineering / CTO Prop Trading"
         }
       },
       "key_insights": [
@@ -817,6 +1051,32 @@
           "yoy": "5\u201310%"
         }
       },
+      "tiers": {
+        "1-3": {
+          "p10": 80000,
+          "p50": 120000,
+          "p90": 155000,
+          "desc": "Investment Banking Analyst / Associate (+30-50% bonus)"
+        },
+        "3-6": {
+          "p10": 145000,
+          "p50": 190000,
+          "p90": 245000,
+          "desc": "M&A Vice President (VP 1-3; +60-100% deal bonus)"
+        },
+        "6-10": {
+          "p10": 200000,
+          "p50": 265000,
+          "p90": 340000,
+          "desc": "Director / Executive Director (+80-140% bonus)"
+        },
+        "10+": {
+          "p10": 290000,
+          "p50": 420000,
+          "p90": 650000,
+          "desc": "Managing Director / Sector Head (+100-200%+ bonus pool)"
+        }
+      },
       "key_insights": [
         "Private equity sponsors rebounding deal activity drives advisory fee pools.",
         "Mid-market boutique advisory firms aggressively poaching VP tier talent."
@@ -873,6 +1133,32 @@
           "bonus_pct": 35,
           "demand": "Critical Scarcity",
           "yoy": "5\u201310%"
+        }
+      },
+      "tiers": {
+        "1-3": {
+          "p10": 80000,
+          "p50": 105000,
+          "p90": 135000,
+          "desc": "AI / Machine Learning Engineer"
+        },
+        "3-6": {
+          "p10": 125000,
+          "p50": 165000,
+          "p90": 210000,
+          "desc": "Senior AI Systems Engineer (Production LLMs & inference)"
+        },
+        "6-10": {
+          "p10": 170000,
+          "p50": 225000,
+          "p90": 290000,
+          "desc": "Principal AI Systems Engineer / Infrastructure Architect"
+        },
+        "10+": {
+          "p10": 230000,
+          "p50": 320000,
+          "p90": 440000,
+          "desc": "VP of AI Engineering / Chief AI Architect"
         }
       },
       "key_insights": [
@@ -933,6 +1219,32 @@
           "yoy": "1\u20134%"
         }
       },
+      "tiers": {
+        "1-3": {
+          "p10": 55000,
+          "p50": 72000,
+          "p90": 88000,
+          "desc": "Compliance Officer / Regulatory Analyst"
+        },
+        "3-6": {
+          "p10": 90000,
+          "p50": 122000,
+          "p90": 155000,
+          "desc": "Senior Compliance Manager / Deputy MLRO"
+        },
+        "6-10": {
+          "p10": 140000,
+          "p50": 185000,
+          "p90": 235000,
+          "desc": "Head of Compliance / Designated SMF16"
+        },
+        "10+": {
+          "p10": 200000,
+          "p50": 280000,
+          "p90": 375000,
+          "desc": "Chief Compliance Officer (CCO) / Group Legal & Compliance Director"
+        }
+      },
       "key_insights": [
         "FCA Consumer Duty and operational resilience mandates driving senior compliance hiring.",
         "Dual legal and compliance qualifications attract senior leadership bonuses."
@@ -989,6 +1301,32 @@
           "bonus_pct": 30,
           "demand": "High",
           "yoy": "5\u201310%"
+        }
+      },
+      "tiers": {
+        "1-3": {
+          "p10": 80000,
+          "p50": 115000,
+          "p90": 155000,
+          "desc": "1st\u20133rd Year STEM Graduate Scheme (Base + \u00a325k\u2013\u00a360k sign-on/bonus)"
+        },
+        "3-6": {
+          "p10": 135000,
+          "p50": 190000,
+          "p90": 255000,
+          "desc": "Desk Quant / Junior Systematic Trader"
+        },
+        "6-10": {
+          "p10": 210000,
+          "p50": 330000,
+          "p90": 480000,
+          "desc": "Quantitative Portfolio Manager / Strategy Lead"
+        },
+        "10+": {
+          "p10": 340000,
+          "p50": 550000,
+          "p90": 950000,
+          "desc": "Partner / Head of Systematic Trading"
         }
       },
       "key_insights": [
@@ -1056,6 +1394,32 @@
           "bonus_pct": 8,
           "demand": "High",
           "yoy": "2\u20134%"
+        }
+      },
+      "tiers": {
+        "1-3": {
+          "p10": 24000,
+          "p50": 30000,
+          "p90": 36000,
+          "desc": "Junior / Trainee Reporter (Regional newsroom / local reporting / digital writer)"
+        },
+        "3-6": {
+          "p10": 34000,
+          "p50": 44000,
+          "p90": 58000,
+          "desc": "Staff Journalist / Desk Reporter (National publication / broadcast producer)"
+        },
+        "6-10": {
+          "p10": 48000,
+          "p50": 65000,
+          "p90": 85000,
+          "desc": "Senior Specialist Correspondent / News Editor (City, politics, investigative lead)"
+        },
+        "10+": {
+          "p10": 75000,
+          "p50": 105000,
+          "p90": 145000,
+          "desc": "Editor-in-Chief / Head of News / Executive Managing Editor"
         }
       },
       "key_insights": [
@@ -1216,6 +1580,32 @@
           "bonus_pct": 10,
           "demand": "Critical Scarcity",
           "yoy": "3\u20136%"
+        }
+      },
+      "tiers": {
+        "1-3": {
+          "p10": 45000,
+          "p50": 54000,
+          "p90": 68000,
+          "desc": "Specialty Trainee ST1\u2013ST3 (Resident Doctor basic; gross \u00a355k\u2013\u00a368k with on-call)"
+        },
+        "3-6": {
+          "p10": 58000,
+          "p50": 72000,
+          "p90": 88000,
+          "desc": "Specialty Registrar ST4\u2013ST8 (MRCPCH qualified; gross \u00a372k\u2013\u00a395k with rota banding)"
+        },
+        "6-10": {
+          "p10": 99500,
+          "p50": 114000,
+          "p90": 130000,
+          "desc": "Newly Appointed NHS Consultant Paediatrician (Thresholds 1\u20134 + EPAs / On-call)"
+        },
+        "10+": {
+          "p10": 120000,
+          "p50": 148000,
+          "p90": 185000,
+          "desc": "Senior Consultant / Clinical Director / Private Clinic Practice (Thresholds 5\u20138+ & NCIAs)"
         }
       },
       "key_insights": [

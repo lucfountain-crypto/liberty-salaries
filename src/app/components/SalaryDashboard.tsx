@@ -526,8 +526,11 @@ export default function SalaryDashboard() {
     }
     // INDUSTRIAL, LOGISTICS, INFRASTRUCTURE, HEALTHCARE & OPERATIONAL BRANCHES
 
+    const isSoftwareRole = /\b(software|developer|frontend|backend|fullstack|programmer|coder)\b/i.test(inputLower);
+    const isTechDataRole = /\b(data warehouse|data warehousing|bi warehouse|cloud warehouse|dwh|etl)\b/i.test(inputLower);
+
     // 0A. Civil, Structural & Infrastructure Engineering (Physical vs Software Engineering)
-    if (/\b(civil|structural|geotechnical|highways?|bridge|drainage|infrastructure|building services|m&e)\s+(engineer|designer|consultant|technician)\b/i.test(inputLower) || /\b(civil engineer|structural engineer|highways engineer|geotechnical engineer)\b/i.test(inputLower)) {
+    if (!isSoftwareRole && (/\b(civil|structural|geotechnical|highways?|bridge|drainage|infrastructure|building services|m&e)\s+(engineer|designer|consultant|technician)\b/i.test(inputLower) || /\b(civil engineer|structural engineer|highways engineer|geotechnical engineer|site engineer|setting out engineer|groundworks engineer)\b/i.test(inputLower))) {
       sector = "Engineering & Infrastructure";
       if (isDirectorLevel) {
         baseP10 = 70000; baseP50 = 92000; baseP90 = 130000;
@@ -548,7 +551,7 @@ export default function SalaryDashboard() {
       }
     }
     // 0B. Education, School Teaching & Leadership (STPCD Pay Framework)
-    else if (/\b(teacher|teaching|primary teacher|secondary teacher|headteacher|head teacher|deputy head|special needs teacher|sen teacher|school leader)\b/i.test(inputLower)) {
+    else if (/\b(teacher|teaching|primary teacher|secondary teacher|headteacher|head teacher|deputy head|special needs teacher|sen teacher|school leader)\b/i.test(inputLower) && !/\b(teaching assistant|ta|nursery)\b/i.test(inputLower)) {
       sector = "Education & School Leadership";
       const isLeadership = isDirectorLevel || /\b(headteacher|head teacher|deputy head|assistant head|principal)\b/i.test(inputLower);
       if (isLeadership) {
@@ -591,8 +594,41 @@ export default function SalaryDashboard() {
         maxExpMultiplier = 1.25;
       }
     }
+    // 0C-1. Dental Nurses & Clinical Dental Support
+    else if (/\b(dental nurse|dental assistant|dental hygienist|orthodontic nurse)\b/i.test(inputLower)) {
+      sector = "Healthcare, Dental & Clinical Support";
+      baseP10 = 24000; baseP50 = 29500; baseP90 = 36000;
+      basePct = 98; bonusPct = 2;
+      description = "Assists dentists and dental specialists during clinical treatments, instrument sterilization, patient charting, and chairside care.";
+      demand = "High Demand for GDC Registered Dental Nurses";
+      yoy = "2–4%";
+      hiringInsight = "GDC registration is mandatory. Post-qualification certifications in dental radiography, sedation, or orthodontic nursing command upper quartile pay.";
+      maxExpMultiplier = 1.25;
+    }
+    // 0C-2. Veterinary Nurses & Clinical Animal Care
+    else if (/\b(veterinary nurse|vet nurse|rvn|registered veterinary nurse|vet tech|animal nurse)\b/i.test(inputLower)) {
+      sector = "Veterinary Medicine & Clinical Animal Care";
+      baseP10 = 24000; baseP50 = 28500; baseP90 = 35000;
+      basePct = 98; bonusPct = 2;
+      description = "Delivers clinical veterinary nursing, anesthesia monitoring, surgical assistance, inpatient care, and client consultations.";
+      demand = "Acute Scarcity (RCVS Registered Veterinary Nurses)";
+      yoy = "3–5%";
+      hiringInsight = "RCVS Registered Veterinary Nurses (RVNs) are in severe short supply. Emergency and 24/7 referral hospitals command £32k–£38k base plus night allowances.";
+      maxExpMultiplier = 1.25;
+    }
+    // 0C-3. Nursery Nurses & Early Years Practitioners
+    else if (/\b(nursery nurse|early years practitioner|early years educator|eyfs practitioner|nursery practitioner|nursery room leader|nursery assistant)\b/i.test(inputLower)) {
+      sector = "Education, Early Years & Childcare";
+      baseP10 = 22500; baseP50 = 26500; baseP90 = 33000;
+      basePct = 100; bonusPct = 0;
+      description = "Delivers early childhood care, EYFS statutory learning frameworks, key person observations, and nursery room operations.";
+      demand = "High Demand for Level 3 Qualified Practitioners";
+      yoy = "2–4%";
+      hiringInsight = "Full Level 3 Early Years Educator qualifications are required for statutory staff ratios. Nursery Room Leaders and Deputy Managers command £28k–£35k in London.";
+      maxExpMultiplier = 1.25;
+    }
     // 0D. Warehouse, Logistics & Supply Chain Operations Management
-    else if (/\b(warehouse|logistics|distribution|supply chain|inventory|transport|depot)\s+(operations?\s+)?(manager|director|lead|controller|supervisor|head)\b/i.test(inputLower) || /\b(operations manager|distribution manager|transport manager|logistics manager)\b/i.test(inputLower)) {
+    else if (!isTechDataRole && (/\b(warehouse|logistics|distribution|supply chain|inventory|transport|depot)\s+(operations?\s+)?(manager|director|lead|controller|supervisor|head)\b/i.test(inputLower) || /\b(operations manager|distribution manager|transport manager|logistics manager)\b/i.test(inputLower))) {
       sector = "Logistics, Warehousing & Supply Chain Management";
       if (isDirectorLevel) {
         baseP10 = 65000; baseP50 = 85000; baseP90 = 125000;
@@ -657,7 +693,7 @@ export default function SalaryDashboard() {
       maxExpMultiplier = 1.20;
     }
     // C. Forklift Truck, Materials Handling & Warehouse Logistics (Operatives)
-    else if (/\b(forklift|flt|reach truck|counterbalance|materials handling|warehouse|picker|packer|logistics operative|yard operative)\b/i.test(inputLower)) {
+    else if (!isTechDataRole && /\b(forklift|flt|reach truck|counterbalance|materials handling|warehouse|picker|packer|logistics operative|yard operative)\b/i.test(inputLower)) {
       sector = "Logistics, Warehousing & Distribution";
       baseP10 = 25000; baseP50 = 31000; baseP90 = 40000;
       basePct = 95; bonusPct = 5;
@@ -700,12 +736,34 @@ export default function SalaryDashboard() {
       hiringInsight = "Certified trade professionals (JIB Gold Card, 18th Edition, Gas Safe, NVQ Level 3) command £38,000–£48,000+ base rates, with overtime and van allowances.";
       maxExpMultiplier = 1.35;
     }
-    // G. Frontline Hospitality, Retail, Catering & Customer Services
-    else if (/\b(chef|cook|waiter|waitress|bartender|barista|retail assistant|store assistant|cashier|customer service|call centre)\b/i.test(inputLower)) {
+    // G. Customer Support, Contact Centre & Client Care
+    else if (/\b(customer service|call centre|contact centre|customer support|client support|customer care|helpdesk agent|customer operations)\b/i.test(inputLower) && !/\b(it helpdesk|tech support|technical support)\b/i.test(inputLower)) {
+      sector = "Hospitality, Retail & Customer Services";
+      const isTeamLeader = isDirectorLevel || /\b(team leader|team lead|supervisor|manager|head of)\b/i.test(inputLower);
+      if (isTeamLeader) {
+        baseP10 = 32000; baseP50 = 40000; baseP90 = 52000;
+        basePct = 92; bonusPct = 8;
+        description = "Manages contact centre performance, service level agreements (SLAs), customer satisfaction (CSAT/NPS), and agent coaching.";
+        demand = "Steady Demand for Experienced Contact Centre Team Leaders";
+        yoy = "2–4%";
+        hiringInsight = "Contact centre team leaders with Zendesk, Salesforce Service Cloud, or telephony workforce management (WFM) proficiency command upper bands.";
+        maxExpMultiplier = 1.30;
+      } else {
+        baseP10 = 24000; baseP50 = 28000; baseP90 = 35000;
+        basePct = 95; bonusPct = 5;
+        description = "Handles inbound customer queries, omni-channel tickets, complaint resolution, and account support.";
+        demand = "High Candidate Availability";
+        yoy = "1–4%";
+        hiringInsight = "Frontline customer service tracks National Living Wage with experienced specialists and financial services contact centers commanding £28k–£35k.";
+        maxExpMultiplier = 1.20;
+      }
+    }
+    // H. Frontline Hospitality, Retail & Catering
+    else if (/\b(chef|cook|waiter|waitress|bartender|barista|retail assistant|store assistant|cashier)\b/i.test(inputLower)) {
       sector = "Hospitality, Retail & Customer Services";
       baseP10 = 24500; baseP50 = 28500; baseP90 = 36000;
       basePct = 95; bonusPct = 5;
-      description = "Delivers customer service, retail operations, food preparation, or frontline service execution.";
+      description = "Delivers retail operations, food preparation, or frontline hospitality execution.";
       demand = "High Candidate Availability";
       yoy = "1–4%";
       hiringInsight = "Frontline roles track retail and hospitality pay agreements; supervisory and team leadership roles reach £30k–£35k.";
@@ -995,7 +1053,7 @@ export default function SalaryDashboard() {
       }
     } 
     // 9. Software Engineering & Technology
-    else if (/\b(developer|software|frontend|backend|fullstack|programmer|cto|engineering director)\b/i.test(inputLower) || (/\bengineer\b/i.test(inputLower) && !/\b(civil|structural|geotechnical|highways?|bridge|drainage|infrastructure|site|building services|m&e|gas|heating|mechanical|pipefitter|maintenance engineer|audio engineer|sound engineer)\b/i.test(inputLower))) {
+    else if (/\b(developer|software|frontend|backend|fullstack|programmer|cto|engineering director|data engineer|data warehouse|data warehousing|dwh|bi developer|analytics engineer|etl developer|cloud engineer|platform engineer|systems engineer)\b/i.test(inputLower) || (/\bengineer\b/i.test(inputLower) && !/\b(civil|structural|geotechnical|highways?|bridge|drainage|infrastructure|site|building services|m&e|gas|heating|mechanical|pipefitter|maintenance engineer|audio engineer|sound engineer)\b/i.test(inputLower))) {
       sector = "Tech & Software Engineering";
       if (isDirectorLevel) {
         baseP10 = 85000; baseP50 = 120000; baseP90 = 175000;

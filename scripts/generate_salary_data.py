@@ -110,6 +110,32 @@ def generate_monthly_dataset():
                     "scotland": { "p10": 30750, "p50": 36900, "p90": 43050, "base_pct": 95, "bonus_pct": 5, "demand": "Medium", "yoy": "1–4%" },
                     "offshore": { "p10": 46875, "p50": 56250, "p90": 65625, "base_pct": 90, "bonus_pct": 10, "demand": "High", "yoy": "1–4%" }
                 },
+                "tiers": {
+                              "1-3": {
+                                        "p10": 34000,
+                                        "p50": 42000,
+                                        "p90": 48000,
+                                        "desc": "Early ACA/ACCA stage trainee; transaction testing"
+                              },
+                              "3-6": {
+                                        "p10": 52000,
+                                        "p50": 62000,
+                                        "p90": 72000,
+                                        "desc": "Finalist / Newly Qualified; audit engagement lead"
+                              },
+                              "6-10": {
+                                        "p10": 70000,
+                                        "p50": 85000,
+                                        "p90": 100000,
+                                        "desc": "Assistant Manager / Audit Supervisor"
+                              },
+                              "10+": {
+                                        "p10": 90000,
+                                        "p50": 110000,
+                                        "p90": 135000,
+                                        "desc": "Senior Practice Manager / Department Head"
+                              }
+                    },
                 "key_insights": [
                     "London part-qualified external audit ranges approximately £30,000–£42,000 depending on exam passes (ACA/ACCA) and firm size (Big Four / Top 10 vs mid-tier).",
                     "Study support, exam leave packages, and first-time pass bonuses are standard features of competitive offers."
@@ -128,6 +154,32 @@ def generate_monthly_dataset():
                     "scotland": { "p10": 36000, "p50": 51250, "p90": 66600, "base_pct": 92, "bonus_pct": 8, "demand": "Moderate", "yoy": "1–4%" },
                     "offshore": { "p10": 54680, "p50": 78125, "p90": 101560, "base_pct": 88, "bonus_pct": 12, "demand": "High", "yoy": "1–4%" }
                 },
+                "tiers": {
+                              "1-3": {
+                                        "p10": 45000,
+                                        "p50": 55000,
+                                        "p90": 65000,
+                                        "desc": "Junior Internal Auditor; walkthroughs and control testing"
+                              },
+                              "3-6": {
+                                        "p10": 68000,
+                                        "p50": 82000,
+                                        "p90": 95000,
+                                        "desc": "Senior Internal Auditor (ACA/CIA 1-3y PQE); end-to-end audit reviews"
+                              },
+                              "6-10": {
+                                        "p10": 92000,
+                                        "p50": 110000,
+                                        "p90": 130000,
+                                        "desc": "Internal Audit Manager / Principal Auditor"
+                              },
+                              "10+": {
+                                        "p10": 125000,
+                                        "p50": 155000,
+                                        "p90": 195000,
+                                        "desc": "Head of Internal Audit (HIA) / Chief Audit Executive"
+                              }
+                    },
                 "key_insights": [
                     "Candidate availability is moderate overall, although newly qualified auditors and candidates with financial-services, IT audit, cyber, model-risk or regulatory experience remain harder to secure.",
                     "Typical bonuses range from 0–10%, with higher variable compensation possible in specialist financial-services positions."
@@ -146,6 +198,32 @@ def generate_monthly_dataset():
                     "scotland": { "p10": 41000, "p50": 54000, "p90": 65600, "base_pct": 93, "bonus_pct": 7, "demand": "Medium", "yoy": "1–4%" },
                     "offshore": { "p10": 62500, "p50": 82500, "p90": 100000, "base_pct": 90, "bonus_pct": 10, "demand": "High", "yoy": "1–4%" }
                 },
+                "tiers": {
+                              "1-3": {
+                                        "p10": 38000,
+                                        "p50": 48000,
+                                        "p90": 56000,
+                                        "desc": "Audit Associate / Trainee ACA"
+                              },
+                              "3-6": {
+                                        "p10": 62000,
+                                        "p50": 76000,
+                                        "p90": 90000,
+                                        "desc": "Newly Qualified Senior Associate / Assistant Manager (Big 4 / Top 10)"
+                              },
+                              "6-10": {
+                                        "p10": 85000,
+                                        "p50": 108000,
+                                        "p90": 130000,
+                                        "desc": "Audit Manager / Senior Manager"
+                              },
+                              "10+": {
+                                        "p10": 135000,
+                                        "p50": 180000,
+                                        "p90": 260000,
+                                        "desc": "Audit Director / Responsible Individual (RI) Partner Track"
+                              }
+                    },
                 "key_insights": [
                     "London part-qualified external audit ranges approximately £30,000–£42,000.",
                     "London newly qualified ACA/ACCA external audit averages £51,000–£56,000."
@@ -164,6 +242,32 @@ def generate_monthly_dataset():
                     "scotland": { "p10": 41000, "p50": 59450, "p90": 76875, "base_pct": 90, "bonus_pct": 10, "demand": "High", "yoy": "1–4%" },
                     "offshore": { "p10": 62500, "p50": 90625, "p90": 117180, "base_pct": 85, "bonus_pct": 15, "demand": "High", "yoy": "1–4%" }
                 },
+                "tiers": {
+                              "1-3": {
+                                        "p10": 50000,
+                                        "p50": 62000,
+                                        "p90": 74000,
+                                        "desc": "Associate IT Auditor; ITGC testing and SOX reviews"
+                              },
+                              "3-6": {
+                                        "p10": 75000,
+                                        "p50": 92000,
+                                        "p90": 110000,
+                                        "desc": "Senior IT / Cyber Auditor (CISA); cloud & ERP application audits"
+                              },
+                              "6-10": {
+                                        "p10": 100000,
+                                        "p50": 125000,
+                                        "p90": 150000,
+                                        "desc": "IT Audit Manager / Technology Governance Lead"
+                              },
+                              "10+": {
+                                        "p10": 145000,
+                                        "p50": 180000,
+                                        "p90": 230000,
+                                        "desc": "Head of Technology Audit / CISO Assurance Director"
+                              }
+                    },
                 "key_insights": [
                     "Specialist skills in IT audit, cyber security, cloud controls, and model risk remain difficult to recruit.",
                     "CISA certification and hands-on cloud control auditing command salary premiums."
@@ -182,6 +286,32 @@ def generate_monthly_dataset():
                     "scotland": { "p10": 56580, "p50": 65805, "p90": 86100, "base_pct": 88, "bonus_pct": 12, "demand": "Medium", "yoy": "1–4%" },
                     "offshore": { "p10": 86250, "p50": 100310, "p90": 131250, "base_pct": 80, "bonus_pct": 20, "demand": "High", "yoy": "1–4%" }
                 },
+                "tiers": {
+                              "1-3": {
+                                        "p10": 78000,
+                                        "p50": 90000,
+                                        "p90": 105000,
+                                        "desc": "New Audit Manager (1st-2nd Year in Grade)"
+                              },
+                              "3-6": {
+                                        "p10": 92000,
+                                        "p50": 112000,
+                                        "p90": 132000,
+                                        "desc": "Senior Audit Manager; multi-business unit portfolio"
+                              },
+                              "6-10": {
+                                        "p10": 120000,
+                                        "p50": 145000,
+                                        "p90": 180000,
+                                        "desc": "Group Audit Lead / Deputy Head of Audit"
+                              },
+                              "10+": {
+                                        "p10": 160000,
+                                        "p50": 210000,
+                                        "p90": 285000,
+                                        "desc": "Chief Audit Executive / Partner / Executive Director"
+                              }
+                    },
                 "key_insights": [
                     "London Internal Audit Manager ranges span £69,000–£80,250 in commercial industry.",
                     "Specialist financial-services Audit Manager roles reach £105,000 base with 15–20% variable bonus."
@@ -200,6 +330,32 @@ def generate_monthly_dataset():
                     "scotland": { "p10": 70000, "p50": 110000, "p90": 170000, "base_pct": 80, "bonus_pct": 20, "demand": "High", "yoy": "1–4%" },
                     "offshore": { "p10": 110000, "p50": 175000, "p90": 275000, "base_pct": 70, "bonus_pct": 30, "demand": "High Scarcity", "yoy": "1–4%" }
                 },
+                "tiers": {
+                              "1-3": {
+                                        "p10": 38000,
+                                        "p50": 48000,
+                                        "p90": 60000,
+                                        "desc": "Assistant Underwriter / Box Trainee at Lloyd's"
+                              },
+                              "3-6": {
+                                        "p10": 60000,
+                                        "p50": 82000,
+                                        "p90": 105000,
+                                        "desc": "Class Underwriter / Specialty Lines Underwriter"
+                              },
+                              "6-10": {
+                                        "p10": 92000,
+                                        "p50": 125000,
+                                        "p90": 160000,
+                                        "desc": "Senior Underwriter / Syndicate Portfolio Lead"
+                              },
+                              "10+": {
+                                        "p10": 140000,
+                                        "p50": 185000,
+                                        "p90": 240000,
+                                        "desc": "Active Underwriter / Chief Underwriting Officer (CUO)"
+                              }
+                    },
                 "key_insights": [
                     "Lloyd's syndicates expanding energy & cyber risk underwriting teams.",
                     "Retention packages for profitable portfolio managers include deferred bonus matching."
@@ -218,6 +374,32 @@ def generate_monthly_dataset():
                     "scotland": { "p10": 74000, "p50": 115000, "p90": 180000, "base_pct": 83, "bonus_pct": 17, "demand": "High", "yoy": "1–4%" },
                     "offshore": { "p10": 120000, "p50": 185000, "p90": 290000, "base_pct": 75, "bonus_pct": 25, "demand": "High Scarcity", "yoy": "1–4%" }
                 },
+                "tiers": {
+                              "1-3": {
+                                        "p10": 52000,
+                                        "p50": 68000,
+                                        "p90": 82000,
+                                        "desc": "Actuarial Analyst (Core exam progress in CT/CS)"
+                              },
+                              "3-6": {
+                                        "p10": 90000,
+                                        "p50": 120000,
+                                        "p90": 150000,
+                                        "desc": "Newly Qualified FIA / Senior Pricing Actuary"
+                              },
+                              "6-10": {
+                                        "p10": 130000,
+                                        "p50": 170000,
+                                        "p90": 215000,
+                                        "desc": "Lead Reserving Actuary / Capital Modeling Manager"
+                              },
+                              "10+": {
+                                        "p10": 190000,
+                                        "p50": 260000,
+                                        "p90": 360000,
+                                        "desc": "Chief Actuary / Actuarial Function Holder / CRO"
+                              }
+                    },
                 "key_insights": [
                     "IFRS 17 regulatory experience commands a 15% salary premium across insurance hubs.",
                     "Python and machine learning pricing model experience increasingly mandatory."
@@ -262,6 +444,32 @@ def generate_monthly_dataset():
                     "scotland": { "p10": 115000, "p50": 190000, "p90": 335000, "base_pct": 52, "bonus_pct": 48, "demand": "High", "yoy": "1–4%" },
                     "offshore": { "p10": 200000, "p50": 350000, "p90": 650000, "base_pct": 40, "bonus_pct": 60, "demand": "Critical Scarcity", "yoy": "5–10%" }
                 },
+                "tiers": {
+                              "1-3": {
+                                        "p10": 120000,
+                                        "p50": 165000,
+                                        "p90": 225000,
+                                        "desc": "Junior Quant Researcher (PhD entry; +50-100% bonus)"
+                              },
+                              "3-6": {
+                                        "p10": 175000,
+                                        "p50": 260000,
+                                        "p90": 360000,
+                                        "desc": "Quant Researcher (Proven alpha track record; +100-200% bonus)"
+                              },
+                              "6-10": {
+                                        "p10": 260000,
+                                        "p50": 400000,
+                                        "p90": 580000,
+                                        "desc": "Senior Lead Quant / Sub-Portfolio Manager (+PnL share)"
+                              },
+                              "10+": {
+                                        "p10": 360000,
+                                        "p50": 650000,
+                                        "p90": 1200000,
+                                        "desc": "Head of Quant Research / Managing Director / Fund Partner"
+                              }
+                    },
                 "key_insights": [
                     "Total compensation regularly doubles via performance bonus pools for top 10% performers.",
                     "Proprietary strategy track records command sign-on buyouts and non-compete guarantees."
@@ -280,6 +488,32 @@ def generate_monthly_dataset():
                     "scotland": { "p10": 98000, "p50": 155000, "p90": 255000, "base_pct": 68, "bonus_pct": 32, "demand": "High", "yoy": "1–4%" },
                     "offshore": { "p10": 160000, "p50": 270000, "p90": 450000, "base_pct": 55, "bonus_pct": 45, "demand": "Critical Scarcity", "yoy": "5–10%" }
                 },
+                "tiers": {
+                              "1-3": {
+                                        "p10": 100000,
+                                        "p50": 145000,
+                                        "p90": 190000,
+                                        "desc": "Junior Low-Latency Engineer (High-throughput systems)"
+                              },
+                              "3-6": {
+                                        "p10": 160000,
+                                        "p50": 230000,
+                                        "p90": 310000,
+                                        "desc": "Core HFT C++ Developer (Exchange gateways & order books)"
+                              },
+                              "6-10": {
+                                        "p10": 230000,
+                                        "p50": 340000,
+                                        "p90": 460000,
+                                        "desc": "Principal Systems Architect / Low-Latency Lead"
+                              },
+                              "10+": {
+                                        "p10": 320000,
+                                        "p50": 480000,
+                                        "p90": 680000,
+                                        "desc": "Head of Core Engineering / CTO Prop Trading"
+                              }
+                    },
                 "key_insights": [
                     "Kernel bypass (Solarflare/onload) and FPGA programming expertise adds £30k-£50k base premium.",
                     "Direct market access (DMA) protocol experience in demand across Mayfair funds."
@@ -298,6 +532,32 @@ def generate_monthly_dataset():
                     "scotland": { "p10": 110000, "p50": 148000, "p90": 218000, "base_pct": 62, "bonus_pct": 38, "demand": "Medium", "yoy": "1–4%" },
                     "offshore": { "p10": 180000, "p50": 260000, "p90": 390000, "base_pct": 50, "bonus_pct": 50, "demand": "High", "yoy": "5–10%" }
                 },
+                "tiers": {
+                              "1-3": {
+                                        "p10": 80000,
+                                        "p50": 120000,
+                                        "p90": 155000,
+                                        "desc": "Investment Banking Analyst / Associate (+30-50% bonus)"
+                              },
+                              "3-6": {
+                                        "p10": 145000,
+                                        "p50": 190000,
+                                        "p90": 245000,
+                                        "desc": "M&A Vice President (VP 1-3; +60-100% deal bonus)"
+                              },
+                              "6-10": {
+                                        "p10": 200000,
+                                        "p50": 265000,
+                                        "p90": 340000,
+                                        "desc": "Director / Executive Director (+80-140% bonus)"
+                              },
+                              "10+": {
+                                        "p10": 290000,
+                                        "p50": 420000,
+                                        "p90": 650000,
+                                        "desc": "Managing Director / Sector Head (+100-200%+ bonus pool)"
+                              }
+                    },
                 "key_insights": [
                     "Private equity sponsors rebounding deal activity drives advisory fee pools.",
                     "Mid-market boutique advisory firms aggressively poaching VP tier talent."
@@ -316,6 +576,32 @@ def generate_monthly_dataset():
                     "scotland": { "p10": 90000, "p50": 138000, "p90": 205000, "base_pct": 76, "bonus_pct": 24, "demand": "High", "yoy": "1–4%" },
                     "offshore": { "p10": 160000, "p50": 250000, "p90": 380000, "base_pct": 65, "bonus_pct": 35, "demand": "Critical Scarcity", "yoy": "5–10%" }
                 },
+                "tiers": {
+                              "1-3": {
+                                        "p10": 80000,
+                                        "p50": 105000,
+                                        "p90": 135000,
+                                        "desc": "AI / Machine Learning Engineer"
+                              },
+                              "3-6": {
+                                        "p10": 125000,
+                                        "p50": 165000,
+                                        "p90": 210000,
+                                        "desc": "Senior AI Systems Engineer (Production LLMs & inference)"
+                              },
+                              "6-10": {
+                                        "p10": 170000,
+                                        "p50": 225000,
+                                        "p90": 290000,
+                                        "desc": "Principal AI Systems Engineer / Infrastructure Architect"
+                              },
+                              "10+": {
+                                        "p10": 230000,
+                                        "p50": 320000,
+                                        "p90": 440000,
+                                        "desc": "VP of AI Engineering / Chief AI Architect"
+                              }
+                    },
                 "key_insights": [
                     "Fintech and insurance institutions establishing dedicated AI innovation hubs in London.",
                     "Hands-on PyTorch, CUDA, and distributed training skills fetch top-band compensation packages."
@@ -334,6 +620,32 @@ def generate_monthly_dataset():
                     "scotland": { "p10": 85000, "p50": 128000, "p90": 185000, "base_pct": 83, "bonus_pct": 17, "demand": "Medium", "yoy": "1–4%" },
                     "offshore": { "p10": 135000, "p50": 210000, "p90": 310000, "base_pct": 75, "bonus_pct": 25, "demand": "High", "yoy": "1–4%" }
                 },
+                "tiers": {
+                              "1-3": {
+                                        "p10": 55000,
+                                        "p50": 72000,
+                                        "p90": 88000,
+                                        "desc": "Compliance Officer / Regulatory Analyst"
+                              },
+                              "3-6": {
+                                        "p10": 90000,
+                                        "p50": 122000,
+                                        "p90": 155000,
+                                        "desc": "Senior Compliance Manager / Deputy MLRO"
+                              },
+                              "6-10": {
+                                        "p10": 140000,
+                                        "p50": 185000,
+                                        "p90": 235000,
+                                        "desc": "Head of Compliance / Designated SMF16"
+                              },
+                              "10+": {
+                                        "p10": 200000,
+                                        "p50": 280000,
+                                        "p90": 375000,
+                                        "desc": "Chief Compliance Officer (CCO) / Group Legal & Compliance Director"
+                              }
+                    },
                 "key_insights": [
                     "FCA Consumer Duty and operational resilience mandates driving senior compliance hiring.",
                     "Dual legal and compliance qualifications attract senior leadership bonuses."
@@ -352,6 +664,32 @@ def generate_monthly_dataset():
                     "scotland": { "p10": 44000, "p50": 60000, "p90": 88000, "base_pct": 80, "bonus_pct": 20, "demand": "Medium", "yoy": "1–4%" },
                     "offshore": { "p10": 75000, "p50": 105000, "p90": 150000, "base_pct": 70, "bonus_pct": 30, "demand": "High", "yoy": "5–10%" }
                 },
+                "tiers": {
+                              "1-3": {
+                                        "p10": 80000,
+                                        "p50": 115000,
+                                        "p90": 155000,
+                                        "desc": "1st–3rd Year STEM Graduate Scheme (Base + £25k–£60k sign-on/bonus)"
+                              },
+                              "3-6": {
+                                        "p10": 135000,
+                                        "p50": 190000,
+                                        "p90": 255000,
+                                        "desc": "Desk Quant / Junior Systematic Trader"
+                              },
+                              "6-10": {
+                                        "p10": 210000,
+                                        "p50": 330000,
+                                        "p90": 480000,
+                                        "desc": "Quantitative Portfolio Manager / Strategy Lead"
+                              },
+                              "10+": {
+                                        "p10": 340000,
+                                        "p50": 550000,
+                                        "p90": 950000,
+                                        "desc": "Partner / Head of Systematic Trading"
+                              }
+                    },
                 "key_insights": [
                     "Top-tier STEM graduates (Oxbridge, Imperial, Warwick) receiving competitive sign-on bonuses.",
                     "Python proficiency and contest math background highly valued."
@@ -371,6 +709,32 @@ def generate_monthly_dataset():
                     "scotland": { "p10": 27880, "p50": 36080, "p90": 50840, "base_pct": 95, "bonus_pct": 5, "demand": "Moderate", "yoy": "2–4%" },
                     "offshore": { "p10": 42500, "p50": 55000, "p90": 77500, "base_pct": 92, "bonus_pct": 8, "demand": "High", "yoy": "2–4%" }
                 },
+                "tiers": {
+                              "1-3": {
+                                        "p10": 24000,
+                                        "p50": 30000,
+                                        "p90": 36000,
+                                        "desc": "Junior / Trainee Reporter (Regional newsroom / local reporting / digital writer)"
+                              },
+                              "3-6": {
+                                        "p10": 34000,
+                                        "p50": 44000,
+                                        "p90": 58000,
+                                        "desc": "Staff Journalist / Desk Reporter (National publication / broadcast producer)"
+                              },
+                              "6-10": {
+                                        "p10": 48000,
+                                        "p50": 65000,
+                                        "p90": 85000,
+                                        "desc": "Senior Specialist Correspondent / News Editor (City, politics, investigative lead)"
+                              },
+                              "10+": {
+                                        "p10": 75000,
+                                        "p50": 105000,
+                                        "p90": 145000,
+                                        "desc": "Editor-in-Chief / Head of News / Executive Managing Editor"
+                              }
+                    },
                 "key_insights": [
                     "London national broadsheets, major broadcasters (BBC, Sky, Reuters), and City publications pay £4,000–£6,000 London weighting over regional newsrooms.",
                     "Specialist domain reporters covering City financial markets, technology policy, or data investigations command £15,000–£30,000 salary premiums."
@@ -415,6 +779,32 @@ def generate_monthly_dataset():
                     "scotland": { "p10": 81590, "p50": 100040, "p90": 135300, "base_pct": 95, "bonus_pct": 5, "demand": "High", "yoy": "3–6%" },
                     "offshore": { "p10": 124375, "p50": 152500, "p90": 206250, "base_pct": 90, "bonus_pct": 10, "demand": "Critical Scarcity", "yoy": "3–6%" }
                 },
+                "tiers": {
+                              "1-3": {
+                                        "p10": 45000,
+                                        "p50": 54000,
+                                        "p90": 68000,
+                                        "desc": "Specialty Trainee ST1–ST3 (Resident Doctor basic; gross £55k–£68k with on-call)"
+                              },
+                              "3-6": {
+                                        "p10": 58000,
+                                        "p50": 72000,
+                                        "p90": 88000,
+                                        "desc": "Specialty Registrar ST4–ST8 (MRCPCH qualified; gross £72k–£95k with rota banding)"
+                              },
+                              "6-10": {
+                                        "p10": 99500,
+                                        "p50": 114000,
+                                        "p90": 130000,
+                                        "desc": "Newly Appointed NHS Consultant Paediatrician (Thresholds 1–4 + EPAs / On-call)"
+                              },
+                              "10+": {
+                                        "p10": 120000,
+                                        "p50": 148000,
+                                        "p90": 185000,
+                                        "desc": "Senior Consultant / Clinical Director / Private Clinic Practice (Thresholds 5–8+ & NCIAs)"
+                              }
+                    },
                 "key_insights": [
                     "Governed by the national NHS Consultant contract (£99,532–£150,569+), with on-call rota banding, EPAs, and Clinical Impact Awards increasing gross NHS remuneration.",
                     "Private practice sessions and Harley Street consulting provide established paediatric consultants with £30,000–£75,000+ supplemental income alongside the NHS defined-benefit pension scheme (~20.6% employer contribution)."
