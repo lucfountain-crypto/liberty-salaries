@@ -64,6 +64,22 @@ export default function SalaryDashboard() {
     }
   }, []);
 
+  // Auto-align expYears if the user types an explicit experience duration into the role input (e.g. "1-2 years", "1-3 yrs")
+  useEffect(() => {
+    const inlineExpMatch = roleInput.match(/\b(\d+)\s*[-–]\s*(\d+)\s*(years?|yrs?|y|pqe)\b/i) || roleInput.match(/\b(\d+)\s*\+?\s*(years?|yrs?|y|pqe)\b/i);
+    if (inlineExpMatch) {
+      const startYears = parseInt(inlineExpMatch[1], 10);
+      let detected = '1-3';
+      if (startYears <= 2) detected = '1-3';
+      else if (startYears <= 5) detected = '3-6';
+      else if (startYears <= 9) detected = '6-10';
+      else detected = '10+';
+      if (detected !== expYears) {
+        setExpYears(detected);
+      }
+    }
+  }, [roleInput, expYears]);
+
   // Pre-cached roles from JSON
   const predefinedRoles = salaryData.roles;
 
@@ -322,7 +338,10 @@ export default function SalaryDashboard() {
     });
     rawTitle = rawTitle.replace(/unless otherwise stated.*$/gi, '');
     rawTitle = rawTitle.replace(/tell me what role.*$/gi, '');
-    const titleClean = rawTitle.trim() || 'Internal Auditor';
+
+    // Strip inline experience qualifiers from role title so "Insurance Account Manager 1-2 years" cleans to "Insurance Account Manager"
+    const cleanedTitleForMatching = rawTitle.replace(/\b\d+\s*[-–]\s*\d+\s*(years?|yrs?|y|pqe)\b/gi, '').replace(/\b\d+\s*\+?\s*(years?|yrs?|y|pqe)\b/gi, '').trim();
+    const titleClean = cleanedTitleForMatching || rawTitle.trim() || 'Internal Auditor';
     const inputLower = titleClean.toLowerCase();
 
     const isGraduateInput = /\b(graduate|grad|trainee|intern|internship|junior graduate|entry level)\b/i.test(inputLower);
@@ -332,6 +351,15 @@ export default function SalaryDashboard() {
       const titleLower = r.title.toLowerCase();
       const normInput = inputLower.replace(/\b(solutions)\b/g, 'solution');
       const normTitle = titleLower.replace(/\b(solutions)\b/g, 'solution');
+
+      // Direct match for Insurance Account Handler & Account Manager
+      if (r.id === 'ins-account-handler-manager') {
+        const isInsuranceContext = /\b(insurance|broker|broking|commercial|lloyd'?s)\b/i.test(inputLower);
+        const isAccountRole = /\b(account handler|account manager|account exec|account executive|broker support|broking handler)\b/i.test(inputLower);
+        if (isInsuranceContext && isAccountRole) return true;
+        if (inputLower === 'account handler' || inputLower === 'insurance account handler' || inputLower === 'insurance account manager' || inputLower === 'account manager, insurance' || inputLower === 'commercial account manager') return true;
+      }
+
       const match = titleLower === inputLower || 
                     normTitle === normInput ||
                     titleLower.includes(inputLower) || 
@@ -352,7 +380,8 @@ export default function SalaryDashboard() {
       const isAudit = titleLower.includes('audit');
       const isQuantOrIB = titleLower.includes('quant') || titleLower.includes('m&a') || titleLower.includes('banking');
       const isLegal = titleLower.includes('solicitor') || titleLower.includes('law') || titleLower.includes('compliance');
-      const isInsurance = titleLower.includes('underwriter') || titleLower.includes('actuary');
+      const isBrokingAccount = titleLower.includes('account handler') || titleLower.includes('account manager') || predefined.id === 'ins-account-handler-manager';
+      const isInsurance = (titleLower.includes('underwriter') || titleLower.includes('actuary')) && !isBrokingAccount;
       const isTech = titleLower.includes('architect') || titleLower.includes('software') || titleLower.includes('engineer') || titleLower.includes('developer');
       const isMarketingOrComms = titleLower.includes('communication') || titleLower.includes('marketing') || titleLower.includes('comms') || titleLower.includes('brand') || titleLower.includes('pr');
 
@@ -363,6 +392,8 @@ export default function SalaryDashboard() {
         movementText = '+6% to +12% annual compensation movement across front-office trading, quant research, and M&A mandates.';
       } else if (isLegal) {
         movementText = '+3% to +6% annual associate scale movement; lateral hiring at 3–5y PQE attracts significant retention premiums.';
+      } else if (isBrokingAccount) {
+        movementText = '+3% to +5% annual salary movement across UK commercial broking and London market account management.';
       } else if (isInsurance) {
         movementText = '+3% to +6% annual movement; specialty and Lloyd\'s syndicate lines command premium underwriting authority allocations.';
       } else if (isTech) {
@@ -380,6 +411,8 @@ export default function SalaryDashboard() {
           ? '0–10% typical (higher in specialist financial services)' 
           : isQuantOrIB 
           ? '30–50%+ variable target bonus'
+          : isBrokingAccount
+          ? '10–20% typical (+ portfolio retention incentives)'
           : isInsurance
           ? '15–30% typical (syndicate performance bonuses)'
           : isTech
@@ -844,24 +877,38 @@ export default function SalaryDashboard() {
         maxExpMultiplier = 1.30;
       }
     }
-    // 5. Insurance Account Handler / Account Executive / Broking
-    else if (/\b(account handler|account executive|broker support|broking|client manager)\b/i.test(inputLower)) {
+    // 5. Insurance Account Handler / Account Executive / Account Manager / Broking
+    else if (
+      /\b(account handler|broker support|broking|client manager)\b/i.test(inputLower) ||
+      (/\baccount (executive|manager)\b/i.test(inputLower) && /\b(insurance|broker|broking|commercial|lloyd'?s|underwriting|syndicate)\b/i.test(inputLower)) ||
+      /\b(insurance|commercial|broking)\s+(commercial\s+)?(account (handler|executive|manager))\b/i.test(inputLower)
+    ) {
       sector = "Insurance & Commercial Broking";
+      const isPeopleManager = /\b(managing people|people manager|team leader|team lead|lead account manager|handling manager|account handling manager)\b/i.test(inputLower);
+
       if (isDirectorLevel) {
-        baseP10 = 80000; baseP50 = 115000; baseP90 = 165000;
+        baseP10 = 85000; baseP50 = 115000; baseP90 = 165000;
         basePct = 75; bonusPct = 25;
         description = "Directs commercial broking operations, key client portfolio placements, insurer relationships, and regional practice leadership.";
         demand = "High Scarcity (Broking Directors)";
-        yoy = "1–4%";
+        yoy = "+3% to +5%";
         hiringInsight = "Broking Directors with portable books of business and strong market relationships command executive compensation.";
         maxExpMultiplier = 1.50;
-      } else {
-        baseP10 = 42000; baseP50 = 58000; baseP90 = 92000;
+      } else if (isPeopleManager) {
+        baseP10 = 55000; baseP50 = 68000; baseP90 = 88000;
         basePct = 85; bonusPct = 15;
+        description = "Supervises and leads teams of commercial account handlers/executives, orchestrating workflow allocation, quality assurance, carrier relationships, and high-level client account escalations.";
+        demand = "High Scarcity for Broking Team Leaders & People Managers";
+        yoy = "+3% to +5%";
+        hiringInsight = "Crucial context distinction: Broking Team Leaders and Account Handling Managers with direct line management responsibility for people command £60k–£85k+ packages, distinctly above individual portfolio handlers.";
+        maxExpMultiplier = 1.40;
+      } else {
+        baseP10 = 36000; baseP50 = 46000; baseP90 = 62000;
+        basePct = 88; bonusPct = 12;
         description = "Manages commercial client policy portfolios, renewal placements, Lloyd's/company market negotiations, and broker client accounts.";
-        demand = "High Demand for Experienced Handlers";
-        yoy = "1–4%";
-        hiringInsight = "Competitive broking market. Experienced handlers with Acturis/Open GI mastery and strong insurer relationships command premium London packages.";
+        demand = "High Demand for Experienced Handlers & Account Execs";
+        yoy = "+3% to +5%";
+        hiringInsight = "Crucial context distinction: In UK insurance broking, an 'Account Manager' at junior level (1–2 years) is functionally equivalent to an Account Handler—the role entails managing client accounts (policy servicing, renewals, Acturis/Open GI input), NOT managing people. People management (supervising handler teams) typically begins at senior/team lead tiers (6+ years, £60k–£85k+) or dedicated Broking Team Leader appointments.";
       }
     }
     // 6. Admin & EA/PA (STRICT WORD BOUNDARY: \bpa\b so "part" never matches)
@@ -1394,6 +1441,7 @@ export default function SalaryDashboard() {
                       'IT Auditor',
                       'Commercial Solicitor',
                       'Specialty Underwriter',
+                      'Insurance Account Handler & Manager',
                       'Software Engineer',
                       'Audit Manager',
                       'External Auditor'

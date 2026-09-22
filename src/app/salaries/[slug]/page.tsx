@@ -196,6 +196,32 @@ const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
       '10+': { p10: 190000, p50: 260000, p90: 360000, desc: 'Chief Actuary / Actuarial Function Holder / CRO' }
     }
   },
+  'ins-account-handler-manager': {
+    basePct: 88,
+    bonusPct: 12,
+    demand: 'High Demand for Experienced Handlers & Commercial Account Managers',
+    movement: '+3% to +5% annual base movement across UK commercial broking hubs',
+    certifications: [
+      'Cert CII / Dip CII (Chartered Insurance Institute)',
+      'Acturis Certification / Open GI / SSP Proficiency',
+      'ACII (Advanced Diploma in Insurance) for Senior / Leadership'
+    ],
+    overview: 'Insurance Account Handlers and Commercial Account Managers manage client insurance portfolios across commercial property, casualty, liability, and specialty risks. Crucial market distinction: at junior levels (1–2 years), an Account Manager manages client policy accounts (renewals, MTAs, insurer quoting), NOT people. True people management (leading broking squads and supervising handlers) commands an executive premium and typically begins at senior/team lead tiers (6+ years).',
+    responsibilities: [
+      'Managing renewals, mid-term adjustments (MTAs), and policy servicing across commercial client portfolios.',
+      'Negotiating terms, risk pricing, and coverage extensions with company market and Lloyd\'s underwriters.',
+      'Utilizing broking software platforms (Acturis, Open GI, Applied) for policy documentation and audit compliance.',
+      'At 1–3 years: focusing on day-to-day policy administration, renewal packs, and client account servicing (managing accounts, not people).',
+      'At senior/lead level (6+ years): providing team leadership, workflow delegation, training junior handlers, and managing people alongside key corporate client relationships.'
+    ],
+    marketContext: 'In UK commercial insurance broking, titles often vary between brokers. "Account Handler" and "Account Manager" at junior-to-mid levels refer to portfolio servicing rather than line management. Where a role genuinely includes managing people (Broking Team Leader / Account Handling Manager), packages command a substantial premium (£60k–£85k+).',
+    tiers: {
+      '1-3': { p10: 26000, p50: 31000, p90: 37000, desc: 'Junior Account Handler / Trainee Account Manager (1–2y exp); client policy renewals & account servicing (managing accounts, not people)' },
+      '3-6': { p10: 38000, p50: 46000, p90: 58000, desc: 'Commercial Account Handler / Account Manager; autonomous client portfolio management & underwriting placement' },
+      '6-10': { p10: 55000, p50: 68000, p90: 88000, desc: 'Senior Commercial Account Manager / Broking Team Leader; complex accounts & supervising teams (managing people)' },
+      '10+': { p10: 85000, p50: 115000, p90: 165000, desc: 'Broking Director / Head of Client Management; operational leadership & carrier negotiations' }
+    }
+  },
   'quant-researcher-sr': {
     basePct: 50,
     bonusPct: 50,

@@ -21,7 +21,7 @@ def generate_monthly_dataset():
             "title": "Liberty Towers Compensation & Market Intelligence",
             "updated_at": current_month_year,
             "version": "1.2.1",
-            "total_roles_benchmarked": 47,
+            "total_roles_benchmarked": 48,
             "sectors": [
                 "Audit, Governance & Risk",
                 "Insurance & Reinsurance",
@@ -221,6 +221,32 @@ def generate_monthly_dataset():
                 "key_insights": [
                     "IFRS 17 regulatory experience commands a 15% salary premium across insurance hubs.",
                     "Python and machine learning pricing model experience increasingly mandatory."
+                ]
+            },
+            {
+                "id": "ins-account-handler-manager",
+                "title": "Insurance Account Handler & Account Manager",
+                "sector": "Insurance & Commercial Broking",
+                "category": "Broking & Account Management",
+                "description": "Manages commercial client policy portfolios, mid-term adjustments, renewal negotiations, and insurer placements. At 1–3 years, scope is managing client accounts (policy servicing); people/team management applies at senior leadership tiers.",
+                "regional_data": {
+                    "london": { "p10": 26000, "p50": 46000, "p90": 85000, "base_pct": 88, "bonus_pct": 12, "demand": "High Demand (Experienced Commercial Handlers & Execs)", "yoy": "+3% to +5%" },
+                    "south_east": { "p10": 23000, "p50": 40500, "p90": 74800, "base_pct": 90, "bonus_pct": 10, "demand": "Steady", "yoy": "+2% to +4%" },
+                    "midlands": { "p10": 21500, "p50": 37700, "p90": 69700, "base_pct": 90, "bonus_pct": 10, "demand": "Steady", "yoy": "+2% to +4%" },
+                    "north_uk": { "p10": 21000, "p50": 36800, "p90": 68000, "base_pct": 90, "bonus_pct": 10, "demand": "Steady", "yoy": "+2% to +4%" },
+                    "scotland": { "p10": 21500, "p50": 37700, "p90": 69700, "base_pct": 90, "bonus_pct": 10, "demand": "Steady", "yoy": "+2% to +4%" },
+                    "offshore": { "p10": 32500, "p50": 57500, "p90": 106000, "base_pct": 85, "bonus_pct": 15, "demand": "High", "yoy": "+3% to +5%" }
+                },
+                "tiers": {
+                    "1-3": { "p10": 26000, "p50": 31000, "p90": 37000, "desc": "Junior Account Handler / Trainee Account Manager (1–2y exp); policy administration, renewals & client account servicing (managing accounts, not people)" },
+                    "3-6": { "p10": 38000, "p50": 46000, "p90": 58000, "desc": "Commercial Account Handler / Account Manager; autonomous client portfolio management, Lloyd's & company market placement" },
+                    "6-10": { "p10": 55000, "p50": 68000, "p90": 88000, "desc": "Senior Commercial Account Manager / Broking Team Leader; high-value corporate accounts, managing people & supervising handler teams" },
+                    "10+": { "p10": 85000, "p50": 115000, "p90": 165000, "desc": "Broking Director / Head of Client Management; operational leadership, P&L ownership & executive carrier relationships" }
+                },
+                "key_insights": [
+                    "Crucial industry context: In UK insurance broking, an 'Account Manager' at junior levels (1–2 years) is functionally equivalent to an Account Handler—the role focuses on managing client accounts (policy servicing, renewals, Acturis admin), NOT managing people.",
+                    "True people management (leading broking squads, workflow allocation, line management) commands a clear salary premium and typically begins at senior/team lead tiers (6+ years, £60k–£85k+) or dedicated Broking Team Leader appointments.",
+                    "Experienced handlers and account managers with Acturis, Open GI, or SSP mastery and strong regional insurer relationships command top-quartile market packages."
                 ]
             },
             {
