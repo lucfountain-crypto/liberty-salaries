@@ -464,6 +464,33 @@ const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
       '6-10': { p10: 100000, p50: 125000, p90: 160000, desc: 'Senior Solutions Architect; multi-cloud architecture (AWS/Azure), enterprise platform design, and technical governance' },
       '10+': { p10: 130000, p50: 165000, p90: 215000, desc: 'Principal / Enterprise Solutions Architect / Chief Architect; enterprise roadmap, board-level technical advisory' }
     }
+  },
+  'marketing-internal-comms-manager': {
+    basePct: 88,
+    bonusPct: 12,
+    demand: 'High UK Demand (Corporate Transformation & Employee Engagement)',
+    movement: '+3% to +6% annual base progression across UK corporate affairs and marketing disciplines',
+    certifications: [
+      'IoIC (Institute of Internal Communication) Accredited',
+      'CIPR (Chartered Institute of Public Relations) Diploma',
+      'PRCA Member',
+      'Prosci Change Management Certification'
+    ],
+    overview: 'Internal Communications Managers lead the design and execution of enterprise-wide employee engagement campaigns, leadership messaging, change management communications, and internal brand alignment.',
+    responsibilities: [
+      'Designing and executing strategic internal communications roadmaps aligned to corporate strategy and organizational culture.',
+      'Crafting high-impact executive comms, CEO town hall scripts, and strategic announcements for C-suite leaders.',
+      'Partnering with HR, Legal, and Transformation teams to deliver sensitive change, M&A, and restructuring communications.',
+      'Managing internal communication channels including modern intranet portals, enterprise social networks, and multimedia broadcasts.',
+      'Tracking employee sentiment, engagement metrics, and feedback loops to continuously optimize channel effectiveness.'
+    ],
+    marketContext: 'Internal Communications sits squarely as a senior marketing and corporate affairs role. UK organisations place immense value on comms managers who can navigate corporate change, align hybrid workforces, and articulate leadership vision with clarity.',
+    tiers: {
+      '1-3': { p10: 42000, p50: 52000, p90: 62000, desc: 'Internal Communications Specialist / Officer; newsletter, intranet & event content' },
+      '3-6': { p10: 58000, p50: 72000, p90: 88000, desc: 'Internal Communications Manager; executive messaging, change programmes, and campaign delivery' },
+      '6-10': { p10: 75000, p50: 92000, p90: 115000, desc: 'Senior Internal Communications Manager / Comms Business Partner; strategic advisory to C-suite & M&A comms' },
+      '10+': { p10: 98000, p50: 125000, p90: 160000, desc: 'Head of Internal Communications / Director of Employee Engagement' }
+    }
   }
 };
 

@@ -350,6 +350,7 @@ export default function SalaryDashboard() {
       const isLegal = titleLower.includes('solicitor') || titleLower.includes('law') || titleLower.includes('compliance');
       const isInsurance = titleLower.includes('underwriter') || titleLower.includes('actuary');
       const isTech = titleLower.includes('architect') || titleLower.includes('software') || titleLower.includes('engineer') || titleLower.includes('developer');
+      const isMarketingOrComms = titleLower.includes('communication') || titleLower.includes('marketing') || titleLower.includes('comms') || titleLower.includes('brand') || titleLower.includes('pr');
 
       let movementText = '+2% to +4% broad UK professional services annual salary movement.';
       if (isAudit) {
@@ -362,6 +363,8 @@ export default function SalaryDashboard() {
         movementText = '+3% to +6% annual movement; specialty and Lloyd\'s syndicate lines command premium underwriting authority allocations.';
       } else if (isTech) {
         movementText = '+4% to +8% annual movement across UK enterprise technology, cloud architecture, and modern engineering platforms.';
+      } else if (isMarketingOrComms) {
+        movementText = '+3% to +6% annual salary movement across UK corporate affairs, internal engagement, and strategic marketing disciplines.';
       }
 
       return {
@@ -377,6 +380,8 @@ export default function SalaryDashboard() {
           ? '15–30% typical (syndicate performance bonuses)'
           : isTech
           ? '15–25% typical (+ equity / performance bonus)'
+          : isMarketingOrComms
+          ? '10–20% typical (higher in FTSE / financial services)'
           : '10–20% typical',
         salaryMovementText: movementText,
         tiers: (predefined as any).tiers
@@ -677,24 +682,53 @@ export default function SalaryDashboard() {
         hiringInsight = "Investment banking analysts and associates command significant bonus pools (30-50% variable) above base salary.";
       }
     }
-    // 4. Marketing, Brand, Sales, Business Development & Commercial Leadership
-    else if (/\b(marketing|market|brand|growth|sales|commercial|business development|biz dev|bd|account director|sales director)\b/i.test(inputLower)) {
-      sector = "Commercial, Sales, Marketing & Business Development";
-      if (isDirectorLevel) {
-        baseP10 = 75000; baseP50 = 105000; baseP90 = 150000;
+    // 4. Marketing, Brand, Communications, PR & Corporate Affairs
+    else if (/\b(marketing|market|brand|growth|sales|commercial|business development|biz dev|bd|account director|sales director|communication|communications|comms|internal comms|corporate affairs|public relations|\bpr\b|media relations|employee engagement|content strategy)\b/i.test(inputLower)) {
+      const isCommsSpecific = /\b(communication|communications|comms|internal comms|corporate affairs|public relations|\bpr\b|media relations|employee engagement)\b/i.test(inputLower);
+      sector = isCommsSpecific 
+        ? "Marketing & Corporate Communications" 
+        : "Commercial, Sales, Marketing & Business Development";
+
+      const isSeniorLeadership = isDirectorLevel || /\b(head of|director|vp|cmo|chief)\b/i.test(inputLower);
+      const isManagerOrLead = /\b(manager|lead|specialist|business partner|bp|consultant|strategist)\b/i.test(inputLower);
+
+      if (isSeniorLeadership) {
+        baseP10 = 85000; baseP50 = 115000; baseP90 = 165000;
         basePct = 75; bonusPct = 25;
-        description = "Leads commercial strategy, business development, omni-channel growth, revenue expansion, and executive sales operations.";
-        demand = "High Demand for Commercial & BD Directors";
-        yoy = "1–4%";
-        hiringInsight = "Business Development and Commercial Directors with verified ROI on client acquisition and revenue growth command top-tier packages (£120k–£180k+).";
+        description = isCommsSpecific
+          ? "Leads enterprise corporate communications, executive narrative strategy, brand reputation, and internal stakeholder alignment."
+          : "Leads commercial strategy, business development, omni-channel growth, revenue expansion, and executive sales operations.";
+        demand = isCommsSpecific
+          ? "High Demand (Corporate Comms & Internal Engagement Directors)"
+          : "High Demand for Commercial & BD Directors";
+        yoy = "+3% to +6%";
+        hiringInsight = isCommsSpecific
+          ? "Heads of Internal Communications and Comms Directors command executive compensation (£110k–£165k+), especially across FTSE transformations and financial services."
+          : "Business Development and Commercial Directors with verified ROI on client acquisition and revenue growth command top-tier packages (£120k–£180k+).";
         maxExpMultiplier = 1.50;
+      } else if (isManagerOrLead) {
+        baseP10 = 55000; baseP50 = 72000; baseP90 = 95000;
+        basePct = 85; bonusPct = 15;
+        description = isCommsSpecific
+          ? "Develops and executes internal communications strategies, executive leadership messaging, employee engagement programmes, and change management narratives."
+          : "Drives product marketing campaigns, customer acquisition funnels, brand growth strategy, and team delivery.";
+        demand = isCommsSpecific
+          ? "High Demand for Experienced Comms & Marketing Managers"
+          : "High Demand for Senior Marketing & Commercial Managers";
+        yoy = "+3% to +5%";
+        hiringInsight = isCommsSpecific
+          ? "Internal Communications Managers are in high demand for corporate restructuring, hybrid-workforce engagement, and M&A integration. Financial services and professional firms offer 15–20% premiums."
+          : "Senior Marketing Managers with proven campaign ROI and multi-channel expertise command upper-quartile remuneration (£70k–£95k+).";
+        maxExpMultiplier = 1.40;
       } else {
-        baseP10 = 42000; baseP50 = 68000; baseP90 = 110000;
-        basePct = 80; bonusPct = 20;
-        description = "Drives brand positioning, campaign execution, digital marketing channels, and client acquisition pipelines.";
+        baseP10 = 38000; baseP50 = 52000; baseP90 = 72000;
+        basePct = 88; bonusPct = 12;
+        description = isCommsSpecific
+          ? "Coordinates employee communications, newsletter distribution, intranet content, and digital messaging channels."
+          : "Drives brand positioning, campaign execution, digital marketing channels, and client acquisition pipelines.";
         demand = "Moderate Candidate Availability";
-        yoy = "1–4%";
-        hiringInsight = "Good active applicant volume. Primary differentiator is demonstrated campaign conversion and sector-specific domain knowledge.";
+        yoy = "+2% to +4%";
+        hiringInsight = "Broad active applicant volume. Primary differentiator is demonstrated campaign conversion, writing quality, and sector-specific domain knowledge.";
         maxExpMultiplier = 1.30;
       }
     }
@@ -1074,6 +1108,7 @@ export default function SalaryDashboard() {
   const isTechRole = inputTitleLower.includes('developer') || inputTitleLower.includes('software') || inputTitleLower.includes('engineer') || inputTitleLower.includes('tech') || inputTitleLower.includes('architect');
   const isAuditRole = inputTitleLower.includes('audit');
   const isInsuranceRole = inputTitleLower.includes('underwriter') || inputTitleLower.includes('actuary') || inputTitleLower.includes('insurance');
+  const isMarketingOrCommsRole = inputTitleLower.includes('marketing') || inputTitleLower.includes('communication') || inputTitleLower.includes('comms') || inputTitleLower.includes('brand') || inputTitleLower.includes('pr');
 
   const formatCurrency = (val: number) => {
     return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(val);
@@ -1459,6 +1494,33 @@ export default function SalaryDashboard() {
                             {[
                               { id: 'default', label: 'Commercial Company Market Lines' },
                               { id: 'lloyds', label: 'Lloyd\'s Syndicate Specialty Lines (+20%)' }
+                            ].map(opt => (
+                              <button
+                                key={opt.id}
+                                type="button"
+                                onClick={() => setRoleSpecialism(opt.id)}
+                                className={`text-xs px-3 py-1.5 rounded-lg border transition ${
+                                  roleSpecialism === opt.id
+                                    ? 'bg-blue-900 text-white border-blue-900 font-semibold shadow-xs'
+                                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                                }`}
+                              >
+                                {opt.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {isMarketingOrCommsRole && (
+                        <div className="pt-2 border-t border-slate-200/60">
+                          <label className="text-xs font-bold text-slate-800 block mb-1">
+                            Corporate Sector Focus
+                          </label>
+                          <div className="flex flex-wrap gap-2">
+                            {[
+                              { id: 'default', label: 'Commercial & Mid-Market Enterprise' },
+                              { id: 'banking_fs', label: 'Financial Services & City Corporate (+20%)' }
                             ].map(opt => (
                               <button
                                 key={opt.id}
