@@ -73,19 +73,23 @@ export default function SalaryDashboard() {
     const locLower = (locationNatural || '').trim().toLowerCase();
     
     // Work style extraction
-    let derivedStyle = 'hybrid';
+    let derivedStyle = '';
     if (/\b(remote|wfh|home|telecommute|distributed)\b/.test(locLower)) {
       derivedStyle = 'remote';
     } else if (/\b(office|onsite|in-office|site-based|desk)\b/.test(locLower)) {
       derivedStyle = 'office';
+    } else {
+      // Physical / site-based occupations default to on-site, not hybrid
+      const isPhysicalOnSite = /\b(nurse|nursing|doctor|medical|teacher|teaching|chef|cook|electrician|plumber|carpenter|builder|mechanic|fitter|welder|cleaner|cleaning|driver|warehouse|picker|packer|carer|care assistant|bartender|waiter|waitress|catering)\b/i.test(roleInput || '');
+      derivedStyle = isPhysicalOnSite ? 'on-site' : 'hybrid';
     }
 
     if (!locLower) {
       return {
         regionKey: 'london',
-        regionName: 'London & City Hubs',
+        regionName: 'Greater London & City Hubs',
         multiplier: 1.0,
-        derivedStyle: 'hybrid',
+        derivedStyle,
         isOverseasEU: false,
         isUnrecognised: false,
         warning: null as string | null
@@ -235,7 +239,7 @@ export default function SalaryDashboard() {
     ) {
       return {
         regionKey: 'london',
-        regionName: "London & Lloyd's Market",
+        regionName: locLower.includes("lloyd's") ? "London (Lloyd's Market)" : "Greater London & City",
         multiplier: 1.0,
         derivedStyle,
         isOverseasEU: false,
@@ -254,7 +258,7 @@ export default function SalaryDashboard() {
       isUnrecognised: true,
       warning: 'Location not explicitly recognized — calibrated against UK National Average (0.82x London baseline). Enter a specific UK city (e.g. London, Manchester, Birmingham) for local precision.'
     };
-  }, [locationNatural]);
+  }, [locationNatural, roleInput]);
 
   // Optional Refinement Multipliers
   const refinementMultiplier = useMemo(() => {
@@ -487,10 +491,118 @@ export default function SalaryDashboard() {
         hiringInsight = "Head of Data packages depend on team scale, whether the role is strategic vs hands-on engineering, and executive reporting lines.";
       }
     }
-    // INDUSTRIAL, DRIVING, LOGISTICS & OPERATIONAL BRANCHES
+    // INDUSTRIAL, LOGISTICS, INFRASTRUCTURE, HEALTHCARE & OPERATIONAL BRANCHES
 
+    // 0A. Civil, Structural & Infrastructure Engineering (Physical vs Software Engineering)
+    if (/\b(civil|structural|geotechnical|highways?|bridge|drainage|infrastructure|building services|m&e)\s+(engineer|designer|consultant|technician)\b/i.test(inputLower) || /\b(civil engineer|structural engineer|highways engineer|geotechnical engineer)\b/i.test(inputLower)) {
+      sector = "Engineering & Infrastructure";
+      if (isDirectorLevel) {
+        baseP10 = 70000; baseP50 = 92000; baseP90 = 130000;
+        basePct = 88; bonusPct = 12;
+        description = "Directs civil, structural and infrastructure delivery, major capital works, statutory approvals, and multi-disciplinary engineering teams.";
+        demand = "High Scarcity (CEng Chartered Engineering Directors)";
+        yoy = "3–6%";
+        hiringInsight = "Chartered Engineering Directors (CEng MICE / MIStructE) command £85k–£120k+ with project delivery performance bonuses.";
+        maxExpMultiplier = 1.40;
+      } else {
+        baseP10 = 36000; baseP50 = 54000; baseP90 = 78000;
+        basePct = 92; bonusPct = 8;
+        description = "Delivers civil and structural design, infrastructure modeling (BIM/CAD), site engineering assessments, and statutory technical compliance.";
+        demand = "Constrained (Chartered & Senior Civil Engineers)";
+        yoy = "3–5%";
+        hiringInsight = "Chartership with the Institution of Civil Engineers (ICE) or IStructE commands an immediate £8,000–£15,000 salary premium over unchartered engineers.";
+        maxExpMultiplier = 1.30;
+      }
+    }
+    // 0B. Education, School Teaching & Leadership (STPCD Pay Framework)
+    else if (/\b(teacher|teaching|primary teacher|secondary teacher|headteacher|head teacher|deputy head|special needs teacher|sen teacher|school leader)\b/i.test(inputLower)) {
+      sector = "Education & School Leadership";
+      const isLeadership = isDirectorLevel || /\b(headteacher|head teacher|deputy head|assistant head|principal)\b/i.test(inputLower);
+      if (isLeadership) {
+        baseP10 = 62000; baseP50 = 82000; baseP90 = 118000;
+        basePct = 100; bonusPct = 0;
+        description = "Directs school governance, instructional leadership, curriculum standards, regulatory compliance (Ofsted), and staff leadership.";
+        demand = "High Demand (Headteachers & Executive Principals)";
+        yoy = "School Teachers' Pay & Conditions Document (STPCD)";
+        hiringInsight = "School leadership pay follows STPCD Leadership Pay Group scales, with London weighting (Inner/Outer) and pupil roll tiers.";
+        maxExpMultiplier = 1.40;
+      } else {
+        baseP10 = 36000; baseP50 = 46000; baseP90 = 58000;
+        basePct = 100; bonusPct = 0;
+        description = "Delivers classroom instruction, curriculum planning, student assessment, and pastoral care under qualified teacher status (QTS).";
+        demand = "Acute Shortage (Qualified Teachers - STEM, Primary, Secondary)";
+        yoy = "STPCD Statutory Scales (Main & Upper Pay Ranges)";
+        hiringInsight = "Classroom teachers follow national STPCD statutory points: M1–M6 Main Pay Scale progressing to Upper Pay Scale (U1–U3), with Inner London M1 starting at £40,317.";
+        maxExpMultiplier = 1.30;
+      }
+    }
+    // 0C. Registered Nurses & Clinical Nursing (NHS Agenda for Change Framework)
+    else if (/\b(registered nurse|staff nurse|rgn|rmn|theatre nurse|icu nurse|district nurse|clinical nurse|nurse practitioner|midwife|ward sister|charge nurse)\b/i.test(inputLower)) {
+      sector = "Healthcare & Clinical Nursing";
+      const isSeniorNurse = isDirectorLevel || /\b(matron|lead nurse|nurse consultant|ward sister|charge nurse|advanced nurse)\b/i.test(inputLower);
+      if (isSeniorNurse) {
+        baseP10 = 49000; baseP50 = 58000; baseP90 = 74000;
+        basePct = 100; bonusPct = 0;
+        description = "Provides clinical ward leadership, advanced nurse practice, clinical governance, and team management.";
+        demand = "Severe Scarcity (Band 7 / 8a Clinical Leads)";
+        yoy = "NHS Agenda for Change Annual Pay Award";
+        hiringInsight = "Senior nurses and ward managers map to NHS Agenda for Change Bands 7 & 8a. High Cost Area Supplement (HCAS) adds up to 20% in Inner London.";
+        maxExpMultiplier = 1.35;
+      } else {
+        baseP10 = 32000; baseP50 = 38000; baseP90 = 46000;
+        basePct = 100; bonusPct = 0;
+        description = "Delivers direct clinical patient care, medication administration, care planning, and clinical triage under NMC registration.";
+        demand = "Critical Scarcity (NMC Registered Nurses)";
+        yoy = "NHS Agenda for Change (Band 5/6)";
+        hiringInsight = "Registered nurses in the NHS start on Band 5 (£32,073 entry in 2026/27) progressing with recognized service to Band 6 (£39,959–£48,117). Private healthcare offers comparable base with flexible shift premiums.";
+        maxExpMultiplier = 1.25;
+      }
+    }
+    // 0D. Warehouse, Logistics & Supply Chain Operations Management
+    else if (/\b(warehouse|logistics|distribution|supply chain|inventory|transport|depot)\s+(operations?\s+)?(manager|director|lead|controller|supervisor|head)\b/i.test(inputLower) || /\b(operations manager|distribution manager|transport manager|logistics manager)\b/i.test(inputLower)) {
+      sector = "Logistics, Warehousing & Supply Chain Management";
+      if (isDirectorLevel) {
+        baseP10 = 65000; baseP50 = 85000; baseP90 = 125000;
+        basePct = 85; bonusPct = 15;
+        description = "Directs multi-site distribution network operations, supply chain strategy, carrier contracts, automation hubs, and logistics P&L.";
+        demand = "High Scarcity (Logistics & Supply Chain Directors)";
+        yoy = "2–5%";
+        hiringInsight = "Supply chain and multi-site distribution directors command £80k–£120k+ with performance-linked bonus pools.";
+        maxExpMultiplier = 1.45;
+      } else {
+        baseP10 = 38000; baseP50 = 50000; baseP90 = 68000;
+        basePct = 90; bonusPct = 10;
+        description = "Manages daily warehouse fulfilment, shift operations, health & safety (IOSH), inventory accuracy, and logistics team leadership.";
+        demand = "Strong Demand for Experienced Warehouse & Ops Managers";
+        yoy = "2–4%";
+        hiringInsight = "Operations and shift managers in UK logistics golden-triangle hubs (Northampton, East/West Midlands) command £45,000–£58,000 base pay plus shift premiums.";
+        maxExpMultiplier = 1.30;
+      }
+    }
+    // 0E. Head Chef, Sous Chef & Culinary Leadership
+    else if (/\b(head chef|executive chef|sous chef|pastry chef|chef de cuisine|culinary director)\b/i.test(inputLower)) {
+      sector = "Hospitality & Culinary Leadership";
+      const isExecOrHead = /\b(head chef|executive chef|culinary director)\b/i.test(inputLower) || isDirectorLevel;
+      if (isExecOrHead) {
+        baseP10 = 38000; baseP50 = 48000; baseP90 = 68000;
+        basePct = 90; bonusPct = 10;
+        description = "Leads kitchen brigade operations, menu development, gross profit margin control, supplier procurement, and food safety standards.";
+        demand = "Acute Scarcity (Experienced Head Chefs & Kitchen Directors)";
+        yoy = "3–6%";
+        hiringInsight = "Head Chefs in premium venues and city centers command £42k–£55k+ base salary, plus tronc / service charge distributions and performance bonuses.";
+        maxExpMultiplier = 1.35;
+      } else {
+        baseP10 = 30000; baseP50 = 36000; baseP90 = 44000;
+        basePct = 92; bonusPct = 8;
+        description = "Directs section food preparation, kitchen line execution, inventory control, and sous-chef brigade support.";
+        demand = "High Demand for Qualified Sous Chefs & Section Leads";
+        yoy = "2–5%";
+        hiringInsight = "Sous Chefs track £32k–£40k across regional UK hubs with tronc additions.";
+        maxExpMultiplier = 1.25;
+      }
+    }
     // A. Heavy Freight, HGV Class 1 & Artic Lorry Driving (Big Goods - High Salary)
-    if (/\b(hgv|lgv|artic|articulated|lorry|class 1|c\+e|big goods|heavy goods|tanker driver|haulage|heavy driver)\b/i.test(inputLower)) {
+    else if (/\b(hgv|lgv|artic|articulated|lorry|class 1|c\+e|big goods|heavy goods|tanker driver|haulage|heavy driver)\b/i.test(inputLower)) {
       sector = "Heavy Freight, Haulage & HGV Transport";
       baseP10 = 38000; baseP50 = 48000; baseP90 = 62000;
       basePct = 92; bonusPct = 8;
@@ -511,7 +623,7 @@ export default function SalaryDashboard() {
       hiringInsight = "Steady demand across e-commerce and regional distribution networks. Clean driving record and multi-drop routing efficiency command top end of grade.";
       maxExpMultiplier = 1.20;
     }
-    // C. Forklift Truck, Materials Handling & Warehouse Logistics
+    // C. Forklift Truck, Materials Handling & Warehouse Logistics (Operatives)
     else if (/\b(forklift|flt|reach truck|counterbalance|materials handling|warehouse|picker|packer|logistics operative|yard operative)\b/i.test(inputLower)) {
       sector = "Logistics, Warehousing & Distribution";
       baseP10 = 25000; baseP50 = 31000; baseP90 = 40000;
@@ -544,38 +656,38 @@ export default function SalaryDashboard() {
       hiringInsight = "Shift patterns (rotating continental / night shifts) typically attract 15–25% shift premium over standard base rates.";
       maxExpMultiplier = 1.20;
     }
-    // F. Skilled Trades, Construction & Industrial Maintenance
+    // F. Skilled Trades, Construction & Industrial Maintenance (Electricians, Plumbers, Gas)
     else if (/\b(electrician|plumber|carpenter|builder|mechanic|fitter|welder|handyman|maintenance technician|maintenance engineer|tradesperson|gas engineer|pipefitter)\b/i.test(inputLower)) {
       sector = "Skilled Trades & Industrial Engineering";
-      baseP10 = 30000; baseP50 = 42000; baseP90 = 58000;
+      baseP10 = 34000; baseP50 = 44000; baseP90 = 62000;
       basePct = 92; bonusPct = 8;
       description = "Executes technical trade installation, mechanical/electrical maintenance, diagnostics, and facility engineering operations.";
-      demand = "High Scarcity (Certified Trades)";
-      yoy = "1–4%";
-      hiringInsight = "Certified trade professionals (Gas Safe, NVQ Level 3, 18th Edition) command strong premium rates across commercial and industrial sectors.";
+      demand = "High Scarcity (Certified Trades & JIB Approved)";
+      yoy = "2–5%";
+      hiringInsight = "Certified trade professionals (JIB Gold Card, 18th Edition, Gas Safe, NVQ Level 3) command £38,000–£48,000+ base rates, with overtime and van allowances.";
       maxExpMultiplier = 1.35;
     }
-    // G. Hospitality, Retail, Catering & Customer Services
+    // G. Frontline Hospitality, Retail, Catering & Customer Services
     else if (/\b(chef|cook|waiter|waitress|bartender|barista|retail assistant|store assistant|cashier|customer service|call centre)\b/i.test(inputLower)) {
       sector = "Hospitality, Retail & Customer Services";
-      baseP10 = 24000; baseP50 = 28000; baseP90 = 38000;
+      baseP10 = 24500; baseP50 = 28500; baseP90 = 36000;
       basePct = 95; bonusPct = 5;
       description = "Delivers customer service, retail operations, food preparation, or frontline service execution.";
       demand = "High Candidate Availability";
       yoy = "1–4%";
-      hiringInsight = "Frontline roles track retail and hospitality pay agreements; head chefs and store managers command higher salary tiers.";
+      hiringInsight = "Frontline roles track retail and hospitality pay agreements; supervisory and team leadership roles reach £30k–£35k.";
       maxExpMultiplier = 1.25;
     }
-    // H. Healthcare & Social Care Support
-    else if (/\b(carer|care assistant|healthcare assistant|nurse|nursing|support worker|care worker)\b/i.test(inputLower)) {
+    // H. Care Assistants & Social Care Support (Frontline Support)
+    else if (/\b(carer|care assistant|healthcare assistant|hca|support worker|care worker)\b/i.test(inputLower)) {
       sector = "Healthcare & Care Services";
-      baseP10 = 24500; baseP50 = 31000; baseP90 = 45000;
+      baseP10 = 24500; baseP50 = 29000; baseP90 = 38000;
       basePct = 95; bonusPct = 5;
-      description = "Provides clinical care, patient support, elderly or disability care, and social care service delivery.";
-      demand = "High Demand for Registered Care Staff";
+      description = "Provides patient support, elderly or disability care, and social care service delivery under supervision.";
+      demand = "High Demand for Care Staff";
       yoy = "1–4%";
-      hiringInsight = "High demand for qualified healthcare workers across NHS and private care providers.";
-      maxExpMultiplier = 1.30;
+      hiringInsight = "Pay closely tracks National Living Wage with NVQ Level 2/3 qualifications commanding modest differentials.";
+      maxExpMultiplier = 1.25;
     }
     // 1. Audit, Governance & Risk - Distinct sub-role definitions
     else if (/\b(part qualified|pq auditor|pq audit)\b/i.test(inputLower)) {
@@ -721,14 +833,14 @@ export default function SalaryDashboard() {
           : "Senior Marketing Managers with proven campaign ROI and multi-channel expertise command upper-quartile remuneration (£70k–£95k+).";
         maxExpMultiplier = 1.40;
       } else {
-        baseP10 = 38000; baseP50 = 52000; baseP90 = 72000;
-        basePct = 88; bonusPct = 12;
+        baseP10 = 30000; baseP50 = 44000; baseP90 = 62000;
+        basePct = 90; bonusPct = 10;
         description = isCommsSpecific
           ? "Coordinates employee communications, newsletter distribution, intranet content, and digital messaging channels."
-          : "Drives brand positioning, campaign execution, digital marketing channels, and client acquisition pipelines.";
-        demand = "Moderate Candidate Availability";
+          : "Executes digital marketing campaigns, SEO/PPC channels, social media engagement, and lead generation funnels.";
+        demand = "High Active Candidate Volume";
         yoy = "+2% to +4%";
-        hiringInsight = "Broad active applicant volume. Primary differentiator is demonstrated campaign conversion, writing quality, and sector-specific domain knowledge.";
+        hiringInsight = "Digital Marketing Executives with hands-on platform certification (Google Ads, Meta, HubSpot) and demonstrable ROI command top quartile of scale.";
         maxExpMultiplier = 1.30;
       }
     }
@@ -836,7 +948,7 @@ export default function SalaryDashboard() {
       }
     } 
     // 9. Software Engineering & Technology
-    else if (/\b(developer|software|frontend|backend|fullstack|engineer|programmer|cto|engineering director)\b/i.test(inputLower)) {
+    else if (/\b(developer|software|frontend|backend|fullstack|programmer|cto|engineering director)\b/i.test(inputLower) || (/\bengineer\b/i.test(inputLower) && !/\b(civil|structural|geotechnical|highways?|bridge|drainage|infrastructure|site|building services|m&e|gas|heating|mechanical|pipefitter|maintenance engineer|audio engineer|sound engineer)\b/i.test(inputLower))) {
       sector = "Tech & Software Engineering";
       if (isDirectorLevel) {
         baseP10 = 85000; baseP50 = 120000; baseP90 = 175000;
@@ -928,13 +1040,13 @@ export default function SalaryDashboard() {
         hiringInsight = "Branch Directors and Prime Central London (PCL) partners command substantial profit share and instruction commissions, with total on-target earnings (OTE) reaching £120k–£220k+.";
         maxExpMultiplier = 1.50;
       } else {
-        baseP10 = 30000; baseP50 = 42000; baseP90 = 65000;
-        basePct = 65; bonusPct = 35;
+        baseP10 = 26000; baseP50 = 34000; baseP90 = 48000;
+        basePct = 60; bonusPct = 40;
         description = "Manages residential property sales, lettings negotiations, market valuations, vendor onboarding, and property conveyance progression.";
         demand = "High Demand for Proven Billing Negotiators";
         yoy = "3–6%";
-        hiringInsight = "Estate agency compensation is heavily performance-weighted: basic salaries (£25k–£45k) are supplemented by 25–40%+ variable sales/lettings commissions. Prime London (PCL) desks command major transaction fee upside.";
-        maxExpMultiplier = 1.45;
+        hiringInsight = "Estate agency compensation is heavily commission-geared: basic salaries (£24k–£36k) are combined with 30–50% variable commission, delivering realistic on-target earnings (OTE) of £45k–£65k+ in London.";
+        maxExpMultiplier = 1.35;
       }
     }
     // 14. Medical Practitioners, Doctors, Paediatricians & Clinical Specialists

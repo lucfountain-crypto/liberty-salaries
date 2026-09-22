@@ -364,6 +364,12 @@ def generate_monthly_dataset():
                     "scotland": { "p10": 24600, "p50": 34440, "p90": 55760, "base_pct": 70, "bonus_pct": 30, "demand": "Medium", "yoy": "3–6%" },
                     "offshore": { "p10": 37500, "p50": 52500, "p90": 85000, "base_pct": 60, "bonus_pct": 40, "demand": "High", "yoy": "3–6%" }
                 },
+                "tiers": {
+                    "1-3": { "p10": 24000, "p50": 28000, "p90": 34000, "desc": "Junior Sales / Lettings Negotiator (Base £24k–£30k; Target OTE £35k–£45k)" },
+                    "3-6": { "p10": 28000, "p50": 35000, "p90": 44000, "desc": "Senior Negotiator / Valuer (Base £28k–£38k; Target OTE £50k–£70k)" },
+                    "6-10": { "p10": 38000, "p50": 48000, "p90": 62000, "desc": "Branch Manager / Senior Lister (Base £38k–£52k; Target OTE £70k–£100k+)" },
+                    "10+": { "p10": 55000, "p50": 72000, "p90": 105000, "desc": "Area Director / Prime Central London Partner (Base £55k–£80k; Target OTE £120k–£200k+)" }
+                },
                 "key_insights": [
                     "Estate agency compensation is heavily commission-geared: basic salaries (£25,000–£45,000) are combined with 25–40%+ variable OTE performance commissions.",
                     "Prime Central London (PCL - Mayfair, Chelsea, Kensington) brokers and branch directors achieve £120,000–£220,000+ total earnings on high-value transaction fee splits."
@@ -488,6 +494,136 @@ def generate_monthly_dataset():
                     "Internal Communications sits squarely within marketing and corporate affairs, driving culture, executive visibility, and strategic organizational alignment.",
                     "Financial services, pharmaceuticals, and FTSE 100 enterprises offer a 15–25% pay premium for comms managers supporting digital transformations or regulatory shifts.",
                     "Strong demand for comms professionals adept in multi-channel internal platforms (Viva, Workvivo, Slack) and crisis/change management."
+                ]
+            },
+            {
+                "id": "eng-civil-structural-engineer",
+                "title": "Civil & Structural Engineer",
+                "sector": "Engineering & Infrastructure",
+                "category": "Civil & Infrastructure Engineering",
+                "description": "Designs, calculates, and delivers structural schemes, highways, drainage, foundations, and civil infrastructure projects across consultancies and major contractors.",
+                "regional_data": {
+                    "london": { "p10": 42000, "p50": 62000, "p90": 88000, "base_pct": 92, "bonus_pct": 8, "demand": "High Demand (Major Infrastructure & Urban Regeneration)", "yoy": "+3% to +6%" },
+                    "south_east": { "p10": 38000, "p50": 56000, "p90": 79000, "base_pct": 92, "bonus_pct": 8, "demand": "Steady", "yoy": "+2% to +5%" },
+                    "midlands": { "p10": 35000, "p50": 51000, "p90": 74000, "base_pct": 92, "bonus_pct": 8, "demand": "Steady", "yoy": "+2% to +5%" },
+                    "north_uk": { "p10": 34000, "p50": 50000, "p90": 72000, "base_pct": 92, "bonus_pct": 8, "demand": "Steady", "yoy": "+2% to +5%" },
+                    "scotland": { "p10": 35000, "p50": 51000, "p90": 74000, "base_pct": 92, "bonus_pct": 8, "demand": "Steady", "yoy": "+2% to +5%" },
+                    "offshore": { "p10": 52000, "p50": 78000, "p90": 110000, "base_pct": 90, "bonus_pct": 10, "demand": "High", "yoy": "+3% to +6%" }
+                },
+                "tiers": {
+                    "1-3": { "p10": 32000, "p50": 38000, "p90": 45000, "desc": "Graduate / Assistant Civil Engineer; CAD/BIM modeling and structural calculations" },
+                    "3-6": { "p10": 42000, "p50": 52000, "p90": 64000, "desc": "Civil / Structural Engineer (Working towards CEng); scheme design and site supervision" },
+                    "6-10": { "p10": 54000, "p50": 66000, "p90": 84000, "desc": "Senior / Chartered Civil Engineer (CEng MICE / MIStructE); project leadership & technical sign-off" },
+                    "10+": { "p10": 72000, "p50": 92000, "p90": 125000, "desc": "Associate Director / Technical Principal / Partner; multi-disciplinary infrastructure lead" }
+                },
+                "key_insights": [
+                    "Chartership with the Institution of Civil Engineers (CEng MICE) or IStructE commands an immediate £8,000–£15,000 salary progression.",
+                    "Civil and structural engineering pay follows consulting engineering frameworks rather than software tech scales.",
+                    "Major national infrastructure programs, water asset management plans (AMP8), and energy transition schemes drive strong demand for senior chartered engineers."
+                ]
+            },
+            {
+                "id": "edu-primary-school-teacher",
+                "title": "Primary School Teacher",
+                "sector": "Education & School Leadership",
+                "category": "Primary Education (STPCD)",
+                "description": "Delivers curriculum instruction, student learning assessments, and pastoral care across Key Stage 1 and 2 under Qualified Teacher Status (QTS).",
+                "regional_data": {
+                    "london": { "p10": 40317, "p50": 47000, "p90": 58000, "base_pct": 100, "bonus_pct": 0, "demand": "Acute Shortage (Inner & Outer London Qualified Teachers)", "yoy": "STPCD Statutory Scales" },
+                    "south_east": { "p10": 36000, "p50": 43000, "p90": 52000, "base_pct": 100, "bonus_pct": 0, "demand": "High", "yoy": "STPCD Scales" },
+                    "midlands": { "p10": 34000, "p50": 41500, "p90": 49000, "base_pct": 100, "bonus_pct": 0, "demand": "High", "yoy": "STPCD Scales" },
+                    "north_uk": { "p10": 34000, "p50": 41500, "p90": 49000, "base_pct": 100, "bonus_pct": 0, "demand": "High", "yoy": "STPCD Scales" },
+                    "scotland": { "p10": 35000, "p50": 42000, "p90": 51000, "base_pct": 100, "bonus_pct": 0, "demand": "Steady", "yoy": "SNCT Scales" },
+                    "offshore": { "p10": 45000, "p50": 55000, "p90": 68000, "base_pct": 100, "bonus_pct": 0, "demand": "Moderate", "yoy": "International Scale" }
+                },
+                "tiers": {
+                    "1-3": { "p10": 35000, "p50": 41000, "p90": 46000, "desc": "Early Career Teacher (ECT 1–2 / Main Pay Scale M1–M3); core classroom delivery" },
+                    "3-6": { "p10": 42000, "p50": 47500, "p90": 54000, "desc": "Experienced Qualified Teacher (M4–M6); subject coordinator / curriculum lead" },
+                    "6-10": { "p10": 50000, "p50": 56000, "p90": 66000, "desc": "Upper Pay Range (U1–U3) / TLR Holder; phase leader / assistant head" },
+                    "10+": { "p10": 65000, "p50": 82000, "p90": 115000, "desc": "Deputy Headteacher / Headteacher (STPCD Leadership Pay Group)" }
+                },
+                "key_insights": [
+                    "Teachers in maintained schools and academies are remunerated strictly against the statutory School Teachers' Pay and Conditions Document (STPCD).",
+                    "Inner London starting salary (M1) is £40,317 and Outer London M1 is £37,870, with progression driven by annual appraisal.",
+                    "Teachers' Pension Scheme (employer contribution of ~28.6%) adds substantial deferred total reward value."
+                ]
+            },
+            {
+                "id": "health-registered-staff-nurse",
+                "title": "Registered Staff Nurse (NHS AfC)",
+                "sector": "Healthcare & Clinical Services",
+                "category": "Clinical Nursing",
+                "description": "Provides professional clinical care, triage, medication administration, and patient management under Nursing and Midwifery Council (NMC) registration.",
+                "regional_data": {
+                    "london": { "p10": 37000, "p50": 43500, "p90": 55000, "base_pct": 100, "bonus_pct": 0, "demand": "Acute Shortage (NHS Trusts & Private Healthcare)", "yoy": "NHS Pay Award" },
+                    "south_east": { "p10": 33500, "p50": 39500, "p90": 50000, "base_pct": 100, "bonus_pct": 0, "demand": "High", "yoy": "NHS Pay Award" },
+                    "midlands": { "p10": 32073, "p50": 37000, "p90": 47500, "base_pct": 100, "bonus_pct": 0, "demand": "High", "yoy": "NHS Pay Award" },
+                    "north_uk": { "p10": 32073, "p50": 37000, "p90": 47500, "base_pct": 100, "bonus_pct": 0, "demand": "High", "yoy": "NHS Pay Award" },
+                    "scotland": { "p10": 33000, "p50": 38000, "p90": 48500, "base_pct": 100, "bonus_pct": 0, "demand": "High", "yoy": "NHS Scotland AfC" },
+                    "offshore": { "p10": 45000, "p50": 55000, "p90": 70000, "base_pct": 100, "bonus_pct": 0, "demand": "High", "yoy": "Healthcare Scale" }
+                },
+                "tiers": {
+                    "1-3": { "p10": 32073, "p50": 35500, "p90": 39500, "desc": "Staff Nurse (NHS Agenda for Change Band 5 entry point £32,073 to top £39,043)" },
+                    "3-6": { "p10": 39959, "p50": 44000, "p90": 48117, "desc": "Senior Staff Nurse / Specialist Nurse (Band 6 £39,959–£48,117); mentor and shift coordinator" },
+                    "6-10": { "p10": 49000, "p50": 54000, "p90": 60000, "desc": "Ward Sister / Charge Nurse / Advanced Clinical Practitioner (Band 7 £49k–£57k+)" },
+                    "10+": { "p10": 58000, "p50": 68000, "p90": 85000, "desc": "Matron / Nurse Consultant / Clinical Lead (Band 8a–8b £58k–£75k+)" }
+                },
+                "key_insights": [
+                    "NHS nursing pay is governed by the national Agenda for Change framework. Band 5 starts at £32,073 for England in 2026/27.",
+                    "Inner London High Cost Area Supplement (HCAS) adds 20% to basic salary (up to ~£8,500 maximum supplement).",
+                    "Unsocial hours enhancement (nights, weekends) adds 30–60% to standard hourly rates."
+                ]
+            },
+            {
+                "id": "logistics-warehouse-operations-manager",
+                "title": "Warehouse Operations Manager",
+                "sector": "Logistics, Supply Chain & Operations",
+                "category": "Warehouse & Logistics Management",
+                "description": "Leads 24/7 distribution facility operations, inventory control, automated fulfilment systems, carrier logistics, and health & safety compliance.",
+                "regional_data": {
+                    "london": { "p10": 48000, "p50": 60000, "p90": 80000, "base_pct": 88, "bonus_pct": 12, "demand": "High Demand (Urban Fulfilment & Last-Mile Hubs)", "yoy": "+3% to +5%" },
+                    "south_east": { "p10": 44000, "p50": 55000, "p90": 74000, "base_pct": 90, "bonus_pct": 10, "demand": "High", "yoy": "+2% to +5%" },
+                    "midlands": { "p10": 42000, "p50": 52000, "p90": 70000, "base_pct": 90, "bonus_pct": 10, "demand": "High (Golden Triangle Hubs: Northampton / Daventry / Rugby)", "yoy": "+3% to +6%" },
+                    "north_uk": { "p10": 40000, "p50": 50000, "p90": 68000, "base_pct": 90, "bonus_pct": 10, "demand": "Steady", "yoy": "+2% to +5%" },
+                    "scotland": { "p10": 40000, "p50": 50000, "p90": 68000, "base_pct": 90, "bonus_pct": 10, "demand": "Steady", "yoy": "+2% to +5%" },
+                    "offshore": { "p10": 58000, "p50": 72000, "p90": 98000, "base_pct": 85, "bonus_pct": 15, "demand": "High", "yoy": "+3% to +6%" }
+                },
+                "tiers": {
+                    "1-3": { "p10": 32000, "p50": 38000, "p90": 45000, "desc": "Warehouse Shift Supervisor / First Line Operations Lead (shift rota oversight)" },
+                    "3-6": { "p10": 42000, "p50": 50000, "p90": 60000, "desc": "Warehouse Operations Manager; facility workflow, carrier SLAs, and staffing" },
+                    "6-10": { "p10": 52000, "p50": 64000, "p90": 80000, "desc": "Senior Distribution Centre Manager / Logistics Hub Lead; multi-tier automation" },
+                    "10+": { "p10": 72000, "p50": 90000, "p90": 125000, "desc": "General Manager / Regional Director of Supply Chain; multi-site logistics P&L" }
+                },
+                "key_insights": [
+                    "Warehouse operations managers command £45k–£65k base salaries in major UK distribution nodes (Northampton, East/West Midlands Golden Triangle).",
+                    "Shift managers and 24/7 continuous-operation leads typically attract 10–20% shift premiums.",
+                    "Experience with warehouse automation (WMS, automated picking systems, robotics) commands an upper-quartile premium."
+                ]
+            },
+            {
+                "id": "hospitality-head-chef",
+                "title": "Head Chef",
+                "sector": "Hospitality & Culinary Management",
+                "category": "Culinary Leadership",
+                "description": "Directs kitchen brigade operations, menu engineering, GP margins, culinary standards, supplier procurement, and food safety governance.",
+                "regional_data": {
+                    "london": { "p10": 45000, "p50": 58000, "p90": 82000, "base_pct": 88, "bonus_pct": 12, "demand": "High Demand (Fine Dining, Hotels & Premium Casual)", "yoy": "+4% to +7%" },
+                    "south_east": { "p10": 38000, "p50": 48000, "p90": 68000, "base_pct": 90, "bonus_pct": 10, "demand": "High", "yoy": "+3% to +6%" },
+                    "midlands": { "p10": 36000, "p50": 45000, "p90": 62000, "base_pct": 90, "bonus_pct": 10, "demand": "Steady", "yoy": "+3% to +5%" },
+                    "north_uk": { "p10": 35000, "p50": 44000, "p90": 60000, "base_pct": 90, "bonus_pct": 10, "demand": "Steady", "yoy": "+3% to +5%" },
+                    "scotland": { "p10": 38000, "p50": 46000, "p90": 65000, "base_pct": 90, "bonus_pct": 10, "demand": "High Demand (Edinburgh & Glasgow Premium Venues)", "yoy": "+3% to +6%" },
+                    "offshore": { "p10": 55000, "p50": 70000, "p90": 98000, "base_pct": 85, "bonus_pct": 15, "demand": "High", "yoy": "+4% to +7%" }
+                },
+                "tiers": {
+                    "1-3": { "p10": 30000, "p50": 36000, "p90": 42000, "desc": "Sous Chef / Senior Sous Chef; section leadership, food prep and service management" },
+                    "3-6": { "p10": 38000, "p50": 46000, "p90": 56000, "desc": "Head Chef; independent venue / gastropub brigade management, menu design, and GP target control" },
+                    "6-10": { "p10": 48000, "p50": 58000, "p90": 75000, "desc": "Senior Head Chef (Rosette / Premium Hotel / High Volume); multi-kitchen oversight" },
+                    "10+": { "p10": 65000, "p50": 80000, "p90": 110000, "desc": "Executive Chef / Group Culinary Director; multi-unit restaurant portfolio and concept development" }
+                },
+                "key_insights": [
+                    "Head Chef salaries in Edinburgh and London range £42,000–£60,000+ basic, supplemented by tronc (service charge distributions) adding £4,000–£10,000 net annually.",
+                    "High-volume venues and luxury hotels offer bonus schemes linked directly to kitchen gross profit (GP) margin delivery and hygiene audit scores.",
+                    "Severe post-Brexit shortages for experienced senior culinary leadership continue to push base wages up."
                 ]
             }
         ]
