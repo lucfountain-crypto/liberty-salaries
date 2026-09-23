@@ -9,29 +9,34 @@ import {
   useRef,
   useState,
 } from "react";
-import type { ProfileReview, ReviewSection } from "@/lib/profile-review";
-import { 
-  Camera, 
-  Image as ImageIcon, 
-  Sparkles, 
-  CheckCircle2, 
-  ArrowRight, 
-  Copy, 
-  Check, 
-  TrendingUp, 
-  AlertCircle, 
-  Briefcase, 
-  MapPin, 
-  Laptop, 
-  Smartphone,
+import {
+  PANEL_REVIEWERS,
+  type ProfileReview,
+  type Reviewer,
+  type ReviewSection,
+} from "@/lib/profile-review";
+import ReviewerAvatar from "./ReviewerAvatar";
+import {
+  Camera,
+  Image as ImageIcon,
+  Sparkles,
+  CheckCircle2,
+  Copy,
+  Check,
+  TrendingUp,
+  AlertCircle,
+  Briefcase,
+  MapPin,
+  Laptop,
   ChevronDown,
   ChevronUp,
-  ShieldCheck
+  ShieldCheck,
+  RefreshCw,
+  Users,
 } from "lucide-react";
 
 const MAX_FILE_BYTES = 8 * 1024 * 1024;
 const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp"];
-const LIBERTY_BLUE = "#0f4c81";
 
 type ApiResponse = { review?: ProfileReview; error?: string };
 
@@ -170,7 +175,17 @@ function HeadlineRewriteBox({ rewrite, alternatives }: { rewrite: string; altern
   );
 }
 
-function Report({ review }: { review: ProfileReview }) {
+function Report({
+  review,
+  onGetSecondOpinion,
+  isSecondOpinionLoading,
+}: {
+  review: ProfileReview;
+  onGetSecondOpinion: (reviewerId?: string) => void;
+  isSecondOpinionLoading: boolean;
+}) {
+  const [selectedOpinionId, setSelectedOpinionId] = useState("");
+
   const scoreTier =
     review.overallScore >= 85
       ? { label: "Executive Tier (Top 10%)", tone: "text-emerald-400 border-emerald-400/30" }
@@ -182,6 +197,78 @@ function Report({ review }: { review: ProfileReview }) {
 
   return (
     <section aria-labelledby="report-title" className="mt-10 scroll-mt-6 space-y-6" id="profile-report">
+      {/* Reviewer Header Card */}
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 sm:p-7 shadow-xs">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="flex items-start gap-4">
+            <ReviewerAvatar reviewer={review.reviewer} size="lg" />
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-900 border border-blue-200">
+                  Advisory Panel Review
+                </span>
+                <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${review.reviewer.bgLight}`}>
+                  {review.reviewer.lens}
+                </span>
+              </div>
+              <h2 className="mt-1 text-xl sm:text-2xl font-black text-slate-900">
+                Reviewed by {review.reviewer.name}
+              </h2>
+              <p className="text-xs font-semibold text-slate-500">
+                {review.reviewer.role} • Liberty Towers
+              </p>
+              <p className="mt-2 text-xs text-slate-600 italic bg-slate-50 border border-slate-100 px-3 py-2 rounded-lg max-w-xl">
+                "{review.reviewer.description}"
+              </p>
+            </div>
+          </div>
+
+          {/* Second Opinion Box */}
+          <div className="w-full md:w-auto shrink-0 bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2.5 shadow-2xs">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                <RefreshCw className={`w-3.5 h-3.5 text-blue-900 ${isSecondOpinionLoading ? "animate-spin" : ""}`} />
+                Get a Second Opinion
+              </span>
+              <span className="text-[10px] font-semibold text-slate-400">28 Advisors</span>
+            </div>
+            <p className="text-[11px] text-slate-600 max-w-xs leading-relaxed">
+              Every reviewer evaluates through a different lens. Request another appraisal from our panel.
+            </p>
+            <div className="flex items-center gap-2 pt-1">
+              <select
+                value={selectedOpinionId}
+                onChange={(e) => setSelectedOpinionId(e.target.value)}
+                disabled={isSecondOpinionLoading}
+                className="flex-1 text-xs bg-white border border-slate-300 text-slate-900 rounded-lg px-2.5 py-2 font-medium focus:ring-1 focus:ring-blue-900 focus:outline-hidden"
+              >
+                <option value="">🎲 Random Next Advisor</option>
+                {PANEL_REVIEWERS.filter((r) => r.id !== review.reviewer.id).map((r) => (
+                  <option key={r.id} value={r.id}>
+                    {r.name} — {r.lens}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                onClick={() => onGetSecondOpinion(selectedOpinionId || undefined)}
+                disabled={isSecondOpinionLoading}
+                className="bg-blue-900 hover:bg-blue-800 disabled:opacity-50 text-white font-bold text-xs px-3.5 py-2 rounded-lg transition whitespace-nowrap cursor-pointer shadow-xs flex items-center gap-1.5"
+              >
+                {isSecondOpinionLoading ? (
+                  <>
+                    <span className="size-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Reviewing...</span>
+                  </>
+                ) : (
+                  <span>Review</span>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Score Header */}
       <div className="overflow-hidden rounded-2xl border border-slate-900 bg-slate-950 p-6 sm:p-8 text-white shadow-xl">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
@@ -197,7 +284,7 @@ function Report({ review }: { review: ProfileReview }) {
           <div className="text-center sm:text-left flex-1">
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
               <span className="text-xs font-bold uppercase tracking-widest text-blue-400">
-                RECRUITER 5-SECOND AUDIT
+                {review.reviewer.name.toUpperCase()}'S 5-SECOND AUDIT
               </span>
               <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border ${scoreTier.tone}`}>
                 {scoreTier.label}
@@ -240,7 +327,7 @@ function Report({ review }: { review: ProfileReview }) {
       <div className="rounded-2xl border border-blue-200 bg-blue-50/50 p-6 sm:p-7">
         <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
           <CheckCircle2 className="w-5 h-5 text-blue-900" />
-          Top Priority Next Steps (To Make Today)
+          Top Priority Next Steps (From {review.reviewer.name}&apos;s Desk)
         </h3>
 
         <ol className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -300,9 +387,17 @@ export default function ProfileReviewComponent() {
   const [previewUrl, setPreviewUrl] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSecondOpinionLoading, setIsSecondOpinionLoading] = useState(false);
   const [error, setError] = useState("");
   const [report, setReport] = useState<ProfileReview | null>(null);
   const [showShortcuts, setShowShortcuts] = useState(false);
+
+  // Form field state for re-runs & second opinions
+  const [targetRole, setTargetRole] = useState("");
+  const [location, setLocation] = useState("");
+  const [careerText, setCareerText] = useState("");
+  const [selectedReviewerId, setSelectedReviewerId] = useState("");
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -354,21 +449,36 @@ export default function ProfileReviewComponent() {
     }
   }
 
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function executeReview(reviewerId?: string) {
     setError("");
-    setReport(null);
 
     if (!file) {
       setError("Please add a profile header screenshot to begin.");
       return;
     }
 
-    const formData = new FormData(event.currentTarget);
-    formData.set("screenshot", file);
-    formData.set("consent", "true");
+    if (!targetRole.trim() || !location.trim()) {
+      setError("Please enter your target role and location.");
+      return;
+    }
 
-    setIsSubmitting(true);
+    const formData = new FormData();
+    formData.set("screenshot", file);
+    formData.set("targetRole", targetRole.trim());
+    formData.set("location", location.trim());
+    formData.set("careerText", careerText.trim());
+    formData.set("consent", "true");
+    if (reviewerId) {
+      formData.set("reviewerId", reviewerId);
+    }
+
+    const isRerun = !!report;
+    if (isRerun) {
+      setIsSecondOpinionLoading(true);
+    } else {
+      setIsSubmitting(true);
+      setReport(null);
+    }
 
     try {
       const response = await fetch("/api/review-profile", {
@@ -398,7 +508,17 @@ export default function ProfileReviewComponent() {
       );
     } finally {
       setIsSubmitting(false);
+      setIsSecondOpinionLoading(false);
     }
+  }
+
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    executeReview(selectedReviewerId || undefined);
+  }
+
+  function handleSecondOpinion(reviewerId?: string) {
+    executeReview(reviewerId);
   }
 
   return (
@@ -408,9 +528,9 @@ export default function ProfileReviewComponent() {
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <a href="/" className="bg-blue-900 px-3.5 py-2 rounded-xl shadow-sm flex items-center hover:bg-blue-800 transition">
-              <img 
-                src="https://s3-eu-west-1.amazonaws.com/rss-websites/libertytowers.co.uk/05-03-2025-84d6f95879f38981b06deb3d3b3c1ac753eaf0ab.png" 
-                alt="Liberty Towers Logo" 
+              <img
+                src="https://s3-eu-west-1.amazonaws.com/rss-websites/libertytowers.co.uk/05-03-2025-84d6f95879f38981b06deb3d3b3c1ac753eaf0ab.png"
+                alt="Liberty Towers Logo"
                 className="h-7 sm:h-8 w-auto object-contain brightness-0 invert"
               />
             </a>
@@ -440,250 +560,285 @@ export default function ProfileReviewComponent() {
 
       <main className="px-4 py-8 sm:py-12">
         <div className="mx-auto max-w-4xl space-y-8">
-        {/* Hero Section */}
-        <div className="text-center space-y-3">
-          <div className="inline-flex items-center space-x-2 bg-blue-50 border border-blue-200 px-3.5 py-1 rounded-full text-xs font-bold text-blue-900 uppercase tracking-widest">
-            <Sparkles className="w-3.5 h-3.5 text-blue-800" />
-            <span>AI Recruiter Profile Audit</span>
+          {/* Hero Section */}
+          <div className="text-center space-y-3">
+            <div className="inline-flex items-center space-x-2 bg-blue-50 border border-blue-200 px-3.5 py-1 rounded-full text-xs font-bold text-blue-900 uppercase tracking-widest">
+              <Sparkles className="w-3.5 h-3.5 text-blue-800" />
+              <span>AI Advisory Panel • Profile Audit</span>
+            </div>
+
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+              What Does Your LinkedIn Say in 5 Seconds?
+            </h1>
+
+            <p className="text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto leading-relaxed">
+              Upload a quick screenshot of your profile header to get an immediate, honest appraisal from our advisory panel. Reviewers evaluate your photo, banner, headline, and target market positioning through their specific professional lens.
+            </p>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            What Does Your LinkedIn Say in 5 Seconds?
-          </h1>
-
-          <p className="text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Upload a quick screenshot of your profile header to get an immediate, honest recruiter evaluation of your photo, banner, headline, and target market positioning.
-          </p>
-        </div>
-
-        {/* Shortcuts Helper */}
-        <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-2xs">
-          <button
-            type="button"
-            onClick={() => setShowShortcuts(!showShortcuts)}
-            className="w-full flex items-center justify-between text-left text-xs font-bold text-slate-800 hover:text-blue-900 transition"
-          >
-            <div className="flex items-center space-x-2">
-              <Laptop className="w-4 h-4 text-blue-800" />
-              <span>How to take a profile snip (Desktop & Mobile Shortcuts)</span>
-            </div>
-            {showShortcuts ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </button>
-
-          {showShortcuts && (
-            <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-3 border-t border-slate-100 text-[11px] text-slate-600">
-              <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
-                <strong className="text-slate-900 block mb-0.5">Windows PC:</strong>
-                <code>Win + Shift + S</code>
-              </div>
-              <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
-                <strong className="text-slate-900 block mb-0.5">Apple Mac:</strong>
-                <code>Cmd + Shift + 4</code>
-              </div>
-              <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
-                <strong className="text-slate-900 block mb-0.5">iPhone:</strong>
-                Side + Volume Up
-              </div>
-              <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
-                <strong className="text-slate-900 block mb-0.5">Android:</strong>
-                Power + Volume Down
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Upload & Options Form */}
-        <form onSubmit={onSubmit} className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
-          {/* Step 1: Dropzone */}
-          <div>
-            <label className="text-sm font-bold text-slate-900 block mb-2">
-              1. Upload Profile Header Screenshot (Photo + Banner + Headline)
-            </label>
-
-            <div
-              onDragOver={(e) => {
-                e.preventDefault();
-                setIsDragging(true);
-              }}
-              onDragLeave={() => setIsDragging(false)}
-              onDrop={onDrop}
-              onClick={() => inputRef.current?.click()}
-              className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition flex flex-col items-center justify-center ${
-                isDragging
-                  ? "border-blue-700 bg-blue-50/50"
-                  : previewUrl
-                  ? "border-emerald-300 bg-emerald-50/20"
-                  : "border-slate-300 hover:border-blue-800 bg-slate-50/50"
-              }`}
+          {/* Shortcuts Helper */}
+          <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-2xs">
+            <button
+              type="button"
+              onClick={() => setShowShortcuts(!showShortcuts)}
+              className="w-full flex items-center justify-between text-left text-xs font-bold text-slate-800 hover:text-blue-900 transition"
             >
-              <input
-                ref={inputRef}
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                onChange={onFileChange}
-                className="hidden"
-              />
+              <div className="flex items-center space-x-2">
+                <Laptop className="w-4 h-4 text-blue-800" />
+                <span>How to take a profile snip (Desktop & Mobile Shortcuts)</span>
+              </div>
+              {showShortcuts ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
 
-              {previewUrl ? (
-                <div className="space-y-3 w-full max-w-sm">
-                  <div className="relative rounded-lg overflow-hidden border border-slate-200 max-h-48 flex justify-center bg-black/5">
-                    <img src={previewUrl} alt="Uploaded screenshot" className="object-contain max-h-48 w-full" />
-                  </div>
-                  <div className="flex items-center justify-center gap-3">
-                    <span className="text-xs font-semibold text-emerald-700">✓ Screenshot Attached</span>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removeFile();
-                      }}
-                      className="text-xs text-rose-600 hover:underline font-semibold"
-                    >
-                      Change image
-                    </button>
-                  </div>
+            {showShortcuts && (
+              <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-3 border-t border-slate-100 text-[11px] text-slate-600">
+                <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
+                  <strong className="text-slate-900 block mb-0.5">Windows PC:</strong>
+                  <code>Win + Shift + S</code>
                 </div>
-              ) : (
-                <div className="space-y-2 py-4">
-                  <div className="size-12 rounded-full bg-blue-50 text-blue-900 flex items-center justify-center mx-auto">
-                    <Camera className="w-6 h-6" />
-                  </div>
-                  <p className="text-sm font-semibold text-slate-800">
-                    Click to browse or drag and drop your screenshot here
-                  </p>
-                  <p className="text-xs text-slate-500">Supports JPG, PNG or WebP up to 8MB</p>
+                <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
+                  <strong className="text-slate-900 block mb-0.5">Apple Mac:</strong>
+                  <code>Cmd + Shift + 4</code>
                 </div>
-              )}
-            </div>
+                <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
+                  <strong className="text-slate-900 block mb-0.5">iPhone:</strong>
+                  Side + Volume Up
+                </div>
+                <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
+                  <strong className="text-slate-900 block mb-0.5">Android:</strong>
+                  Power + Volume Down
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Step 2: Target Positioning */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-100">
+          {/* Upload & Options Form */}
+          <form onSubmit={onSubmit} className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+            {/* Step 1: Dropzone */}
             <div>
-              <label className="text-xs font-bold text-slate-800 block mb-1.5 flex items-center gap-1.5">
-                <Briefcase className="w-3.5 h-3.5 text-blue-900" />
-                Target Role / Next Career Step
+              <label className="text-sm font-bold text-slate-900 block mb-2">
+                1. Upload Profile Header Screenshot (Photo + Banner + Headline)
               </label>
-              <input
-                required
-                name="targetRole"
-                type="text"
-                placeholder="e.g. Commercial Solicitor / Finance Director"
-                className="w-full bg-slate-50 border border-slate-300 focus:border-blue-900 text-slate-900 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm focus:outline-none transition"
-              />
+
+              <div
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setIsDragging(true);
+                }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={onDrop}
+                onClick={() => inputRef.current?.click()}
+                className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition flex flex-col items-center justify-center ${
+                  isDragging
+                    ? "border-blue-700 bg-blue-50/50"
+                    : previewUrl
+                    ? "border-emerald-300 bg-emerald-50/20"
+                    : "border-slate-300 hover:border-blue-800 bg-slate-50/50"
+                }`}
+              >
+                <input
+                  ref={inputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={onFileChange}
+                  className="hidden"
+                />
+
+                {previewUrl ? (
+                  <div className="space-y-3 w-full max-w-sm">
+                    <div className="relative rounded-lg overflow-hidden border border-slate-200 max-h-48 flex justify-center bg-black/5">
+                      <img src={previewUrl} alt="Uploaded screenshot" className="object-contain max-h-48 w-full" />
+                    </div>
+                    <div className="flex items-center justify-center gap-3">
+                      <span className="text-xs font-semibold text-emerald-700">✓ Screenshot Attached</span>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeFile();
+                        }}
+                        className="text-xs text-rose-600 hover:underline font-semibold"
+                      >
+                        Change image
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-2 py-4">
+                    <div className="size-12 rounded-full bg-blue-50 text-blue-900 flex items-center justify-center mx-auto">
+                      <Camera className="w-6 h-6" />
+                    </div>
+                    <p className="text-sm font-semibold text-slate-800">
+                      Click to browse or drag and drop your screenshot here
+                    </p>
+                    <p className="text-xs text-slate-500">Supports JPG, PNG or WebP up to 8MB</p>
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div>
-              <label className="text-xs font-bold text-slate-800 block mb-1.5 flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-blue-900" />
-                Target Location / Working Setup
+            {/* Step 2: Target Positioning */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-100">
+              <div>
+                <label className="text-xs font-bold text-slate-800 block mb-1.5 flex items-center gap-1.5">
+                  <Briefcase className="w-3.5 h-3.5 text-blue-900" />
+                  Target Role / Next Career Step
+                </label>
+                <input
+                  required
+                  name="targetRole"
+                  type="text"
+                  value={targetRole}
+                  onChange={(e) => setTargetRole(e.target.value)}
+                  placeholder="e.g. Commercial Solicitor / Finance Director"
+                  className="w-full bg-slate-50 border border-slate-300 focus:border-blue-900 text-slate-900 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm focus:outline-hidden transition"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-800 block mb-1.5 flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-blue-900" />
+                  Target Location / Working Setup
+                </label>
+                <input
+                  required
+                  name="location"
+                  type="text"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  placeholder="e.g. London (Hybrid) / Manchester / Remote"
+                  className="w-full bg-slate-50 border border-slate-300 focus:border-blue-900 text-slate-900 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm focus:outline-hidden transition"
+                />
+              </div>
+            </div>
+
+            {/* Step 3: Advisory Reviewer Lens (Optional) */}
+            <div className="pt-2 border-t border-slate-100 space-y-1.5">
+              <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <Users className="w-3.5 h-3.5 text-blue-900" />
+                Select Advisory Reviewer Lens (Optional)
               </label>
-              <input
-                required
-                name="location"
-                type="text"
-                placeholder="e.g. London (Hybrid) / Manchester / Remote"
-                className="w-full bg-slate-50 border border-slate-300 focus:border-blue-900 text-slate-900 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm focus:outline-none transition"
-              />
-            </div>
-          </div>
-
-          {/* Step 3: Optional Text Deep Dive */}
-          <div className="pt-2 border-t border-slate-100">
-            <label className="text-xs font-bold text-slate-800 block mb-1">
-              Cut and paste your LinkedIn About and Experience for deeper evidence audit (Optional)
-            </label>
-            <textarea
-              name="careerText"
-              rows={3}
-              placeholder="Copy and paste text directly from your LinkedIn About summary and Experience roles..."
-              className="w-full bg-slate-50 border border-slate-300 focus:border-blue-900 text-slate-900 px-3.5 py-2.5 rounded-xl text-xs focus:outline-none transition"
-            />
-          </div>
-
-          {/* GDPR Compliance Notice */}
-          <div className="rounded-xl border border-blue-100 bg-blue-50/60 p-3.5 text-xs text-slate-700 flex items-start gap-3">
-            <ShieldCheck className="w-5 h-5 text-blue-900 shrink-0 mt-0.5" />
-            <div>
-              <strong className="text-slate-900 font-bold block mb-0.5">GDPR Compliance</strong>
-              <p className="leading-relaxed text-slate-600">
-                This tool is a guide on how your LinkedIn profile is perceived. We do not store or hold your data.
+              <select
+                value={selectedReviewerId}
+                onChange={(e) => setSelectedReviewerId(e.target.value)}
+                className="w-full bg-slate-50 border border-slate-300 focus:border-blue-900 text-slate-900 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm focus:outline-hidden transition font-medium"
+              >
+                <option value="">✨ Any Available Advisor (Auto-assigned at random)</option>
+                {PANEL_REVIEWERS.map((r) => (
+                  <option key={r.id} value={r.id}>
+                    {r.name} — {r.role} ({r.lens})
+                  </option>
+                ))}
+              </select>
+              <p className="text-[11px] text-slate-500">
+                Each advisor inspects your profile through their own distinct specialty (e.g. ATS screening, executive polish, commercial ROI, tech stack credibility).
               </p>
             </div>
-          </div>
 
-          {/* Consent Checkbox */}
-          <div className="pt-2 border-t border-slate-100">
-            <label className="flex items-start gap-2.5 cursor-pointer text-xs text-slate-600">
-              <input
-                required
-                type="checkbox"
-                name="consentCheckbox"
-                defaultChecked
-                className="mt-0.5 rounded border-slate-300 text-blue-900 focus:ring-blue-900"
+            {/* Step 4: Optional Text Deep Dive */}
+            <div className="pt-2 border-t border-slate-100">
+              <label className="text-xs font-bold text-slate-800 block mb-1">
+                Cut and paste your LinkedIn About and Experience for deeper evidence audit (Optional)
+              </label>
+              <textarea
+                name="careerText"
+                rows={3}
+                value={careerText}
+                onChange={(e) => setCareerText(e.target.value)}
+                placeholder="Copy and paste text directly from your LinkedIn About summary and Experience roles..."
+                className="w-full bg-slate-50 border border-slate-300 focus:border-blue-900 text-slate-900 px-3.5 py-2.5 rounded-xl text-xs focus:outline-hidden transition"
               />
-              <span>
-                I confirm this screenshot is my own professional profile and grant permission for automated AI analysis.
-              </span>
-            </label>
-          </div>
-
-          {/* Error Message */}
-          {error && (
-            <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>{error}</span>
             </div>
-          )}
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold text-sm px-6 py-3.5 rounded-xl shadow-sm transition flex items-center justify-center space-x-2 disabled:opacity-60 cursor-pointer"
-          >
-            {isSubmitting ? (
-              <span className="flex items-center gap-2">
-                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Auditing Profile & Formulating Rewrites...
-              </span>
-            ) : (
-              <span className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-amber-300" />
-                Generate Instant Profile Scorecard
-              </span>
+            {/* GDPR Compliance Notice */}
+            <div className="rounded-xl border border-blue-100 bg-blue-50/60 p-3.5 text-xs text-slate-700 flex items-start gap-3">
+              <ShieldCheck className="w-5 h-5 text-blue-900 shrink-0 mt-0.5" />
+              <div>
+                <strong className="text-slate-900 font-bold block mb-0.5">GDPR Compliance</strong>
+                <p className="leading-relaxed text-slate-600">
+                  This tool is a guide on how your LinkedIn profile is perceived. We do not store or hold your data.
+                </p>
+              </div>
+            </div>
+
+            {/* Consent Checkbox */}
+            <div className="pt-2 border-t border-slate-100">
+              <label className="flex items-start gap-2.5 cursor-pointer text-xs text-slate-600">
+                <input
+                  required
+                  type="checkbox"
+                  name="consentCheckbox"
+                  defaultChecked
+                  className="mt-0.5 rounded border-slate-300 text-blue-900 focus:ring-blue-900"
+                />
+                <span>
+                  I confirm this screenshot is my own professional profile and grant permission for automated AI analysis.
+                </span>
+              </label>
+            </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{error}</span>
+              </div>
             )}
-          </button>
-        </form>
 
-        {/* Render Generated Report */}
-        {report && <Report review={report} />}
-      </div>
-    </main>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold text-sm px-6 py-3.5 rounded-xl shadow-sm transition flex items-center justify-center space-x-2 disabled:opacity-60 cursor-pointer"
+            >
+              {isSubmitting ? (
+                <span className="flex items-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Auditing Profile & Formulating Rewrites...
+                </span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-300" />
+                  Generate Instant Profile Scorecard
+                </span>
+              )}
+            </button>
+          </form>
 
-    {/* Global Footer */}
-    <footer className="border-t border-slate-200 bg-white mt-16 py-8">
-      <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-        <div className="flex items-center space-x-3">
-          <div className="bg-blue-900 px-2.5 py-1.5 rounded-lg">
-            <img 
-              src="https://s3-eu-west-1.amazonaws.com/rss-websites/libertytowers.co.uk/05-03-2025-84d6f95879f38981b06deb3d3b3c1ac753eaf0ab.png" 
-              alt="Liberty Towers" 
-              className="h-5 w-auto object-contain brightness-0 invert"
+          {/* Render Generated Report */}
+          {report && (
+            <Report
+              review={report}
+              onGetSecondOpinion={handleSecondOpinion}
+              isSecondOpinionLoading={isSecondOpinionLoading}
             />
+          )}
+        </div>
+      </main>
+
+      {/* Global Footer */}
+      <footer className="border-t border-slate-200 bg-white mt-16 py-8">
+        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+          <div className="flex items-center space-x-3">
+            <div className="bg-blue-900 px-2.5 py-1.5 rounded-lg">
+              <img
+                src="https://s3-eu-west-1.amazonaws.com/rss-websites/libertytowers.co.uk/05-03-2025-84d6f95879f38981b06deb3d3b3c1ac753eaf0ab.png"
+                alt="Liberty Towers"
+                className="h-5 w-auto object-contain brightness-0 invert"
+              />
+            </div>
+            <span>© {new Date().getFullYear()} Liberty Towers Ltd. All rights reserved. London, UK.</span>
           </div>
-          <span>© {new Date().getFullYear()} Liberty Towers Ltd. All rights reserved. London, UK.</span>
+          <div className="flex items-center gap-4">
+            <a href="/salaries" className="hover:underline">Salary Benchmarks</a>
+            <a href="/hiring-cost-calculator" className="hover:underline">Hiring Calculator</a>
+            <a href="/profile-review" className="hover:underline font-bold text-blue-950">LinkedIn Review</a>
+            <a href="/cv-review" className="hover:underline">CV Review</a>
+            <a href="/privacy" className="hover:underline">Privacy Policy</a>
+            <a href="/terms" className="hover:underline">Terms</a>
+          </div>
         </div>
-        <div className="flex items-center gap-4">
-          <a href="/salaries" className="hover:underline">Salary Benchmarks</a>
-          <a href="/hiring-cost-calculator" className="hover:underline">Hiring Calculator</a>
-          <a href="/profile-review" className="hover:underline font-bold text-blue-950">LinkedIn Review</a>
-          <a href="/cv-review" className="hover:underline">CV Review</a>
-          <a href="/privacy" className="hover:underline">Privacy Policy</a>
-          <a href="/terms" className="hover:underline">Terms</a>
-        </div>
-      </div>
-    </footer>
-  </div>
+      </footer>
+    </div>
   );
 }

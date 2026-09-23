@@ -2,8 +2,10 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import {
   calculateOverallScore,
+  getReviewer,
   modelReviewSchema,
   profileReviewSchema,
+  type Reviewer,
 } from "@/lib/profile-review";
 
 export const runtime = "nodejs";
@@ -17,10 +19,18 @@ const requestSchema = z.object({
   location: z.string().trim().min(2).max(150),
   careerText: z.string().trim().max(15000),
   consent: z.literal(true),
+  reviewerId: z.string().optional(),
 });
 
-const REVIEW_INSTRUCTIONS = `
-You are a seasoned UK Executive Search and Recruitment Director at Liberty Towers reviewing a candidate's LinkedIn profile header screenshot and career details. Write in direct, constructive, highly professional British English.
+function buildReviewInstructions(reviewer: Reviewer): string {
+  return `
+You are ${reviewer.name}, ${reviewer.role} at Liberty Towers (an executive search & recruitment advisory in London). Write in direct, constructive, highly professional British English.
+
+YOUR REVIEW PERSPECTIVE & LENS:
+- Reviewer: ${reviewer.name} (${reviewer.role})
+- Distinct Lens: "${reviewer.lens}"
+- Core Philosophy: ${reviewer.description}
+Reflect your distinct evaluation perspective and priorities across your executiveSummary, headline feedback, and priorityActions.
 
 Strict Review Guidelines:
 1. Photo (Visual Audit):
@@ -32,7 +42,7 @@ Strict Review Guidelines:
    - Suggest a crisp brand banner concept tailored to their role.
 3. Headline (Positioning & Keywords):
    - Flag passive "kill words" like "Aspiring", "Seeking opportunities", "Passionate about", or generic lists like "Problem solver".
-   - Provide 3 distinct, high-converting headline rewrites:
+   - Provide 3 distinct, high-converting headline rewrites reflecting modern executive hiring:
      * Option 1: Direct Corporate / Authority ("Title @ Firm | Specialty | Credential")
      * Option 2: Value & Impact Driven ("Helping [Sector] Achieve [Result] | Tech Stack / Domain")
      * Option 3: Executive Search / Modern Specialist
@@ -44,10 +54,11 @@ Strict Review Guidelines:
    - Benchmark their profile directly against their target role and location.
    - Evaluate whether a London / UK recruiter would shortlist them or pass within 5 seconds.
 6. Highest-Impact Next Moves:
-   - Provide 3 to 5 prioritized, immediately actionable bullet points they can change today to double profile conversions.
+   - Provide 3 to 5 prioritized, immediately actionable bullet points they can change today to double profile conversions through your specific lens as ${reviewer.name}.
 
 Always return strictly valid JSON matching the schema.
 `.trim();
+}
 
 export async function POST(request: Request) {
   try {
@@ -59,6 +70,7 @@ export async function POST(request: Request) {
       location: formData.get("location"),
       careerText: formData.get("careerText") || "",
       consent: formData.get("consent") === "true",
+      reviewerId: formData.get("reviewerId") ? String(formData.get("reviewerId")) : undefined,
     });
 
     if (!parsed.success) {
@@ -94,6 +106,8 @@ export async function POST(request: Request) {
       );
     }
 
+    const reviewer = getReviewer(parsed.data.reviewerId);
+
     const arrayBuffer = await screenshot.arrayBuffer();
     const base64Data = Buffer.from(arrayBuffer).toString("base64");
 
@@ -103,7 +117,8 @@ export async function POST(request: Request) {
       careerText: parsed.data.careerText || "None provided by candidate (reviewing screenshot exclusively).",
     };
 
-    const promptText = `${REVIEW_INSTRUCTIONS}\n\nCandidate Submission Context:\n${JSON.stringify(inputContext, null, 2)}`;
+    const reviewInstructions = buildReviewInstructions(reviewer);
+    const promptText = `${reviewInstructions}\n\nCandidate Submission Context:\n${JSON.stringify(inputContext, null, 2)}`;
 
     const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
@@ -158,6 +173,7 @@ export async function POST(request: Request) {
     const review = profileReviewSchema.parse({
       ...parsedModelReview,
       overallScore,
+      reviewer,
     });
 
     return NextResponse.json({ review });
