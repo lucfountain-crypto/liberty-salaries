@@ -994,6 +994,22 @@ function isCvRateLimited(ip: string, limit = 6, windowMs = 15 * 60 * 1000): bool
   return false;
 }
 
+// In-memory sliding rate limit: max 6 Profile reviews per 15 minutes per IP
+const profileRateLimitMap = new Map<string, { count: number; resetTime: number }>();
+function isProfileRateLimited(ip: string, limit = 6, windowMs = 15 * 60 * 1000): boolean {
+  const now = Date.now();
+  const record = profileRateLimitMap.get(ip);
+  if (!record || now > record.resetTime) {
+    profileRateLimitMap.set(ip, { count: 1, resetTime: now + windowMs });
+    return false;
+  }
+  if (record.count >= limit) {
+    return true;
+  }
+  record.count += 1;
+  return false;
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
@@ -1001,6 +1017,14 @@ export default {
     // 1. Handle POST /api/review-profile
     if (url.pathname === "/api/review-profile" && request.method === "POST") {
       try {
+        const clientIp = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for") || "unknown";
+        if (isProfileRateLimited(clientIp)) {
+          return new Response(
+            JSON.stringify({ error: "Rate limit reached: Maximum 6 profile reviews per 15 minutes from this connection. Please wait a short while before trying again." }),
+            { status: 429, headers: { "Content-Type": "application/json" } }
+          );
+        }
+
         const formData = await request.formData();
         const screenshot = formData.get("screenshot");
         const targetRole = String(formData.get("targetRole") || "").trim();
