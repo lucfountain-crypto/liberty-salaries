@@ -63,7 +63,7 @@ function parseLocation(locationNatural: string, roleInput: string) {
 const dashCode = fs.readFileSync(path.join(__dirname, '../src/app/components/SalaryDashboard.tsx'), 'utf8');
 
 // Test runner function
-async function evaluateDashboard(roleInput: string, expYears: string, locationNatural: string) {
+async function evaluateDashboard(roleInput: string, expYears: string, locationNatural: string, employerType = 'standard') {
   const parsedLocation = parseLocation(locationNatural, roleInput);
 
   let rawTitle = roleInput.trim();
@@ -101,6 +101,8 @@ async function evaluateDashboard(roleInput: string, expYears: string, locationNa
       if (isInsuranceContext && isAccountRole) return true;
       if (inputLower === 'account handler' || inputLower === 'insurance account handler' || inputLower === 'insurance account manager' || inputLower === 'account manager, insurance' || inputLower === 'commercial account manager') return true;
     }
+
+    if (['general-counsel', 'head-of-legal', 'company-secretary'].includes(r.id)) return titleLower === inputLower;
 
     const match = titleLower === inputLower || 
                   normTitle === normInput ||
@@ -140,12 +142,12 @@ async function evaluateDashboard(roleInput: string, expYears: string, locationNa
     // Let us extract the heuristic chain from SalaryDashboard.tsx
     const startIdx = dashCode.indexOf("const isSoftwareRole =");
     const endIdx = dashCode.indexOf("const regMult = parsedLocation.multiplier;", startIdx);
-    const chainCode = dashCode.substring(startIdx, endIdx);
+    const chainCode = dashCode.substring(startIdx, endIdx).replace(/let customTiers: .*? = null;/, 'let customTiers = null;');
 
     // Run in local scope
     const evalFn = new Function(
       "inputLower", "isDirectorLevel", "sector", "baseP10", "baseP50", "baseP90", "basePct", "bonusPct", "description", "demand", "yoy", "hiringInsight", "maxExpMultiplier", "isGraduateInput",
-      `${chainCode}; return { sector, baseP10, baseP50, baseP90, basePct, bonusPct, description, demand, yoy, hiringInsight, maxExpMultiplier };`
+      `${chainCode}; return { sector, baseP10, baseP50, baseP90, basePct, bonusPct, description, demand, yoy, hiringInsight, maxExpMultiplier, customTiers };`
     );
 
     const hRes = evalFn(inputLower, isDirectorLevel, sector, baseP10, baseP50, baseP90, basePct, bonusPct, description, demand, yoy, hiringInsight, maxExpMultiplier, isGraduateInput);
@@ -159,7 +161,7 @@ async function evaluateDashboard(roleInput: string, expYears: string, locationNa
       baseP10: hRes.baseP10,
       baseP50: hRes.baseP50,
       baseP90: hRes.baseP90,
-      tiers: null
+      tiers: hRes.customTiers
     };
   }
 
@@ -187,9 +189,10 @@ async function evaluateDashboard(roleInput: string, expYears: string, locationNa
     baseP90Val = (activeRoleData.baseP90 || 68000) * expFactor;
   }
 
-  const rawP10 = baseP10Val * regMult;
-  const rawP50 = baseP50Val * regMult;
-  const rawP90 = baseP90Val * regMult;
+  const refMult = employerType === 'city_elite' ? 1.45 : employerType === 'specialist' ? 1.10 : employerType === 'public' ? 0.88 : 1.0;
+  const rawP10 = baseP10Val * regMult * refMult;
+  const rawP50 = baseP50Val * regMult * refMult;
+  const rawP90 = baseP90Val * regMult * refMult;
 
   const nmwFloor = parsedLocation.isOverseasEU ? 18000 : (parsedLocation.regionKey === 'london' ? 28000 : 25000);
   const p10 = Math.max(nmwFloor, Math.round(rawP10 / 500) * 500);
@@ -259,7 +262,56 @@ async function main() {
     }
   }
 
-  console.log(`\nResults: ${passed} passed, ${failed} failed out of ${testSuite.length} tests.`);
+  // Exact legal/governance regressions, including aliases that bypass directory matching.
+  const exactCases = [
+    { role: 'Internal Auditor', exp: '1-3', loc: 'London hybrid', values: [45000, 55000, 65000] },
+    { role: 'IT Auditor', exp: '3-6', loc: 'Manchester hybrid', values: [60000, 73500, 88000] },
+    { role: 'Commercial Solicitor', exp: '3-6', values: [58000, 75000, 95000] },
+    { role: 'Commercial Solicitor', exp: '3-6', employer: 'city_elite', values: [84000, 109000, 138000] },
+    { role: 'Specialty Underwriter', exp: '6-10', values: [92000, 125000, 160000] },
+    { role: 'Software Engineer', exp: '3-6', loc: 'Birmingham hybrid', values: [45000, 56000, 70000] },
+    { role: 'Solutions Architect', exp: '6-10', values: [100000, 125000, 160000] },
+    { role: 'Internal Communications Manager', exp: '3-6', values: [58000, 72000, 88000] },
+    { role: 'Insurance Account Handler', exp: '1-3', values: [28000, 31000, 37000] },
+    { role: 'Insurance Account Manager', exp: '1-3', values: [28000, 31000, 37000] },
+    { role: 'Broking Team Leader', exp: '6-10', values: [69000, 85000, 110000] },
+
+    { role: 'General Counsel', exp: '3-6', values: [125000, 155000, 215000] },
+    { role: 'Chief Legal Officer', exp: '3-6', values: [125000, 155000, 215000] },
+    { role: 'Group General Counsel', exp: '3-6', values: [125000, 155000, 215000] },
+    { role: 'Head of Legal', exp: '3-6', values: [95000, 122000, 165000] },
+    { role: 'Legal Director', exp: '3-6', values: [95000, 122000, 165000] },
+    { role: 'Deputy General Counsel', exp: '3-6', values: [95000, 122000, 165000] },
+    { role: 'Senior Solicitor', exp: '3-6', values: [48000, 72000, 105000] },
+    { role: 'Company Secretary', exp: '1-3', values: [35000, 45000, 58000] },
+    { role: 'Company Secretary', exp: '3-6', values: [55000, 78000, 100000] },
+    { role: 'Company Secretary', exp: '6-10', values: [90000, 125000, 165000] },
+    { role: 'Company Secretary', exp: '10+', values: [150000, 220000, 320000] },
+    { role: 'Chartered Secretary', exp: '3-6', values: [55000, 78000, 100000] },
+    { role: 'Chartered Governance Professional', exp: '3-6', values: [55000, 78000, 100000] },
+    { role: 'Governance Officer', exp: '1-3', values: [35000, 45000, 58000] },
+    { role: 'Governance Assistant', exp: '1-3', values: [35000, 45000, 58000] },
+    { role: 'Governance Manager', exp: '6-10', values: [90000, 125000, 165000] },
+    { role: 'Assistant Company Secretary', exp: '1-3', values: [35000, 45000, 58000] },
+    { role: 'Deputy Company Secretary', exp: '6-10', values: [90000, 125000, 165000] },
+    { role: 'Head of Secretariat', exp: '6-10', values: [90000, 125000, 165000] },
+    { role: 'Group Secretary', exp: '10+', values: [150000, 220000, 320000] },
+    { role: 'General Counsel', exp: '3-6', employer: 'city_elite', values: [181500, 225000, 312000] },
+    { role: 'Head of Legal', exp: '3-6', employer: 'city_elite', values: [138000, 177000, 239500] },
+    { role: 'General Counsel', exp: '10+', values: [170000, 220000, 330000] },
+    { role: 'Head of Legal', exp: '10+', values: [125000, 155000, 205000] }
+  ];
+  for (const t of exactCases) {
+    const res = await evaluateDashboard(t.role, t.exp, 'loc' in t ? t.loc! : 'London hybrid', t.employer);
+    const actual = [res.p10, res.p50, res.p90];
+    const salaryOk = actual.every((v, i) => v === t.values[i]);
+    const sectorOk = exactCases.indexOf(t) < 11 || t.role === 'Senior Solicitor' || res.sector === 'Legal, Risk & Compliance';
+    const ok = salaryOk && sectorOk;
+    if (ok) passed++; else failed++;
+    console.log(`${ok ? '✅ [PASS]' : '❌ [FAIL]'} ${t.role} (${t.exp}, ${t.employer || 'standard'}) | ${res.sector} | £${actual.join(' / £')} (expected £${t.values.join(' / £')})`);
+  }
+  console.log(`\nResults: ${passed} passed, ${failed} failed out of ${testSuite.length + exactCases.length} tests.`);
+  if (failed) process.exitCode = 1;
 }
 
 main();

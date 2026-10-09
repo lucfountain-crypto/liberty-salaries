@@ -42,6 +42,135 @@ interface RoleBenchmarkMeta {
 
 // 2026 Recalibrated City of London & UK Executive Search Compensation Benchmarks
 const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
+  "general-counsel": {
+    "basePct": 80,
+    "bonusPct": 20,
+    "demand": "Constrained for experienced legal and governance specialists",
+    "movement": "Role- and employer-specific; no observed market-wide growth estimate",
+    "certifications": [
+        "Qualified Solicitor (SRA)",
+        "Board advisory and in-house legal leadership"
+    ],
+    "overview": "Acts as the most senior in-house legal officer, advising the board on enterprise legal risk, corporate transactions and strategy. Distinct from private-practice equity Partners and from Head of Legal.",
+    "responsibilities": [
+        "Advising executive leadership on legal risk, strategic transactions and governance.",
+        "Leading in-house legal teams and managing external counsel relationships.",
+        "Overseeing commercial contracting, disputes and regulatory legal advice."
+    ],
+    "marketContext": "Robert Half 2026 UK Salary Guide: General Counsel commerce survey quartiles £127,000 / £145,500 / £173,250; financial services £141,250 / £173,000 / £201,000. Barclay Simpson 2026 In-house Legal Salary Guide: £140k–£220k smaller organisations, £170k–£250k mid-market and £200k–£350k+ large/FTSE. Robert Walters UK 2026: broad General Counsel base range £110,000–£330,000. Modelled hiring ranges exclude bonus/LTIP/equity; lower tiers are PQE-equivalent remit tracks, not literal junior GC appointments.",
+    "tiers": {
+        "1-3": {
+            "p10": 95000,
+            "p50": 120000,
+            "p90": 150000,
+            "desc": "Associate GC / Deputy GC; PQE-equivalent development track, not a junior GC appointment"
+        },
+        "3-6": {
+            "p10": 125000,
+            "p50": 155000,
+            "p90": 215000,
+            "desc": "Divisional / Regional GC; established in-house leadership remit"
+        },
+        "6-10": {
+            "p10": 145000,
+            "p50": 185000,
+            "p90": 260000,
+            "desc": "Group GC (mid-cap); enterprise-wide legal risk and board advisory"
+        },
+        "10+": {
+            "p10": 170000,
+            "p50": 220000,
+            "p90": 330000,
+            "desc": "Group GC / Chief Legal Officer (FTSE / large-cap); C-suite remit"
+        }
+    }
+},
+  "head-of-legal": {
+    "basePct": 85,
+    "bonusPct": 15,
+    "demand": "Constrained for experienced legal and governance specialists",
+    "movement": "Role- and employer-specific; no observed market-wide growth estimate",
+    "certifications": [
+        "Qualified Solicitor (SRA)",
+        "Board advisory and in-house legal leadership"
+    ],
+    "overview": "Leads the in-house legal function, legal delivery and external counsel relationships, reporting to General Counsel or executive leadership. Senior to legal counsel but distinct from the board-level chief legal officer.",
+    "responsibilities": [
+        "Advising executive leadership on legal risk, strategic transactions and governance.",
+        "Leading in-house legal teams and managing external counsel relationships.",
+        "Overseeing commercial contracting, disputes and regulatory legal advice."
+    ],
+    "marketContext": "Robert Half 2026 UK Salary Guide: Head of Legal commerce survey quartiles £111,750 / £119,000 / £127,500; financial services £120,750 / £133,250 / £187,250. Robert Half 2026 UK Salary Guide: Senior Legal Counsel commerce £87,500 / £97,250 / £110,000; financial services £96,000 / £112,250 / £122,500. Base salary excludes bonus/LTIP; remit and sector drive placement.",
+    "tiers": {
+        "1-3": {
+            "p10": 80000,
+            "p50": 100000,
+            "p90": 125000,
+            "desc": "Senior Legal Counsel / Legal Manager; PQE-equivalent leadership development"
+        },
+        "3-6": {
+            "p10": 95000,
+            "p50": 122000,
+            "p90": 165000,
+            "desc": "Head of Legal / Legal Director; functional leadership below General Counsel"
+        },
+        "6-10": {
+            "p10": 110000,
+            "p50": 140000,
+            "p90": 185000,
+            "desc": "Head of Legal / Deputy GC; complex group or regulated-sector remit"
+        },
+        "10+": {
+            "p10": 125000,
+            "p50": 155000,
+            "p90": 205000,
+            "desc": "Senior Head of Legal; international functional leadership, reporting to GC"
+        }
+    }
+},
+  "company-secretary": {
+    "basePct": 85,
+    "bonusPct": 15,
+    "demand": "Constrained for experienced legal and governance specialists",
+    "movement": "Role- and employer-specific; no observed market-wide growth estimate",
+    "certifications": [
+        "CGI / ICSA Chartered Governance qualification"
+    ],
+    "overview": "Delivers statutory compliance, Companies House filings, board governance and AGMs. A CGI/ICSA-qualified governance profession reporting to or alongside General Counsel, not an administrative/PA role.",
+    "responsibilities": [
+        "Overseeing statutory filings, board governance, committee reporting and AGMs.",
+        "Advising on Companies Act obligations and listed-company governance requirements.",
+        "Coordinating with General Counsel, finance and treasury."
+    ],
+    "marketContext": "Robert Half 2026 UK Salary Guide: Company Secretary commerce survey quartiles £74,000 / £92,000 / £110,250; Deputy Company Secretary/Governance Manager £44,250 / £57,750 / £70,000; Governance Assistant £26,000 / £32,000 / £36,750. The modelled entry track reflects assistant company secretariat remit, not generic governance administration. Ingen Partners Company Secretary Salary Guide: FTSE 250 assistant £50k–£80k, senior assistant £75k–£120k, head of secretariat £100k–£150k, deputy £130k–£180k and group £160k–£250k+; FTSE 100 group £180k–£350k+. BWW Recruitment 2026 Salary Guide: combined FTSE 100 Group Company Secretary/GC £200k+ with 50%+ bonus. All modelled hiring ranges are base only; bonuses remain separate.",
+    "tiers": {
+        "1-3": {
+            "p10": 35000,
+            "p50": 45000,
+            "p90": 58000,
+            "desc": "Governance Assistant / Assistant Company Secretary; developing statutory and board support remit"
+        },
+        "3-6": {
+            "p10": 55000,
+            "p50": 78000,
+            "p90": 100000,
+            "desc": "Company Secretary / Senior Assistant; autonomous governance delivery"
+        },
+        "6-10": {
+            "p10": 90000,
+            "p50": 125000,
+            "p90": 165000,
+            "desc": "Deputy Company Secretary / Head of Secretariat; team and board governance leadership"
+        },
+        "10+": {
+            "p10": 150000,
+            "p50": 220000,
+            "p90": 320000,
+            "desc": "Group Company Secretary; FTSE / listed-company governance leadership"
+        }
+    }
+},
+
   'audit-part-qualified': {
     basePct: 95,
     bonusPct: 5,
@@ -439,7 +568,7 @@ const ROLE_DETAILS: Record<string, RoleBenchmarkMeta> = {
       '1-3': { p10: 52000, p50: 66000, p90: 85000, desc: 'Junior Solicitor (1–2y PQE); commercial drafting & disclosure' },
       '3-6': { p10: 58000, p50: 75000, p90: 95000, desc: 'Commercial Solicitor (3–5y PQE); corporate contracts & advisory' },
       '6-10': { p10: 85000, p50: 115000, p90: 145000, desc: 'Senior Associate / Managing Counsel; high-value deals' },
-      '10+': { p10: 120000, p50: 175000, p90: 260000, desc: 'Partner / General Counsel / Legal Director' }
+      '10+': { p10: 120000, p50: 175000, p90: 260000, desc: 'Private-Practice Partner / Practice Group Lead' }
     }
   },
   'tech-software-engineer': {

@@ -360,6 +360,9 @@ export default function SalaryDashboard() {
         if (inputLower === 'account handler' || inputLower === 'insurance account handler' || inputLower === 'insurance account manager' || inputLower === 'account manager, insurance' || inputLower === 'commercial account manager') return true;
       }
 
+      // Dedicated leadership cards must not swallow deputy/assistant aliases.
+      if (['general-counsel', 'head-of-legal', 'company-secretary'].includes(r.id)) return titleLower === inputLower;
+
       const match = titleLower === inputLower || 
                     normTitle === normInput ||
                     titleLower.includes(inputLower) || 
@@ -379,6 +382,7 @@ export default function SalaryDashboard() {
       const titleLower = predefined.title.toLowerCase();
       const isAudit = titleLower.includes('audit');
       const isQuantOrIB = titleLower.includes('quant') || titleLower.includes('m&a') || titleLower.includes('banking');
+      const isLegalLeadership = ['general-counsel', 'head-of-legal', 'company-secretary'].includes(predefined.id);
       const isLegal = titleLower.includes('solicitor') || titleLower.includes('law') || titleLower.includes('compliance');
       const isBrokingAccount = titleLower.includes('account handler') || titleLower.includes('account manager') || predefined.id === 'ins-account-handler-manager';
       const isInsurance = (titleLower.includes('underwriter') || titleLower.includes('actuary')) && !isBrokingAccount;
@@ -386,7 +390,9 @@ export default function SalaryDashboard() {
       const isMarketingOrComms = titleLower.includes('communication') || titleLower.includes('marketing') || titleLower.includes('comms') || titleLower.includes('brand') || titleLower.includes('pr');
 
       let movementText = '+2% to +4% broad UK professional services annual salary movement.';
-      if (isAudit) {
+      if (isLegalLeadership) {
+        movementText = 'Role- and employer-specific; base salary benchmark excludes bonus, LTIP and equity.';
+      } else if (isAudit) {
         movementText = '+1% to +4% planned internal pay reviews for retained employees (Source: Barclay Simpson 2026 Internal Audit Salary Guide); external career moves between employers typically achieve 8% to 15% salary progression.';
       } else if (isQuantOrIB) {
         movementText = '+6% to +12% annual compensation movement across front-office trading, quant research, and M&A mandates.';
@@ -527,6 +533,7 @@ export default function SalaryDashboard() {
     // INDUSTRIAL, LOGISTICS, INFRASTRUCTURE, HEALTHCARE & OPERATIONAL BRANCHES
 
     const isSoftwareRole = /\b(software|developer|frontend|backend|fullstack|programmer|coder)\b/i.test(inputLower);
+    let customTiers: Record<string, { p10: number; p50: number; p90: number; desc: string }> | null = null;
     const isTechDataRole = /\b(data warehouse|data warehousing|bi warehouse|cloud warehouse|dwh|etl)\b/i.test(inputLower);
 
     // 0A. Civil, Structural & Infrastructure Engineering (Physical vs Software Engineering)
@@ -826,13 +833,48 @@ export default function SalaryDashboard() {
       yoy = "4–7%";
       hiringInsight = "Internal Auditors (ACA/CIA 1–3 yrs PQE) range £68k–£95k base in London financial institutions.";
     }
+    // In-house legal leadership is distinct from private-practice partnership.
+    else if (/\b(general counsel|chief legal officer)\b/i.test(inputLower) && !/\b(deputy|associate|assistant)\b/i.test(inputLower)) {
+      sector = "Legal, Risk & Compliance";
+      baseP10 = 125000; baseP50 = 155000; baseP90 = 215000;
+      basePct = 80; bonusPct = 20;
+      description = "Acts as the most senior in-house legal officer, advising the board on enterprise legal risk, transactions and corporate strategy; not a law-firm equity Partner.";
+      demand = "Constrained availability for board-level in-house legal leaders";
+      yoy = "Role- and employer-specific; no observed market-wide growth estimate";
+      hiringInsight = "Modelled base salary only: Robert Half 2026 UK Salary Guide, Barclay Simpson 2026 In-house Legal Salary Guide and Robert Walters UK 2026. Large-cap/FTSE context uses the existing +45% employer toggle; bonus and LTIP are separate.";
+    }
+    else if (/\b(head of legal|legal director|deputy general counsel|associate general counsel|assistant general counsel)\b/i.test(inputLower)) {
+      sector = "Legal, Risk & Compliance";
+      baseP10 = 95000; baseP50 = 122000; baseP90 = 165000;
+      basePct = 85; bonusPct = 15;
+      description = "Leads an in-house legal function, legal delivery and external counsel relationships, reporting to the General Counsel or executive leadership; distinct from the board-level chief legal officer.";
+      demand = "Constrained availability for experienced in-house legal function heads";
+      yoy = "Role- and employer-specific; no observed market-wide growth estimate";
+      hiringInsight = "Robert Half 2026 UK Salary Guide: Head of Legal commerce £111,750/£119,000/£127,500; financial services £120,750/£133,250/£187,250 (survey quartiles). These modelled hiring ranges are base salary only, excluding bonus and LTIP.";
+    }
+    // Governance professionals must win before legal, banking and administrative fallbacks.
+    else if (/\b(company secretary|chartered secretary|group secretary|head of secretariat|chartered governance professional|governance (officer|manager|assistant))\b/i.test(inputLower)) {
+      sector = "Legal, Risk & Compliance";
+      baseP10 = 55000; baseP50 = 78000; baseP90 = 100000;
+      basePct = 85; bonusPct = 15;
+      description = "Delivers statutory compliance, Companies House filings, board governance and AGMs; a CGI/ICSA governance profession, not a personal assistant or administrative secretary.";
+      demand = "Constrained for qualified CGI/ICSA governance specialists";
+      yoy = "Role- and employer-specific; no observed market-wide growth estimate";
+      hiringInsight = "Base salary calibration: Robert Half 2026 UK Salary Guide, BWW Recruitment 2026 Salary Guide and Ingen Partners Company Secretary Salary Guide. FTSE group roles command £160k–£350k+ base; performance bonus remains separate.";
+      customTiers = {
+        '1-3': { p10: 35000, p50: 45000, p90: 58000, desc: 'Governance Assistant / Assistant Company Secretary; developing statutory and board support remit' },
+        '3-6': { p10: 55000, p50: 78000, p90: 100000, desc: 'Company Secretary / Senior Assistant; autonomous governance delivery' },
+        '6-10': { p10: 90000, p50: 125000, p90: 165000, desc: 'Deputy Company Secretary / Head of Secretariat; team and board governance leadership' },
+        '10+': { p10: 150000, p50: 220000, p90: 320000, desc: 'Group Company Secretary; FTSE / listed-company governance leadership' }
+      };
+    }
     // 2. Legal & Professional Services (Separating City/US Premium vs Standard / Regional Practice)
     else if (/\b(legal|solicitor|lawyer|counsel|partner|attorney|barrister|conveyancer)\b/i.test(inputLower)) {
       const isCityOrUS = /\b(city|us firm|us law|magic circle|silver circle|wall street|white shoe|us legal)\b/i.test(inputLower);
 
       if (isCityOrUS) {
         sector = "Legal & Professional Services (City & US Elite)";
-        if (isDirectorLevel || /\b(partner|general counsel)\b/i.test(inputLower)) {
+        if (isDirectorLevel || /\bpartner\b/i.test(inputLower)) {
           baseP10 = 140000; baseP50 = 220000; baseP90 = 350000;
           basePct = 80; bonusPct = 20;
           description = "Leads corporate governance, high-stakes M&A litigation, regulatory compliance, and partner equity advisory across City and US elite law firms.";
@@ -849,13 +891,13 @@ export default function SalaryDashboard() {
         }
       } else {
         sector = "Legal & Professional Services";
-        if (isDirectorLevel || /\b(partner|general counsel|head of legal)\b/i.test(inputLower)) {
+        if (isDirectorLevel || /\bpartner\b/i.test(inputLower)) {
           baseP10 = 90000; baseP50 = 135000; baseP90 = 195000;
           basePct = 85; bonusPct = 15;
           description = "Leads legal affairs, corporate governance, risk management, and regulatory compliance for commercial organisations or practice groups.";
           demand = "High Demand for Experienced Counsel";
           yoy = "1–4%";
-          hiringInsight = "General Counsel and Regional Law Firm Partners average £110k–£180k base pay depending on company turnover or equity structure.";
+          hiringInsight = "Regional Law Firm Partners have partnership-specific remuneration; profit share is separate from the modelled base hiring range.";
         } else {
           baseP10 = 48000; baseP50 = 72000; baseP90 = 105000;
           basePct = 88; bonusPct = 12;
@@ -1253,7 +1295,7 @@ export default function SalaryDashboard() {
       bonusPct: bonusPct,
       demand: demand,
       hiringInsight: hiringInsight,
-      tiers: null,
+      tiers: customTiers,
       regional_data: {
         [parsedLocation.regionKey]: {
           p10: Math.round(baseP10 * regMult),
@@ -1321,6 +1363,8 @@ export default function SalaryDashboard() {
   const bonusPct = (activeRoleData as any).bonusPct || 10;
 
   const inputTitleLower = (roleInput || activeRoleData.title).toLowerCase();
+  const isInHouseLeadership = /\b(general counsel|chief legal officer|head of legal|legal director)\b/i.test(inputTitleLower);
+  const isGovernanceRole = /\b(company secretary|chartered secretary|group secretary|head of secretariat|chartered governance professional|governance (officer|manager|assistant))\b/i.test(inputTitleLower);
   const isLegalRole = inputTitleLower.includes('solicitor') || inputTitleLower.includes('legal') || inputTitleLower.includes('counsel') || inputTitleLower.includes('lawyer');
   const isTechRole = inputTitleLower.includes('developer') || inputTitleLower.includes('software') || inputTitleLower.includes('engineer') || inputTitleLower.includes('tech') || inputTitleLower.includes('architect');
   const isAuditRole = inputTitleLower.includes('audit');
@@ -1602,7 +1646,7 @@ export default function SalaryDashboard() {
                           {[
                             { id: 'standard', label: 'Established Corporate / Mid-Market (Standard)' },
                             { id: 'specialist', label: 'Specialist Boutique / High-Growth (+10%)' },
-                            { id: 'city_elite', label: 'City / US Elite / Bulge Bracket (+45%)' },
+                            { id: 'city_elite', label: isInHouseLeadership || isGovernanceRole ? 'Large-Cap / FTSE / Global Group (+45%)' : 'City / US Elite / Bulge Bracket (+45%)' },
                             { id: 'public', label: 'Public Sector / NHS / Local Authority' }
                           ].map(opt => (
                             <button
@@ -1621,7 +1665,7 @@ export default function SalaryDashboard() {
                         </div>
                       </div>
 
-                      {isLegalRole && (
+                      {isLegalRole && !isInHouseLeadership && !isGovernanceRole && (
                         <div className="pt-2 border-t border-slate-200/60">
                           <label className="text-xs font-bold text-slate-800 block mb-1">
                             Legal Practice Setting (Experience evaluated as PQE)
