@@ -120,8 +120,6 @@ export async function POST(request: Request) {
     const reviewInstructions = buildReviewInstructions(reviewer);
     const promptText = `${reviewInstructions}\n\nCandidate Submission Context:\n${JSON.stringify(inputContext, null, 2)}`;
 
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-
     const payload = {
       contents: [
         {
@@ -141,15 +139,36 @@ export async function POST(request: Request) {
       },
     };
 
-    const geminiRes = await fetch(geminiUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    const candidateModels = [
+      "gemini-3.5-flash-lite",
+      "gemini-flash-lite-latest",
+      "gemini-3.5-flash",
+      "gemini-3.8-flash",
+      "gemini-3.6-flash",
+    ];
 
-    if (!geminiRes.ok) {
-      const errText = await geminiRes.text();
-      console.error("Gemini API Error:", geminiRes.status, errText);
+    let geminiRes: Response | null = null;
+
+    for (const model of candidateModels) {
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      try {
+        const res = await fetch(geminiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (res.ok) {
+          geminiRes = res;
+          break;
+        }
+        const errText = await res.text();
+        console.warn(`Gemini API Error (${model}):`, res.status, errText);
+      } catch (err) {
+        console.warn(`Gemini fetch exception (${model}):`, err);
+      }
+    }
+
+    if (!geminiRes) {
       return NextResponse.json(
         { error: "AI Review Engine was unable to process the image. Please try again." },
         { status: 502 }
