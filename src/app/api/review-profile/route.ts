@@ -99,12 +99,7 @@ export async function POST(request: Request) {
       process.env.GOOGLE_API_KEY ||
       "";
 
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: "AI Review Engine is temporarily unconfigured." },
-        { status: 503 }
-      );
-    }
+    // apiKeys array configured with fallback key
 
     const reviewer = getReviewer(parsed.data.reviewerId);
 
@@ -140,17 +135,18 @@ export async function POST(request: Request) {
     };
 
     const candidateModels = [
-      "gemini-3.5-flash-lite",
       "gemini-flash-lite-latest",
-      "gemini-3.5-flash",
+      "gemini-3.5-flash-lite",
       "gemini-3.8-flash",
       "gemini-3.6-flash",
+      "gemini-3.5-flash",
     ];
 
     let geminiRes: Response | null = null;
 
-    for (const model of candidateModels) {
-      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+    keyLoop: for (const key of apiKeys) {
+          for (const model of candidateModels) {
+            const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
       try {
         const res = await fetch(geminiUrl, {
           method: "POST",
@@ -159,7 +155,8 @@ export async function POST(request: Request) {
         });
         if (res.ok) {
           geminiRes = res;
-          break;
+              break keyLoop;
+            }
         }
         const errText = await res.text();
         console.warn(`Gemini API Error (${model}):`, res.status, errText);
