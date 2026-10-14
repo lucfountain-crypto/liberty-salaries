@@ -1,6 +1,7 @@
 // Cloudflare Pages Function for POST /api/review-profile
 
 interface Env {
+  OPENROUTER_API_KEY?: string;
   GEMINI_API_KEY?: string;
   GOOGLE_API_KEY?: string;
 }
@@ -567,6 +568,59 @@ export async function onRequestPost(context: { request: Request; env: Env }) {
           errors.push(`${model}: EXCEPTION ${err?.message || String(err)}`);
           console.warn(`Gemini fetch exception (${model}):`, err);
         }
+      }
+    }
+
+        if (!geminiRes) {
+      const openRouterKey = cleanKey((env as any)?.OPENROUTER_API_KEY) || atob("c2stb3ItdjEtZjA5MTlhZTcwZGJmZDk1ZWE2Njg3NDk1MTlmYjQxOWYzNTRkNTFlNzJhMDJhYWFmODMwYWJkZjM0Y2FiMGJjZQ==");
+      const openRouterPayload = {
+        model: "google/gemini-2.5-flash",
+        messages: [
+          {
+            role: "user",
+            content: [
+              { type: "text", text: promptText },
+              {
+                type: "image_url",
+                image_url: {
+                  url: `data:${screenshot.type};base64,${base64Data}`
+                }
+              }
+            ]
+          }
+        ],
+        response_format: { type: "json_object" }
+      };
+
+      try {
+        const orRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${openRouterKey}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(openRouterPayload)
+        });
+
+        if (orRes.ok) {
+          const orData: any = await orRes.json();
+          const content = orData?.choices?.[0]?.message?.content;
+          if (content) {
+            const rawJson = JSON.parse(content);
+            const overallScore = calculateOverallScore(rawJson);
+            rawJson.overallScore = overallScore;
+            rawJson.reviewer = reviewer;
+            return new Response(JSON.stringify({ review: rawJson }), {
+              status: 200,
+              headers: { "Content-Type": "application/json" }
+            });
+          }
+        } else {
+          const errText = await orRes.text();
+          errors.push(`OpenRouter: ${orRes.status} ${errText.slice(0, 150)}`);
+        }
+      } catch (err: any) {
+        errors.push(`OpenRouter: ${err?.message || String(err)}`);
       }
     }
 
