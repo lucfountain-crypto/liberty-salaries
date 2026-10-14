@@ -549,6 +549,7 @@ export async function onRequestPost(context: { request: Request; env: Env }) {
     ];
 
     let geminiRes: Response | null = null;
+    const errors: string[] = [];
 
     for (const model of candidateModels) {
       const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
@@ -563,15 +564,20 @@ export async function onRequestPost(context: { request: Request; env: Env }) {
           break;
         }
         const errText = await res.text();
+        errors.push(`${model}: ${res.status} ${errText.slice(0, 150)}`);
         console.warn(`Gemini API Error (${model}):`, res.status, errText);
-      } catch (err) {
+      } catch (err: any) {
+        errors.push(`${model}: EXCEPTION ${err?.message || String(err)}`);
         console.warn(`Gemini fetch exception (${model}):`, err);
       }
     }
 
     if (!geminiRes) {
       return new Response(
-        JSON.stringify({ error: "AI Review Engine was unable to process the image. Please try again." }),
+        JSON.stringify({
+          error: "AI Review Engine was unable to process the image. Please try again.",
+          debug: errors
+        }),
         { status: 502, headers: { "Content-Type": "application/json" } }
       );
     }
