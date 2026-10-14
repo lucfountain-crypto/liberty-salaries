@@ -1125,7 +1125,7 @@ export default {
         }
 
                 if (!geminiRes) {
-          const openRouterKey = cleanKey((env as any)?.OPENROUTER_API_KEY) || atob("c2stb3ItdjEtZjA5MTlhZTcwZGJmZDk1ZWE2Njg3NDk1MTlmYjQxOWYzNTRkNTFlNzJhMDJhYWFmODMwYWJkZjM0Y2FiMGJjZQ==");
+          const openRouterKey = cleanKey((env as any)?.OPENROUTER_API_KEY) || atob("c2stb3ItdjEtZmFlY2I5MzI5OGYyNmI2ZGNiMmMzYTExZTMwZjg3OGIwNDkwZDIwNjc2MWI1M2ZhYzJlYWI3OWMyOTc1ZjBlNw==");
           const openRouterPayload = {
             model: "google/gemini-2.5-flash",
             messages: [
