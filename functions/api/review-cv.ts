@@ -649,23 +649,23 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
     let geminiRes: Response | null = null;
 
     keyLoop: for (const key of apiKeys) {
-          for (const model of candidateModels) {
-            const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
-      try {
-        const res = await fetch(geminiUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-        if (res.ok) {
-          geminiRes = res;
-              break keyLoop;
-            }
+      for (const model of candidateModels) {
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+        try {
+          const res = await fetch(geminiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (res.ok) {
+            geminiRes = res;
+            break keyLoop;
+          }
+          const errText = await res.text();
+          console.warn(`Gemini CV API Error (${model}):`, res.status, errText);
+        } catch (err) {
+          console.warn(`Gemini CV fetch exception (${model}):`, err);
         }
-        const errText = await res.text();
-        console.warn(`Gemini CV API Error (${model}):`, res.status, errText);
-      } catch (err) {
-        console.warn(`Gemini CV fetch exception (${model}):`, err);
       }
     }
 

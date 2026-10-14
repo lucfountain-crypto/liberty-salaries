@@ -547,25 +547,25 @@ export async function onRequestPost(context: { request: Request; env: Env }) {
     const errors: string[] = [];
 
     keyLoop: for (const key of apiKeys) {
-          for (const model of candidateModels) {
-            const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
-      try {
-        const res = await fetch(geminiUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-        if (res.ok) {
-          geminiRes = res;
-              break keyLoop;
-            }
+      for (const model of candidateModels) {
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+        try {
+          const res = await fetch(geminiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (res.ok) {
+            geminiRes = res;
+            break keyLoop;
+          }
+          const errText = await res.text();
+          errors.push(`${model}: ${res.status} ${errText.slice(0, 150)}`);
+          console.warn(`Gemini API Error (${model}):`, res.status, errText);
+        } catch (err: any) {
+          errors.push(`${model}: EXCEPTION ${err?.message || String(err)}`);
+          console.warn(`Gemini fetch exception (${model}):`, err);
         }
-        const errText = await res.text();
-        errors.push(`${model}: ${res.status} ${errText.slice(0, 150)}`);
-        console.warn(`Gemini API Error (${model}):`, res.status, errText);
-      } catch (err: any) {
-        errors.push(`${model}: EXCEPTION ${err?.message || String(err)}`);
-        console.warn(`Gemini fetch exception (${model}):`, err);
       }
     }
 

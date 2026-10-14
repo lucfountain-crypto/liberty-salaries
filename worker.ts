@@ -1102,23 +1102,23 @@ export default {
         keyLoop: for (const key of apiKeys) {
           for (const model of candidateModels) {
             const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
-          try {
-            const res = await fetch(geminiUrl, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-            });
-            if (res.ok) {
-              geminiRes = res;
-              break keyLoop;
+            try {
+              const res = await fetch(geminiUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+              });
+              if (res.ok) {
+                geminiRes = res;
+                break keyLoop;
+              }
+              const errText = await res.text();
+              errors.push(`${model}: ${res.status} ${errText.slice(0, 150)}`);
+              console.warn(`Gemini API Error (${model}):`, res.status, errText);
+            } catch (err: any) {
+              errors.push(`${model}: EXCEPTION ${err?.message || String(err)}`);
+              console.warn(`Gemini fetch exception (${model}):`, err);
             }
-            }
-            const errText = await res.text();
-            errors.push(`${model}: ${res.status} ${errText.slice(0, 150)}`);
-            console.warn(`Gemini API Error (${model}):`, res.status, errText);
-          } catch (err: any) {
-            errors.push(`${model}: EXCEPTION ${err?.message || String(err)}`);
-            console.warn(`Gemini fetch exception (${model}):`, err);
           }
         }
 
@@ -1127,8 +1127,8 @@ export default {
             JSON.stringify({
               error: "AI Review Engine was unable to process the image. Please try again.",
               debug: errors,
-              hasKey: Boolean(apiKey),
-              keyLen: apiKey.length
+              hasKey: apiKeys.length > 0,
+              keyLen: (apiKeys[0] || "").length
             }),
             { status: 502, headers: { "Content-Type": "application/json" } }
           );
@@ -1268,21 +1268,21 @@ export default {
         keyLoop: for (const key of apiKeys) {
           for (const model of candidateModels) {
             const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
-          try {
-            const res = await fetch(geminiUrl, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-            });
-            if (res.ok) {
-              geminiRes = res;
-              break keyLoop;
+            try {
+              const res = await fetch(geminiUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+              });
+              if (res.ok) {
+                geminiRes = res;
+                break keyLoop;
+              }
+              const errText = await res.text();
+              console.warn(`Gemini CV API Error (${model}):`, res.status, errText);
+            } catch (err) {
+              console.warn(`Gemini CV fetch exception (${model}):`, err);
             }
-            }
-            const errText = await res.text();
-            console.warn(`Gemini CV API Error (${model}):`, res.status, errText);
-          } catch (err) {
-            console.warn(`Gemini CV fetch exception (${model}):`, err);
           }
         }
 
