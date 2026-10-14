@@ -499,7 +499,8 @@ export async function onRequestPost(context: { request: Request; env: Env }) {
       );
     }
 
-    const apiKeys = [env.GEMINI_API_KEY, env.GOOGLE_API_KEY, atob("QVEuQWI4Uk42S3ZHZ2tKTFdqeGY2N2hta29JUmhzQ1V5ak02R2o3M1QwRnFPTEhfT0FFUkE=")].filter((k): k is string => Boolean(k && k.trim()));
+    const cleanKey = (k?: string) => k ? k.replace(/["']/g, "").trim() : "";
+        const apiKeys = [cleanKey(env?.GEMINI_API_KEY), cleanKey(env?.GOOGLE_API_KEY), atob("QVEuQWI4Uk42S3ZHZ2tKTFdqeGY2N2hta29JUmhzQ1V5ak02R2o3M1QwRnFPTEhfT0FFUkE=")].filter((k): k is string => Boolean(k && k.length > 0));
     // apiKeys array configured with fallback key
 
     const reviewer = getReviewer(reviewerId);
